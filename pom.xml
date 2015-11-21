@@ -8,5 +8,6 @@
       <module>phoenix-bom</module>
       <module>phoenix-engine</module>
       <module>phoenix-all</module>
+      <module>phoenix-core</module>
   </modules>
 </project>
