@@ -17,6 +17,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.phoenix.config.CmdArguments;
+
 /**
  * @author nschuste
  * @version 1.0.0
@@ -80,7 +82,8 @@ public class Application_main_Test {
   @Test()
   public final void test_working() throws CmdLineException {
     this.app.doMain(new String[] {"-in", "test"});
-    Mockito.verify(this.runner, Mockito.only()).executeArgs(org.mockito.Matchers.any());;
+    Mockito.verify(this.runner, Mockito.only()).executeArgs(
+        org.mockito.Matchers.any(CmdArguments.class));
     Mockito.verifyNoMoreInteractions(this.runner);
   }
 }
