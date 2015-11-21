@@ -23,6 +23,15 @@ public class Application {
   @Autowired
   private Runner runner;
 
+  /**
+   * Main method to execute TC locally.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @param args program arguments
+   * @throws CmdLineException get's thrown if parsing of args fails.
+   * @since Nov 21, 2015
+   */
   public static void main(final String[] args) throws CmdLineException {
     final ApplicationContext context = SpringApplication.run(Application.class);
     context.getBean(Application.class).doMain(args);
@@ -33,6 +42,15 @@ public class Application {
     this.runner.executeArgs(arguments);
   }
 
+  /**
+   * Creates an object based on the arguments.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @param args
+   * @return
+   * @since Nov 21, 2015
+   */
   protected CmdArguments extractArgs(final String[] args) {
     final CmdArguments arguments = new CmdArguments();
     final CmdLineParser parser = new CmdLineParser(arguments);

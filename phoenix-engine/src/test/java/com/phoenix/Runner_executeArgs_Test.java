@@ -5,19 +5,25 @@
 
 package com.phoenix;
 
+import java.net.URISyntaxException;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.kohsuke.args4j.CmdLineException;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
+import com.phoenix.execution.TcExecutor;
+import com.phoenix.to.TestCase;
 
 /**
  * @author nschuste
@@ -25,13 +31,13 @@ import com.phoenix.config.CmdArguments;
  * @since Nov 21, 2015
  */
 @RunWith(MockitoJUnitRunner.class)
-public class Application_main_Test {
-
-  @InjectMocks
-  private Application app;
-
+public class Runner_executeArgs_Test {
   @Mock
-  private Runner runner;
+  private TcExecutor executor;
+  @Spy
+  private ObjectMapper mapper;
+  @InjectMocks
+  private RunnerImpl runner;
 
   /**
    * @author nschuste
@@ -69,21 +75,14 @@ public class Application_main_Test {
   @After
   public void tearDown() throws Exception {}
 
-  @Test(expected = RuntimeException.class)
-  public final void test_too_few_arguments() throws CmdLineException {
-    this.app.doMain(new String[] {""});
+  @Test
+  public final void test() throws URISyntaxException {
+    final CmdArguments args = new CmdArguments();
+    final String inputFile = this.getClass().getResource("sample.tc").getFile();
+    args.setInputFile(inputFile);
+    this.runner.executeArgs(args);
+    Mockito.verify(this.executor, Mockito.only()).run(Matchers.any(TestCase.class));
+    Mockito.verifyNoMoreInteractions(this.executor);
   }
 
-  @Test(expected = RuntimeException.class)
-  public final void test_too_many_arguments() throws CmdLineException {
-    this.app.doMain(new String[] {""});
-  }
-
-  @Test()
-  public final void test_working() throws CmdLineException {
-    this.app.doMain(new String[] {"-in", "test"});
-    Mockito.verify(this.runner, Mockito.only()).executeArgs(
-        org.mockito.Matchers.any(CmdArguments.class));
-    Mockito.verifyNoMoreInteractions(this.runner);
-  }
 }
