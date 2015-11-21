@@ -8,7 +8,9 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <properties>
-        <spring.bom.version></spring.bom.version>
+        <args4j.version>2.32</args4j.version>
+        <lombok.version>1.16.6</lombok.version>
+        <slf4j.version>1.7.13</slf4j.version>
     </properties>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
@@ -20,6 +22,21 @@
                 <version>2.0.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>${args4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>${slf4j.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
