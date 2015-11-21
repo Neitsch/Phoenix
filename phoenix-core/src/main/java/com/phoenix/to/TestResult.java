@@ -5,11 +5,14 @@
 
 package com.phoenix.to;
 
+import lombok.Data;
+
 /**
  * @author nschuste
  * @version 1.0.0
  * @since Nov 21, 2015
  */
+@Data
 public class TestResult {
-
+  private boolean success;
 }

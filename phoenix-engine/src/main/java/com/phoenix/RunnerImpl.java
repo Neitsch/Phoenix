@@ -20,6 +20,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
+import com.phoenix.to.TestResult;
 
 /**
  * @author nschuste
@@ -46,7 +47,8 @@ public class RunnerImpl implements Runner {
   public void executeArgs(final CmdArguments args) {
     try {
       final TestCase tc = this.loadTC(args.getInputFile());
-      this.executor.run(tc);
+      final TestResult result = this.executor.run(tc);
+      log.info(result.toString());
     } catch (final Exception e) {
       log.catching(e);
     }

@@ -24,6 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
+import com.phoenix.to.TestResult;
 
 /**
  * @author nschuste
@@ -76,10 +77,12 @@ public class Runner_executeArgs_Test {
   public void tearDown() throws Exception {}
 
   @Test
-  public final void test() throws URISyntaxException {
+  public final void test_simple() throws URISyntaxException {
     final CmdArguments args = new CmdArguments();
     final String inputFile = this.getClass().getResource("sample.tc").getFile();
     args.setInputFile(inputFile);
+    final TestResult result = new TestResult();
+    Mockito.doReturn(result).when(this.executor).run(Matchers.any(TestCase.class));
     this.runner.executeArgs(args);
     Mockito.verify(this.executor, Mockito.only()).run(Matchers.any(TestCase.class));
     Mockito.verifyNoMoreInteractions(this.executor);
