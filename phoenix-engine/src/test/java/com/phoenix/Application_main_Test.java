@@ -5,6 +5,11 @@
 
 package com.phoenix;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.Map;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -50,6 +55,24 @@ public class Application_main_Test {
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {}
+
+  @Test
+  public void mysql() {
+    final Map<String, String> env = System.getenv();
+    System.out.println(env.get("MYSQL_USER"));
+    try {
+      final Connection conn =
+          DriverManager.getConnection("jdbc:mysql://localhost/test?" + "user="
+              + env.get("MYSQL_USER") + "&password=" + env.get("MYSQL_PASSWORD"));
+
+      // Do something with the Connection
+    } catch (final SQLException ex) {
+      // handle any errors
+      System.out.println("SQLException: " + ex.getMessage());
+      System.out.println("SQLState: " + ex.getSQLState());
+      System.out.println("VendorError: " + ex.getErrorCode());
+    }
+  }
 
   /**
    * @author nschuste
