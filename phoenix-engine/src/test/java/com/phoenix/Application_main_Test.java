@@ -8,6 +8,7 @@ package com.phoenix;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Map;
 
 import org.junit.After;
@@ -66,6 +67,8 @@ public class Application_main_Test {
               + env.get("MYSQL_USER") + "&password=" + env.get("MYSQL_PASSWORD"));
 
       // Do something with the Connection
+      final Statement state = conn.createStatement();
+      state.execute("CREATE TABLE my_test");
     } catch (final SQLException ex) {
       // handle any errors
       System.out.println("SQLException: " + ex.getMessage());
