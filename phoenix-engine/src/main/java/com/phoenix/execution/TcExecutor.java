@@ -5,6 +5,7 @@
 
 package com.phoenix.execution;
 
+import com.phoenix.config.Configuration;
 import com.phoenix.to.TestCase;
 import com.phoenix.to.TestResult;
 
@@ -19,8 +20,9 @@ public interface TcExecutor {
    * @author nschuste
    * @version 1.0.0
    * @param tc
+   * @param config
    * @since Nov 21, 2015
    */
-  public TestResult run(final TestCase tc);
+  public TestResult run(final TestCase tc, Configuration config);
 
 }

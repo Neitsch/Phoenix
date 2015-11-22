@@ -5,6 +5,8 @@
 
 package com.phoenix.config;
 
+import lombok.Data;
+
 import org.kohsuke.args4j.Option;
 
 /**
@@ -12,33 +14,13 @@ import org.kohsuke.args4j.Option;
  * @version 1.0.0
  * @since Nov 21, 2015
  */
+@Data
 public class CmdArguments {
+  @Option(hidden = false, required = true, name = "-config",
+      usage = "relative or absolute path to the configuration file.", metaVar = "FILEPATH")
+  private String configLocation;
+
   @Option(hidden = false, required = true, name = "-in",
-      usage = "relative or absolute path to file that should be executed.", help = true,
-      metaVar = "FILEPATH")
+      usage = "relative or absolute path to file that should be executed.", metaVar = "FILEPATH")
   private String inputFile;
-
-  /**
-   * Gets value for inputFile.
-   * 
-   * @author nschuste
-   * @version 1.0.0
-   * @return inputFile of type {@link String}
-   * @since Nov 21, 2015
-   */
-  public final String getInputFile() {
-    return this.inputFile;
-  }
-
-  /**
-   * Sets value for inputFile.
-   * 
-   * @author nschuste
-   * @version 1.0.0
-   * @param inputFile inputFile to set of type {@link String}
-   * @since Nov 21, 2015
-   */
-  public final void setInputFile(final String inputFile) {
-    this.inputFile = inputFile;
-  }
 }

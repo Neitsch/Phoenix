@@ -22,6 +22,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
+import com.phoenix.config.Configuration;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
 import com.phoenix.to.TestResult;
@@ -81,10 +82,13 @@ public class Runner_executeArgs_Test {
     final CmdArguments args = new CmdArguments();
     final String inputFile = this.getClass().getResource("sample.tc").getFile();
     args.setInputFile(inputFile);
+    args.setConfigLocation(this.getClass().getResource("sample.config").getFile());
     final TestResult result = new TestResult();
-    Mockito.doReturn(result).when(this.executor).run(Matchers.any(TestCase.class));
+    Mockito.doReturn(result).when(this.executor)
+        .run(Matchers.any(TestCase.class), Matchers.any(Configuration.class));
     this.runner.executeArgs(args);
-    Mockito.verify(this.executor, Mockito.only()).run(Matchers.any(TestCase.class));
+    Mockito.verify(this.executor, Mockito.only()).run(Matchers.any(TestCase.class),
+        Matchers.any(Configuration.class));
     Mockito.verifyNoMoreInteractions(this.executor);
   }
 

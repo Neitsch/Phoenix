@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
+import com.phoenix.config.Configuration;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
 import com.phoenix.to.TestResult;
@@ -47,10 +48,24 @@ public class RunnerImpl implements Runner {
   public void executeArgs(final CmdArguments args) {
     try {
       final TestCase tc = this.loadTC(args.getInputFile());
-      final TestResult result = this.executor.run(tc);
+      final Configuration config = this.loadConfig(args.getConfigLocation());
+      final TestResult result = this.executor.run(tc, config);
       log.info(result.toString());
     } catch (final Exception e) {
       log.catching(e);
+    }
+  }
+
+  protected <T> T loadFile(final String input, final Class<T> clazz) throws IOException {
+    try {
+      final File file = new File(input);
+      final InputStream stream = new BufferedInputStream(new FileInputStream(file));
+      final T res = this.mapper.readValue(stream, clazz);
+      return res;
+    } catch (final IOException e) {
+      log.error("Unable to load " + clazz.toString());
+      log.catching(e);
+      throw e;
     }
   }
 
@@ -63,15 +78,18 @@ public class RunnerImpl implements Runner {
    * @since Nov 21, 2015
    */
   protected TestCase loadTC(final String inputFile) throws Exception {
-    try {
-      final File file = new File(inputFile);
-      final InputStream stream = new BufferedInputStream(new FileInputStream(file));
-      final TestCase tc = this.mapper.readValue(stream, TestCase.class);
-      return tc;
-    } catch (final IOException e) {
-      log.error("Unable to load testcase");
-      log.catching(e);
-      throw e;
-    }
+    return this.loadFile(inputFile, TestCase.class);
+  }
+
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @param configLocation
+   * @return
+   * @throws IOException
+   * @since Nov 21, 2015
+   */
+  private Configuration loadConfig(final String configLocation) throws IOException {
+    return this.loadFile(configLocation, Configuration.class);
   }
 }

@@ -26,12 +26,12 @@ import com.phoenix.config.CmdArguments;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class Application_main_Test {
-
   @InjectMocks
   private Application app;
-
   @Mock
   private Runner runner;
+  @Mock
+  org.springframework.beans.factory.config.AutowireCapableBeanFactory fact;
 
   /**
    * @author nschuste
@@ -76,12 +76,12 @@ public class Application_main_Test {
 
   @Test(expected = RuntimeException.class)
   public final void test_too_many_arguments() throws CmdLineException {
-    this.app.doMain(new String[] {""});
+    this.app.doMain(new String[] {"-in", "test"});
   }
 
   @Test()
   public final void test_working() throws CmdLineException {
-    this.app.doMain(new String[] {"-in", "test"});
+    this.app.doMain(new String[] {"-in", "test", "-config", "abc"});
     Mockito.verify(this.runner, Mockito.only()).executeArgs(
         org.mockito.Matchers.any(CmdArguments.class));
     Mockito.verifyNoMoreInteractions(this.runner);
