@@ -11,6 +11,7 @@
         <args4j.version>2.32</args4j.version>
         <lombok.version>1.16.6</lombok.version>
         <slf4j.version>1.7.13</slf4j.version>
+        <assertj.version>3.0.2</assertj.version>
     </properties>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
@@ -42,6 +43,11 @@
                 <groupId>com.phoenix</groupId>
                 <artifactId>phoenix-core</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-swing</artifactId>
+                <version>${assertj.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

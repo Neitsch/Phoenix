@@ -9,6 +9,7 @@
       <module>phoenix-engine</module>
       <module>phoenix-all</module>
       <module>phoenix-core</module>
+      <module>phoenix-example</module>
   </modules>
     <build>
         <pluginManagement>
