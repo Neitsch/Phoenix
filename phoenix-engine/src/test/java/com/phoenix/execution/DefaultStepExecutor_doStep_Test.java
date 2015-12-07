@@ -80,7 +80,7 @@ public class DefaultStepExecutor_doStep_Test {
   public void tearDown() throws Exception {}
 
   @Test
-  public void test() throws NoSuchMethodException, SecurityException {
+  public void test() throws Exception {
     final String mName = "TestMethod";
     final TestCaseStep step = new TestCaseStep();
     final tCl t = new tCl();
