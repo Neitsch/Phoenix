@@ -5,7 +5,10 @@
 
 package com.phoenix.to;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author nschuste
@@ -13,6 +16,9 @@ import lombok.Data;
  * @since Nov 21, 2015
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TestResult {
   private boolean success;
 }

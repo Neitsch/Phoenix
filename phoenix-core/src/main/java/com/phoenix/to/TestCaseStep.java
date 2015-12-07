@@ -13,6 +13,6 @@ import lombok.Data;
  * @since Nov 21, 2015
  */
 @Data
-public class TestCaseLine {
-
+public class TestCaseStep {
+  private String methodName;
 }

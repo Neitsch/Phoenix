@@ -3,9 +3,9 @@
  */
 
 
-package com.phoenix;
+package com.phoenix.execution;
 
-import java.util.LinkedList;
+import java.lang.reflect.Method;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,32 +15,39 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Spy;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.ApplicationContext;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.phoenix.to.TestCase;
-import com.phoenix.to.TestCaseBody;
-import com.phoenix.to.TestCaseHead;
 import com.phoenix.to.TestCaseStep;
 
 /**
  * @author nschuste
  * @version 1.0.0
- * @since Nov 21, 2015
+ * @since Dec 7, 2015
  */
 @RunWith(MockitoJUnitRunner.class)
-public class Runner_loadTc_Test {
-  @Spy
-  private ObjectMapper mapper;
+public class DefaultStepExecutor_doStep_Test {
+  public class tCl {
+    public void TestMethod() {
+      DefaultStepExecutor_doStep_Test.this.invoked = true;
+    }
+  }
+
+  private boolean invoked;
+  @Mock
+  ApplicationContext context;
   @InjectMocks
-  private RunnerImpl runner;
+  DefaultStepExecutor exec;
+  @Mock
+  MethodStore store;
 
   /**
    * @author nschuste
    * @version 1.0.0
    * @throws java.lang.Exception
-   * @since Nov 21, 2015
+   * @since Dec 7, 2015
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {}
@@ -49,7 +56,7 @@ public class Runner_loadTc_Test {
    * @author nschuste
    * @version 1.0.0
    * @throws java.lang.Exception
-   * @since Nov 21, 2015
+   * @since Dec 7, 2015
    */
   @AfterClass
   public static void tearDownAfterClass() throws Exception {}
@@ -58,7 +65,7 @@ public class Runner_loadTc_Test {
    * @author nschuste
    * @version 1.0.0
    * @throws java.lang.Exception
-   * @since Nov 21, 2015
+   * @since Dec 7, 2015
    */
   @Before
   public void setUp() throws Exception {}
@@ -67,22 +74,22 @@ public class Runner_loadTc_Test {
    * @author nschuste
    * @version 1.0.0
    * @throws java.lang.Exception
-   * @since Nov 21, 2015
+   * @since Dec 7, 2015
    */
   @After
   public void tearDown() throws Exception {}
 
   @Test
-  public final void test_readTc() throws Exception {
-    final String inputFile = this.getClass().getResource("sample.tc").getFile();
-    final TestCase tc = this.runner.loadTC(inputFile);
-    final TestCase test = new TestCase();
-    final TestCaseBody tcb = new TestCaseBody();
-    final TestCaseHead tch = new TestCaseHead();
-    tcb.setLines(new LinkedList<TestCaseStep>());
-    tch.setName("MyName");
-    test.setTcBody(tcb);
-    test.setTcHead(tch);
-    Assert.assertEquals(test, tc);
+  public void test() throws Exception {
+    final String mName = "TestMethod";
+    final TestCaseStep step = new TestCaseStep();
+    final tCl t = new tCl();
+    Mockito.when(this.context.getBean(tCl.class)).thenReturn(t);
+    step.setMethodName(mName);
+    final Method m = tCl.class.getMethod(mName);
+    Mockito.when(this.store.getMethod(mName)).thenReturn(m);
+    this.invoked = false;
+    this.exec.doStep(step);
+    Assert.assertEquals(true, this.invoked);
   }
 }
