@@ -3,6 +3,9 @@
  */
 package com.phoenix;
 
+import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
+
 import lombok.extern.slf4j.XSlf4j;
 
 import org.kohsuke.args4j.CmdLineException;
@@ -63,8 +66,16 @@ public class Application {
       return arguments;
     } catch (final CmdLineException e) {
       log.catching(e);
-      System.err.println(e.getMessage());
-      parser.printUsage(System.err);
+      final ByteArrayOutputStream os = new ByteArrayOutputStream();
+      parser.printUsage(os);
+      String aString;
+      try {
+        aString = new String(os.toByteArray(), "UTF-8");
+        log.info(aString);
+      } catch (final UnsupportedEncodingException e1) {
+        log.catching(e1);
+        parser.printUsage(System.out);
+      }
       throw new RuntimeException("Not able to correctly handle Command Line arguments.");
     }
   }
