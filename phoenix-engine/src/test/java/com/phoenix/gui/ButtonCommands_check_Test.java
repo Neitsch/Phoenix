@@ -27,8 +27,10 @@ import com.phoenix.command.gui.ButtonCommands;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class ButtonCommands_check_Test {
+  private Environment env;
   @InjectMocks
   SampleFrame frame;
+
   @Mock
   ClickTracker tracker;
 
@@ -57,7 +59,12 @@ public class ButtonCommands_check_Test {
    * @since Dec 10, 2015
    */
   @Before
-  public void setUp() throws Exception {}
+  public void setUp() throws Exception {
+    this.env = new Environment();
+    this.env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
+    this.frame.run();
+    this.env.setFrame(this.frame.getFrame());
+  }
 
   /**
    * @author nschuste
@@ -66,16 +73,14 @@ public class ButtonCommands_check_Test {
    * @since Dec 10, 2015
    */
   @After
-  public void tearDown() throws Exception {}
+  public void tearDown() throws Exception {
+    this.env.getRobot().cleanUp();
+  }
 
   @Test
   public final void test() throws InterruptedException {
-    final Environment env = new Environment();
-    env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
-    this.frame.run();
-    env.setFrame(this.frame.getFrame());
     final ButtonCommands com = new ButtonCommands();
-    com.check(env, "button1", "Hello World");
+    com.check(this.env, "button1", "Hello World");
     Mockito.verifyNoMoreInteractions(this.tracker);
   }
 
