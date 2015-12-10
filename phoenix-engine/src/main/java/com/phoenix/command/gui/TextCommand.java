@@ -37,7 +37,7 @@ public class TextCommand {
    * @since Dec 10, 2015
    */
   public void enter(final Environment env, final String... varargs) {
-    getFixture(env.getRobot(), env.getFrame(), varargs[0], true).enterText(varargs[1]);
+    getFixture(env.getRobot(), env.getFrame(), varargs[0], true).deleteText().enterText(varargs[1]);
   }
 
 }
