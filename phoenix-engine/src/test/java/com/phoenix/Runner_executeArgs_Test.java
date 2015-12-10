@@ -24,7 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCaseBody;
-import com.phoenix.to.TestResult;
+import com.phoenix.to.TestCaseBodyResult;
 
 /**
  * @author nschuste
@@ -82,7 +82,7 @@ public class Runner_executeArgs_Test {
     final String inputFile = this.getClass().getResource("sample.tc").getFile();
     args.setInputFile(inputFile);
     args.setConfigLocation(this.getClass().getResource("sample.config").getFile());
-    final TestResult result = new TestResult();
+    final TestCaseBodyResult result = new TestCaseBodyResult();
     Mockito.doReturn(result).when(this.executor).execute(Matchers.any(TestCaseBody.class));
     this.runner.executeArgs(args);
     Mockito.verify(this.executor, Mockito.only()).execute(Matchers.any(TestCaseBody.class));
