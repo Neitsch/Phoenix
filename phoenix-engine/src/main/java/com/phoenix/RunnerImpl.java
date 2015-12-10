@@ -21,7 +21,7 @@ import com.phoenix.config.CmdArguments;
 import com.phoenix.config.Configuration;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
-import com.phoenix.to.TestResult;
+import com.phoenix.to.TestCaseBodyResult;
 
 /**
  * @author nschuste
@@ -49,7 +49,7 @@ public class RunnerImpl implements Runner {
     try {
       final TestCase tc = this.loadTC(args.getInputFile());
       final Configuration config = this.loadConfig(args.getConfigLocation());
-      final TestResult result = this.executor.execute(tc.getTcBody());
+      final TestCaseBodyResult result = this.executor.execute(tc.getTcBody());
       log.info(result.toString());
     } catch (final Exception e) {
       log.catching(e);

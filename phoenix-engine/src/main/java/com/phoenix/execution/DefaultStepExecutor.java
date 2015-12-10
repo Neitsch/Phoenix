@@ -13,8 +13,10 @@ import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
+import com.phoenix.to.ExceptionResult;
 import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
+import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
  * @author nschuste
@@ -39,15 +41,17 @@ public class DefaultStepExecutor implements StepExecutor {
    */
   @Override
   public TestCaseStepResult doStep(final TestCaseStep step) throws Exception {
+    final TestCaseStepResult res = new TestCaseStepResult();
     final String mName = step.getMethodName();
     final Method method = this.store.getMethod(mName);
     final Object bean = this.context.getBean(method.getDeclaringClass());
+    res.setStep(step);
     try {
-      method.invoke(bean);
+      res.setResult((TestCaseStepResultStatus) method.invoke(bean));
     } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
       log.catching(e);
-      throw e;
+      res.setResult(new ExceptionResult(e));
     }
-    return null;
+    return res;
   }
 }

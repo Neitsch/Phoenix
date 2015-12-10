@@ -6,9 +6,9 @@
 package com.phoenix.execution;
 
 import com.phoenix.to.TestCaseBody;
+import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseEnd;
 import com.phoenix.to.TestCaseSetup;
-import com.phoenix.to.TestResult;
 
 /**
  * @author nschuste
@@ -24,7 +24,7 @@ public interface TcExecutor {
    * @param config
    * @since Nov 21, 2015
    */
-  public TestResult execute(final TestCaseBody tc);
+  public TestCaseBodyResult execute(final TestCaseBody tc);
 
   public void setUp(TestCaseSetup setup);
 

@@ -5,15 +5,16 @@
 
 package com.phoenix.to;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
  * @author nschuste
  * @version 1.0.0
- * @since Dec 1, 2015
+ * @since Dec 10, 2015
  */
 @Data
-public class TestCaseStepResult {
-  private TestCaseStepResultStatus result;
-  private TestCaseStep step;
+public class TestCaseBodyResult {
+  private List<TestCaseStepResult> stepResults;
 }

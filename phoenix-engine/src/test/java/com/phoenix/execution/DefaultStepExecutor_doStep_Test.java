@@ -20,7 +20,10 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 
+import com.phoenix.to.SuccessResult;
 import com.phoenix.to.TestCaseStep;
+import com.phoenix.to.TestCaseStepResult;
+import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
  * @author nschuste
@@ -30,8 +33,9 @@ import com.phoenix.to.TestCaseStep;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultStepExecutor_doStep_Test {
   public class tCl {
-    public void TestMethod() {
+    public TestCaseStepResultStatus TestMethod() {
       DefaultStepExecutor_doStep_Test.this.invoked = true;
+      return new SuccessResult();
     }
   }
 
@@ -89,7 +93,9 @@ public class DefaultStepExecutor_doStep_Test {
     final Method m = tCl.class.getMethod(mName);
     Mockito.when(this.store.getMethod(mName)).thenReturn(m);
     this.invoked = false;
-    this.exec.doStep(step);
+    final TestCaseStepResult res = this.exec.doStep(step);
     Assert.assertEquals(true, this.invoked);
+    Assert.assertThat(res.getResult(), org.hamcrest.CoreMatchers.instanceOf(SuccessResult.class));
+    Assert.assertEquals(step, res.getStep());
   }
 }

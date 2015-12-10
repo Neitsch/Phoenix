@@ -5,12 +5,18 @@
 
 package com.phoenix.execution;
 
+import java.util.Iterator;
+
 import lombok.extern.slf4j.XSlf4j;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 import com.phoenix.to.TestCaseBody;
+import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseEnd;
 import com.phoenix.to.TestCaseSetup;
-import com.phoenix.to.TestResult;
+import com.phoenix.to.TestCaseStep;
+import com.phoenix.to.TestCaseStepResult;
 
 /**
  * @author nschuste
@@ -19,22 +25,36 @@ import com.phoenix.to.TestResult;
  */
 @XSlf4j
 public class AbstractTcExecutor implements TcExecutor {
+  @Autowired
+  StepExecutor exec;
+
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.execution.TcExecutor#execute(com.phoenix.to.TestCaseBody)
    * @since Dec 1, 2015
    */
   @Override
-  public TestResult execute(final TestCaseBody tc) {
-    return null;
+  public TestCaseBodyResult execute(final TestCaseBody tc) {
+    final TestCaseBodyResult res = new TestCaseBodyResult();
+    final Iterator<TestCaseStep> it = tc.getLines().iterator();
+    while (it.hasNext()) {
+      try {
+        final TestCaseStep step = it.next();
+        final TestCaseStepResult myRes = this.exec.doStep(step);
+        res.getStepResults().add(myRes);
+      } catch (final Exception e) {
+        log.catching(e);
+      }
+    }
+    return res;
   }
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.execution.TcExecutor#setUp(com.phoenix.to.TestCaseSetup)
@@ -45,7 +65,7 @@ public class AbstractTcExecutor implements TcExecutor {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.execution.TcExecutor#tearDown(com.phoenix.to.TestCaseEnd)
