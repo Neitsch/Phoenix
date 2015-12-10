@@ -10,6 +10,7 @@ import java.util.Iterator;
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseBodyResult;
@@ -24,7 +25,8 @@ import com.phoenix.to.TestCaseStepResult;
  * @since Nov 21, 2015
  */
 @XSlf4j
-public class AbstractTcExecutor implements TcExecutor {
+@Service
+public class DefaultTcExecutor implements TcExecutor {
   @Autowired
   StepExecutor exec;
 
