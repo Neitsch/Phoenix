@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phoenix.command.Environment;
-import com.phoenix.command.gui.BaseCommands;
+import com.phoenix.command.gui.ButtonCommands;
 
 /**
  * @author nschuste
@@ -26,7 +26,7 @@ import com.phoenix.command.gui.BaseCommands;
  * @since Dec 7, 2015
  */
 @RunWith(MockitoJUnitRunner.class)
-public class BaseCommands_click_Test {
+public class ButtonCommands_click_Test {
   @InjectMocks
   SampleFrame frame;
   @Mock
@@ -74,7 +74,7 @@ public class BaseCommands_click_Test {
     env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
     this.frame.run();
     env.setFrame(this.frame.getFrame());
-    final BaseCommands com = new BaseCommands();
+    final ButtonCommands com = new ButtonCommands();
     com.click(env, "button1");
     Mockito.verify(this.tracker, Mockito.times(1)).click();
     Mockito.verifyNoMoreInteractions(this.tracker);
