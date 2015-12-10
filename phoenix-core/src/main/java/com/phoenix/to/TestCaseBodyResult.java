@@ -5,6 +5,7 @@
 
 package com.phoenix.to;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import lombok.Data;
@@ -16,5 +17,5 @@ import lombok.Data;
  */
 @Data
 public class TestCaseBodyResult {
-  private List<TestCaseStepResult> stepResults;
+  private List<TestCaseStepResult> stepResults = new LinkedList<>();
 }

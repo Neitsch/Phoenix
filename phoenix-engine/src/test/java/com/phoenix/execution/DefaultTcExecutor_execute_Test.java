@@ -7,6 +7,7 @@ package com.phoenix.execution;
 
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -20,6 +21,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phoenix.command.Environment;
 import com.phoenix.to.TestCaseBody;
+import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
 
@@ -81,7 +83,9 @@ public class DefaultTcExecutor_execute_Test {
     Mockito.doReturn(new TestCaseStepResult()).when(this.stepExec)
         .doStep(Matchers.any(TestCaseStep.class), Matchers.any(Environment.class));
     final InOrder order = Mockito.inOrder(this.stepExec);
-    this.exec.execute(tc);
+    final TestCaseBodyResult result = this.exec.execute(tc);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(2, result.getStepResults().size());
     order.verify(this.stepExec).doStep(Matchers.eq(step1), Matchers.any(Environment.class));
     order.verify(this.stepExec).doStep(Matchers.eq(step2), Matchers.any(Environment.class));
     order.verifyNoMoreInteractions();
