@@ -22,7 +22,7 @@ import com.phoenix.spi.GuiPackage;
  * @since Dec 7, 2015
  */
 @GuiPackage(packageName = "button")
-public class ButtonCommands {
+public class ButtonCommand {
   private static JButtonFixture getFixture(final Robot r, final Frame f, final String name,
       final boolean showing) {
     return new JButtonFixture(r, r.finder().findByName(f, name, JButton.class, showing));

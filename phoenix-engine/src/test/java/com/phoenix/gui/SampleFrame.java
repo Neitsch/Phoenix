@@ -5,8 +5,12 @@
 
 package com.phoenix.gui;
 
+import java.awt.GridLayout;
+
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.text.JTextComponent;
 
 import lombok.extern.slf4j.XSlf4j;
 
@@ -20,6 +24,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @XSlf4j
 public class SampleFrame implements Runnable {
   static Object not;
+  public JTextComponent textComponent;
   private JFrame frame;
   @Autowired
   private ClickTracker tracker;
@@ -31,6 +36,10 @@ public class SampleFrame implements Runnable {
    */
   public SampleFrame() {
     SampleFrame.not = new Object();
+  }
+
+  public static void main(final String[] args) {
+    javax.swing.SwingUtilities.invokeLater(() -> new SampleFrame().createAndShowGUI());
   }
 
   public JFrame getFrame() {
@@ -60,9 +69,13 @@ public class SampleFrame implements Runnable {
     button.setName("button1");
     button.addActionListener(e -> SampleFrame.this.tracker.click());
     this.frame.getContentPane().add(button);
-
+    this.textComponent = new JTextField("Hi World");
+    this.textComponent.setName("textField1");
+    this.frame.getContentPane().add(this.textComponent);
+    this.frame.getContentPane().setLayout(new GridLayout());
     // Display the window.
     this.frame.pack();
+    this.frame.setBounds(0, 0, 500, 100);
     this.frame.setVisible(true);
     synchronized (not) {
       not.notify();

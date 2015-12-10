@@ -8,17 +8,16 @@ package com.phoenix.gui;
 import org.assertj.swing.core.BasicRobot;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phoenix.command.Environment;
-import com.phoenix.command.gui.ButtonCommand;
+import com.phoenix.command.gui.TextCommand;
 
 /**
  * @author nschuste
@@ -26,13 +25,10 @@ import com.phoenix.command.gui.ButtonCommand;
  * @since Dec 10, 2015
  */
 @RunWith(MockitoJUnitRunner.class)
-public class ButtonCommands_check_Test {
+public class TextCommand_enter_Test {
   private Environment env;
   @InjectMocks
   SampleFrame frame;
-
-  @Mock
-  ClickTracker tracker;
 
   /**
    * @author nschuste
@@ -77,11 +73,11 @@ public class ButtonCommands_check_Test {
     this.env.getRobot().cleanUp();
   }
 
-  @Test(timeout = 2000)
-  public final void test() throws InterruptedException {
-    final ButtonCommand com = new ButtonCommand();
-    com.check(this.env, "button1", "Hello World");
-    Mockito.verifyNoMoreInteractions(this.tracker);
+  @Test
+  public final void test() {
+    final TextCommand com = new TextCommand();
+    com.enter(this.env, "textField1", "Hii");
+    Assert.assertEquals("Hii", this.frame.textComponent.getText());
   }
 
 }

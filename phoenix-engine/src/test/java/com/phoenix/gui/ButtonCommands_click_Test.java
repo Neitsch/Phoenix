@@ -18,7 +18,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phoenix.command.Environment;
-import com.phoenix.command.gui.ButtonCommands;
+import com.phoenix.command.gui.ButtonCommand;
 
 /**
  * @author nschuste
@@ -78,7 +78,7 @@ public class ButtonCommands_click_Test {
 
   @Test
   public final void test() throws InterruptedException {
-    final ButtonCommands com = new ButtonCommands();
+    final ButtonCommand com = new ButtonCommand();
     com.click(this.env, "button1");
     Mockito.verify(this.tracker, Mockito.times(1)).click();
     Mockito.verifyNoMoreInteractions(this.tracker);
