@@ -5,6 +5,7 @@
 
 package com.phoenix.execution;
 
+import com.phoenix.command.Environment;
 import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
 
@@ -14,5 +15,5 @@ import com.phoenix.to.TestCaseStepResult;
  * @since Dec 1, 2015
  */
 public interface StepExecutor {
-  public TestCaseStepResult doStep(TestCaseStep step) throws Exception;
+  public TestCaseStepResult doStep(TestCaseStep step, Environment env) throws Exception;
 }

@@ -20,6 +20,7 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.context.ApplicationContext;
 
+import com.phoenix.command.Environment;
 import com.phoenix.to.SuccessResult;
 import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
@@ -33,7 +34,7 @@ import com.phoenix.to.TestCaseStepResultStatus;
 @RunWith(MockitoJUnitRunner.class)
 public class DefaultStepExecutor_doStep_Test {
   public class tCl {
-    public TestCaseStepResultStatus TestMethod() {
+    public TestCaseStepResultStatus TestMethod(final Environment env, final String... varargs) {
       DefaultStepExecutor_doStep_Test.this.invoked = true;
       return new SuccessResult();
     }
@@ -85,15 +86,17 @@ public class DefaultStepExecutor_doStep_Test {
 
   @Test
   public void test() throws Exception {
+    final Environment env = null;
     final String mName = "TestMethod";
     final TestCaseStep step = new TestCaseStep();
     final tCl t = new tCl();
     Mockito.when(this.context.getBean(tCl.class)).thenReturn(t);
     step.setMethodName(mName);
-    final Method m = tCl.class.getMethod(mName);
+    step.setArgs(new String[0]);
+    final Method m = tCl.class.getMethod(mName, Environment.class, String[].class);
     Mockito.when(this.store.getMethod(mName)).thenReturn(m);
     this.invoked = false;
-    final TestCaseStepResult res = this.exec.doStep(step);
+    final TestCaseStepResult res = this.exec.doStep(step, env);
     Assert.assertEquals(true, this.invoked);
     Assert.assertThat(res.getResult(), org.hamcrest.CoreMatchers.instanceOf(SuccessResult.class));
     Assert.assertEquals(step, res.getStep());

@@ -12,6 +12,7 @@ import lombok.extern.slf4j.XSlf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.phoenix.command.Environment;
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseEnd;
@@ -27,6 +28,7 @@ import com.phoenix.to.TestCaseStepResult;
 @XSlf4j
 @Service
 public class DefaultTcExecutor implements TcExecutor {
+  private Environment env;
   @Autowired
   StepExecutor exec;
 
@@ -45,7 +47,7 @@ public class DefaultTcExecutor implements TcExecutor {
     while (it.hasNext()) {
       try {
         final TestCaseStep step = it.next();
-        final TestCaseStepResult myRes = this.exec.doStep(step);
+        final TestCaseStepResult myRes = this.exec.doStep(step, this.env);
         res.getStepResults().add(myRes);
       } catch (final Exception e) {
         log.catching(e);
@@ -63,7 +65,9 @@ public class DefaultTcExecutor implements TcExecutor {
    * @since Dec 1, 2015
    */
   @Override
-  public void setUp(final TestCaseSetup setup) {}
+  public void setUp(final TestCaseSetup setup) {
+    this.env = new Environment();
+  }
 
   /**
    * {@inheritDoc}
