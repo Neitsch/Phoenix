@@ -5,7 +5,7 @@
 
 package com.phoenix.to;
 
-import java.net.URL;
+import java.util.List;
 
 import lombok.Data;
 
@@ -16,8 +16,10 @@ import lombok.Data;
  */
 @Data
 public class TestCaseSetup {
+  private List<DownloadWorker> downloads;
   private String frameName;
-  private URL jarUrl;
-  private String startArgs;
+  private String[] startArgs;
   private String startClass;
+  private String startupScript;
+  private long timeout;
 }

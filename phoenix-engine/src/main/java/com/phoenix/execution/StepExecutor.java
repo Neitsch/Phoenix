@@ -6,8 +6,8 @@
 package com.phoenix.execution;
 
 import com.phoenix.command.Environment;
+import com.phoenix.to.ResultWithMessage;
 import com.phoenix.to.TestCaseStep;
-import com.phoenix.to.TestCaseStepResult;
 
 /**
  * @author nschuste
@@ -15,5 +15,5 @@ import com.phoenix.to.TestCaseStepResult;
  * @since Dec 1, 2015
  */
 public interface StepExecutor {
-  public TestCaseStepResult doStep(TestCaseStep step, Environment env) throws Exception;
+  public ResultWithMessage doStep(TestCaseStep step, Environment env) throws Exception;
 }

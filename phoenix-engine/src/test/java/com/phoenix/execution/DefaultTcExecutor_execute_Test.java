@@ -20,10 +20,10 @@ import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
 import com.phoenix.command.Environment;
+import com.phoenix.to.ResultWithMessage;
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseStep;
-import com.phoenix.to.TestCaseStepResult;
 
 /**
  * @author nschuste
@@ -80,7 +80,7 @@ public class DefaultTcExecutor_execute_Test {
     final TestCaseBody tc = new TestCaseBody();
     tc.getLines().add(step1);
     tc.getLines().add(step2);
-    Mockito.doReturn(new TestCaseStepResult()).when(this.stepExec)
+    Mockito.doReturn(new ResultWithMessage()).when(this.stepExec)
         .doStep(Matchers.any(TestCaseStep.class), Matchers.any(Environment.class));
     final InOrder order = Mockito.inOrder(this.stepExec);
     final TestCaseBodyResult result = this.exec.execute(tc);

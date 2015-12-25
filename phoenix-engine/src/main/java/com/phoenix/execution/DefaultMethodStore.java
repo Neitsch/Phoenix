@@ -21,6 +21,7 @@ import org.springframework.stereotype.Repository;
 
 import com.phoenix.spi.GuiMethod;
 import com.phoenix.spi.GuiPackage;
+import com.phoenix.to.ResultWithMessage;
 import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
@@ -64,7 +65,7 @@ public class DefaultMethodStore implements MethodStore {
     for (final String s : beans.keySet()) {
       for (final Method m : beans.get(s).getClass().getDeclaredMethods()) {
         if (m.isAnnotationPresent(GuiMethod.class)) {
-          if (TestCaseStepResultStatus.class.isAssignableFrom(m.getReturnType())) {
+          if (ResultWithMessage.class.isAssignableFrom(m.getReturnType())) {
             final GuiMethod g = m.getAnnotation(GuiMethod.class);
             this.store.put(g.methodName(), m);
           } else {

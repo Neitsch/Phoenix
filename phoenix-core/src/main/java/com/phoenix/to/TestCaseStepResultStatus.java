@@ -10,6 +10,6 @@ package com.phoenix.to;
  * @version 1.0.0
  * @since Dec 10, 2015
  */
-public interface TestCaseStepResultStatus {
-
+public enum TestCaseStepResultStatus {
+  EXCEPTION, NOT_EXECUTED, SUCCESS
 }

@@ -5,6 +5,8 @@
 
 package com.phoenix.to;
 
+import java.util.Optional;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,13 +15,14 @@ import lombok.NoArgsConstructor;
 /**
  * @author nschuste
  * @version 1.0.0
- * @since Dec 1, 2015
+ * @since Dec 25, 2015
  */
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class TestCaseStepResult {
-  private TestCaseStepResultStatus result;
-  private TestCaseStep step;
+public class ResultWithMessage {
+  private Optional<Exception> exception;
+  private Optional<String> message;
+  private TestCaseStepResultStatus status;
 }

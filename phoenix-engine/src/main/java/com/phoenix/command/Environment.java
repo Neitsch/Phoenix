@@ -6,6 +6,7 @@
 package com.phoenix.command;
 
 import java.awt.Frame;
+import java.nio.file.Path;
 
 import lombok.Data;
 
@@ -18,6 +19,7 @@ import org.assertj.swing.core.Robot;
  */
 @Data
 public class Environment {
+  private Path dir;
   private Frame frame;
   private Robot robot;
 }

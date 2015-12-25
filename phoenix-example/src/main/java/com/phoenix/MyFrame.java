@@ -6,6 +6,7 @@
 package com.phoenix;
 
 import java.awt.BorderLayout;
+import java.awt.Button;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -19,6 +20,7 @@ import javax.swing.border.EmptyBorder;
  */
 public class MyFrame extends JFrame {
 
+  private static Object notify;
   private final JPanel contentPane;
 
   /**
@@ -31,19 +33,25 @@ public class MyFrame extends JFrame {
     this.contentPane = new JPanel();
     this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
     this.contentPane.setLayout(new BorderLayout(0, 0));
+    this.contentPane.add(new Button("Hi!!"));
     this.setContentPane(this.contentPane);
+    this.pack();
   }
 
   /**
    * Launch the application.
    */
-  public static void main(final String[] args) {
+  public static void main(final String[] args, final Object notify) {
     System.out.println("lol");
+    MyFrame.notify = notify;
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
           final MyFrame frame = new MyFrame();
           frame.setVisible(true);
+          synchronized (MyFrame.notify) {
+            MyFrame.notify.notifyAll();
+          }
         } catch (final Exception e) {
           e.printStackTrace();
         }

@@ -5,6 +5,7 @@
 
 package com.phoenix.execution;
 
+import com.phoenix.exception.SetupException;
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseBodyResult;
 import com.phoenix.to.TestCaseEnd;
@@ -26,7 +27,7 @@ public interface TcExecutor {
    */
   public TestCaseBodyResult execute(final TestCaseBody tc);
 
-  public void setUp(TestCaseSetup setup);
+  public void setUp(TestCaseSetup setup) throws SetupException;
 
   public void tearDown(TestCaseEnd end);
 }
