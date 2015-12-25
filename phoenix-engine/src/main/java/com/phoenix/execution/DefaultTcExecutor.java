@@ -104,6 +104,8 @@ public class DefaultTcExecutor implements TcExecutor {
       // First create Robot, so that it will pick up on the created frame
       this.env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
       // Execute setup script if present
+      Files.newDirectoryStream(downloads).forEach(
+          t -> System.out.println(t.toAbsolutePath().toString()));
       final Path script = downloads.resolve("run.sh");
       if (Files.exists(script)) {
         final Set<PosixFilePermission> perms = Files.getPosixFilePermissions(script);
