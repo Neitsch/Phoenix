@@ -10,6 +10,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -92,7 +93,7 @@ public class DefaultTcExecutor implements TcExecutor {
       // Create new Env for TC
       this.env = new Environment();
       // Configure working directory
-      this.env.setDir(Files.createTempDirectory("temp-gui-"));
+      this.env.setDir(Files.createTempDirectory(Paths.get(""), "temp-gui-"));
       log.debug("Working directory: " + this.env.getDir().toAbsolutePath().toString());
       System.setProperty("user.dir", this.env.getDir().toAbsolutePath().toString());
       // Download Assets
