@@ -99,7 +99,7 @@ public class DefaultTcExecutor_setup_Test {
   @Test
   public final void test() throws Exception {
     final TestCaseSetup setup = new TestCaseSetup();
-    setup.setTimeout(100);
+    setup.setTimeout(2);
     final List<DownloadWorker> downloads = new LinkedList<>();
     downloads.add(downloads1 -> {
       try {

@@ -104,8 +104,6 @@ public class DefaultTcExecutor implements TcExecutor {
       // First create Robot, so that it will pick up on the created frame
       this.env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
       // Execute setup script if present
-      Files.newDirectoryStream(downloads).forEach(
-          t -> System.out.println(t.toAbsolutePath().toString()));
       final Path script = downloads.resolve("run.sh");
       if (Files.exists(script)) {
         final Set<PosixFilePermission> perms = Files.getPosixFilePermissions(script);
@@ -127,20 +125,8 @@ public class DefaultTcExecutor implements TcExecutor {
       final ClassLoader loader =
           new URLClassLoader(new URL[] {downloads.resolve("program.jar").toUri().toURL()});
       final Class<?> main = loader.loadClass(setup.getStartClass());
-      final Object o = new Object();
-      final Thread t =
-          new Thread(() -> {
-            try {
-              main.getMethod("main", String[].class, Object.class).invoke(null,
-                  setup.getStartArgs(), o);
-            } catch (final Exception e) {
-              log.catching(e);
-            }
-          });
-      t.run();
-      synchronized (o) {
-        o.wait();
-      }
+      main.getMethod("main", String[].class).invoke(null, (Object) setup.getStartArgs());
+      this.env.getRobot().waitForIdle();
       final Frame frame =
           this.env.getRobot().finder().find(FrameMatcher.withName(setup.getFrameName()));
       this.env.setFrame(frame);

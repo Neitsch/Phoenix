@@ -41,22 +41,30 @@ public class MyFrame extends JFrame {
   /**
    * Launch the application.
    */
-  public static void main(final String[] args, final Object notify) {
-    System.out.println("lol");
-    MyFrame.notify = notify;
+  public static void main(final String[] args) {
     EventQueue.invokeLater(new Runnable() {
       public void run() {
         try {
           final MyFrame frame = new MyFrame();
           frame.setVisible(true);
-          synchronized (MyFrame.notify) {
-            MyFrame.notify.notifyAll();
+          if (MyFrame.notify != null) {
+            synchronized (MyFrame.notify) {
+              MyFrame.notify.notifyAll();
+            }
           }
         } catch (final Exception e) {
           e.printStackTrace();
         }
       }
     });
+  }
+
+  /**
+   * Launch the application.
+   */
+  public static void main(final String[] args, final Object notify) {
+    MyFrame.notify = notify;
+    main(args);
   }
 
 }
