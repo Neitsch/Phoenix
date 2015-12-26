@@ -5,8 +5,12 @@
 
 package com.phoenix.util;
 
-import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
 
 /**
  * @author nschuste
@@ -14,15 +18,27 @@ import java.io.IOException;
  * @since Dec 21, 2015
  */
 public class FS {
-  public static File createTempDirectory() throws IOException {
-    final File temp;
-    temp = File.createTempFile("temp", Long.toString(System.nanoTime()));
-    if (!(temp.delete())) {
-      throw new IOException("Could not delete temp file: " + temp.getAbsolutePath());
-    }
-    if (!(temp.mkdir())) {
-      throw new IOException("Could not create temp directory: " + temp.getAbsolutePath());
-    }
-    return (temp);
+  public static void delete(final Path p) throws IOException {
+    Files.walkFileTree(p, new SimpleFileVisitor<Path>() {
+
+      @Override
+      public FileVisitResult postVisitDirectory(final Path dir, final IOException exc)
+          throws IOException {
+        if (exc == null) {
+          Files.delete(dir);
+          return FileVisitResult.CONTINUE;
+        } else {
+          throw exc;
+        }
+      }
+
+      @Override
+      public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
+          throws IOException {
+        Files.delete(file);
+        return FileVisitResult.CONTINUE;
+      }
+
+    });
   }
 }

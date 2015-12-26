@@ -9,12 +9,9 @@ import java.awt.Frame;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.PosixFilePermission;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +35,7 @@ import com.phoenix.to.TestCaseSetup;
 import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
 import com.phoenix.to.TestCaseStepResultStatus;
+import com.phoenix.util.FS;
 
 /**
  * @author nschuste
@@ -154,27 +152,7 @@ public class DefaultTcExecutor implements TcExecutor {
   public void tearDown(final TestCaseEnd end) {
     this.env.getRobot().cleanUp();
     try {
-      Files.walkFileTree(this.env.getDir(), new SimpleFileVisitor<Path>() {
-
-        @Override
-        public FileVisitResult postVisitDirectory(final Path dir, final IOException exc)
-            throws IOException {
-          if (exc == null) {
-            Files.delete(dir);
-            return FileVisitResult.CONTINUE;
-          } else {
-            throw exc;
-          }
-        }
-
-        @Override
-        public FileVisitResult visitFile(final Path file, final BasicFileAttributes attrs)
-            throws IOException {
-          Files.delete(file);
-          return FileVisitResult.CONTINUE;
-        }
-
-      });
+      FS.delete(this.env.getDir());
     } catch (final IOException e) {
       log.catching(e);
     }

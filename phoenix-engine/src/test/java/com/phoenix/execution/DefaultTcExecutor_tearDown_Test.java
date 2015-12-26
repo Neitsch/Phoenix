@@ -5,8 +5,7 @@
 
 package com.phoenix.execution;
 
-import java.io.IOException;
-import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.assertj.swing.core.Robot;
@@ -23,6 +22,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.phoenix.command.Environment;
+import com.phoenix.util.FS;
 
 /**
  * @author nschuste
@@ -30,7 +30,9 @@ import com.phoenix.command.Environment;
  * @since Dec 25, 2015
  */
 @RunWith(PowerMockRunner.class)
+@PrepareForTest(FS.class)
 public class DefaultTcExecutor_tearDown_Test {
+  DefaultTcExecutor exec = null;
 
   /**
    * @author nschuste
@@ -57,7 +59,9 @@ public class DefaultTcExecutor_tearDown_Test {
    * @since Dec 25, 2015
    */
   @Before
-  public void setUp() throws Exception {}
+  public void setUp() throws Exception {
+    this.exec = new DefaultTcExecutor();
+  }
 
   /**
    * @author nschuste
@@ -68,18 +72,16 @@ public class DefaultTcExecutor_tearDown_Test {
   @After
   public void tearDown() throws Exception {}
 
-  @PrepareForTest({Files.class})
   @Test
-  public final void test() throws IOException {
+  public final void test() throws Exception {
     final Environment env = Mockito.mock(Environment.class);
     final Robot r = Mockito.mock(Robot.class);
-    final DefaultTcExecutor exec = new DefaultTcExecutor();
-    exec.env = env;
+    this.exec.env = env;
     Mockito.when(env.getRobot()).thenReturn(r);
-    Mockito.when(env.getDir()).thenReturn(Paths.get(""));
-    PowerMockito.mockStatic(Files.class);
-    PowerMockito.when(Files.walkFileTree(Matchers.any(), Matchers.any())).thenReturn(null);
-    exec.tearDown(null);
+    Mockito.when(env.getDir()).thenReturn(Paths.get("mock"));
+    PowerMockito.mockStatic(FS.class);
+    PowerMockito.doNothing().when(FS.class, "delete", Matchers.any(Path.class));
+    this.exec.tearDown(null);
+    PowerMockito.verifyStatic();
   }
-
 }
