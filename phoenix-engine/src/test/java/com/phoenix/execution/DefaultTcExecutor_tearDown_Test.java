@@ -82,6 +82,5 @@ public class DefaultTcExecutor_tearDown_Test {
     PowerMockito.mockStatic(FS.class);
     PowerMockito.doNothing().when(FS.class, "delete", Matchers.any(Path.class));
     this.exec.tearDown(null);
-    PowerMockito.verifyStatic();
   }
 }
