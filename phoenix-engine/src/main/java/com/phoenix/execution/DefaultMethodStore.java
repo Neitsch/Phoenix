@@ -6,9 +6,7 @@
 package com.phoenix.execution;
 
 import java.lang.reflect.Method;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -61,7 +59,6 @@ public class DefaultMethodStore implements MethodStore {
   @PostConstruct
   public void init() {
     final Map<String, Object> beans = this.context.getBeansWithAnnotation(GuiPackage.class);
-    final Collection<Method> mm = new HashSet<>();
     for (final String s : beans.keySet()) {
       for (final Method m : beans.get(s).getClass().getDeclaredMethods()) {
         if (m.isAnnotationPresent(GuiMethod.class)) {
