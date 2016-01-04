@@ -5,6 +5,8 @@
 
 package com.phoenix.to;
 
+import java.net.URL;
+
 import lombok.Data;
 
 /**
@@ -13,7 +15,9 @@ import lombok.Data;
  * @since Nov 21, 2015
  */
 @Data
-public class TestCaseHead {
-  private String name;
-  private TestCaseSetup setup;
+public class TestCaseSetup {
+  private String frameName;
+  private URL jarUrl;
+  private String startArgs;
+  private String startClass;
 }

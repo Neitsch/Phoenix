@@ -16,5 +16,5 @@ import lombok.Data;
  */
 @Data
 public class TestCaseBody {
-  private List<TestCaseLine> lines;
+  private List<TestCaseStep> lines;
 }

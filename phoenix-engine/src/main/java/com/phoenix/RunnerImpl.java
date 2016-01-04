@@ -49,7 +49,7 @@ public class RunnerImpl implements Runner {
     try {
       final TestCase tc = this.loadTC(args.getInputFile());
       final Configuration config = this.loadConfig(args.getConfigLocation());
-      final TestResult result = this.executor.run(tc, config);
+      final TestResult result = this.executor.execute(tc.getTcBody());
       log.info(result.toString());
     } catch (final Exception e) {
       log.catching(e);
