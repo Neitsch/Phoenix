@@ -20,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import com.phoenix.spi.GuiMethod;
 import com.phoenix.spi.GuiPackage;
 import com.phoenix.to.ResultWithMessage;
-import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
  * @author nschuste
@@ -58,17 +57,18 @@ public class DefaultMethodStore implements MethodStore {
 
   @PostConstruct
   public void init() {
+    final Class<?> target = ResultWithMessage.class;
     final Map<String, Object> beans = this.context.getBeansWithAnnotation(GuiPackage.class);
     for (final String s : beans.keySet()) {
       for (final Method m : beans.get(s).getClass().getDeclaredMethods()) {
         if (m.isAnnotationPresent(GuiMethod.class)) {
-          if (ResultWithMessage.class.isAssignableFrom(m.getReturnType())) {
+          if (target.isAssignableFrom(m.getReturnType())) {
             final GuiMethod g = m.getAnnotation(GuiMethod.class);
             this.store.put(g.methodName(), m);
           } else {
             log.warn("Method is assigned " + GuiMethod.class.getName()
-                + " annotation, but does not return " + TestCaseStepResultStatus.class.getName()
-                + ". Skipped " + m.getDeclaringClass().getName() + "." + m.getName());
+                + " annotation, but does not return " + target.getName() + ". Skipped "
+                + m.getDeclaringClass().getName() + "." + m.getName());
           }
         }
       }

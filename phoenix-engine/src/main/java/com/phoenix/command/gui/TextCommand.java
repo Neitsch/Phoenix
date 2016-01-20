@@ -13,7 +13,10 @@ import org.assertj.swing.core.Robot;
 import org.assertj.swing.fixture.JTextComponentFixture;
 
 import com.phoenix.command.Environment;
+import com.phoenix.spi.GuiMethod;
 import com.phoenix.spi.GuiPackage;
+import com.phoenix.to.ResultWithMessage;
+import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
  * @author nschuste
@@ -36,8 +39,10 @@ public class TextCommand {
    * @param string2
    * @since Dec 10, 2015
    */
-  public void enter(final Environment env, final String... varargs) {
+  @GuiMethod(methodName = "enter")
+  public ResultWithMessage enter(final Environment env, final String... varargs) {
     getFixture(env.getRobot(), env.getFrame(), varargs[0], true).deleteText().enterText(varargs[1]);
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 
 }

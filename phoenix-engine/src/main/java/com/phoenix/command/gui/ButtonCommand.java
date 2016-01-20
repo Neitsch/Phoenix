@@ -15,6 +15,8 @@ import org.assertj.swing.fixture.JButtonFixture;
 import com.phoenix.command.Environment;
 import com.phoenix.spi.GuiMethod;
 import com.phoenix.spi.GuiPackage;
+import com.phoenix.to.ResultWithMessage;
+import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
  * @author nschuste
@@ -37,14 +39,16 @@ public class ButtonCommand {
    * @since Dec 10, 2015
    */
   @GuiMethod(methodName = "check")
-  public void check(final Environment env, final String... varargs) {
+  public ResultWithMessage check(final Environment env, final String... varargs) {
     final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
     fixture.requireText(varargs[1]);
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 
   @GuiMethod(methodName = "click")
-  public void click(final Environment env, final String... varargs) {
+  public ResultWithMessage click(final Environment env, final String... varargs) {
     final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
     fixture.click();
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 }
