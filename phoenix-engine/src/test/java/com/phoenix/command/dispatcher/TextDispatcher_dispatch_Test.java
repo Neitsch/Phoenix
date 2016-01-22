@@ -60,5 +60,6 @@ public class TextDispatcher_dispatch_Test {
     Assert.assertEquals(capt.getArgs().length, 2);
     Assert.assertEquals(capt.getArgs()[0], "xyz");
     Assert.assertEquals(capt.getArgs()[1], "hello");
+    r.cleanUp();
   }
 }

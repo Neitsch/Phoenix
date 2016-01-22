@@ -53,5 +53,6 @@ public class ButtonDispatcher_dispatch_Test {
     Assert.assertEquals(capt.getMethodName(), "click");
     Assert.assertEquals(capt.getArgs().length, 1);
     Assert.assertEquals(capt.getArgs()[0], "def");
+    r.cleanUp();
   }
 }
