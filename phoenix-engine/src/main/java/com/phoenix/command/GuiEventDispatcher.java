@@ -42,13 +42,15 @@ public class GuiEventDispatcher {
           Thread.sleep(100);
           final Optional<Component> c = Widgettracker.getComponent();
           if (c.isPresent()) {
-            System.out.println(c.get());
-          }
-        } catch (final Exception e) {
-          e.printStackTrace();
-        }
+
+            // Update component
+            // System.out.println(c.get());
       }
-    });
+    } catch (final Exception e) {
+      e.printStackTrace();
+    }
+  }
+}   );
     t.start();
     Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
       Optional<TestCaseStep> step = patch1.dispatch(event);

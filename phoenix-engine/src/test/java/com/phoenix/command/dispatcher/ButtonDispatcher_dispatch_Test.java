@@ -34,7 +34,7 @@ public class ButtonDispatcher_dispatch_Test {
   @Mock
   private MyEventListener<TestCaseStep> lstr;
 
-  @Test
+  @Test(timeout = 10000)
   public void test() throws InterruptedException {
     final Robot r = BasicRobot.robotWithNewAwtHierarchy();
     final JFrame frame = new JFrame();
