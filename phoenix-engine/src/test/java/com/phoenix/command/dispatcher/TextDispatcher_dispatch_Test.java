@@ -16,7 +16,9 @@ import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.fixture.JButtonFixture;
 import org.assertj.swing.fixture.JTextComponentFixture;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -37,10 +39,20 @@ import com.phoenix.util.MyEventListener;
 public class TextDispatcher_dispatch_Test {
   @Mock
   private MyEventListener<TestCaseStep> lstr;
+  Robot r;
+
+  @Before
+  public void setup() {
+    this.r = BasicRobot.robotWithNewAwtHierarchy();
+  }
+
+  @After
+  public void tearDown() {
+    this.r.cleanUp();
+  }
 
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
-    final Robot r = BasicRobot.robotWithNewAwtHierarchy();
     final JFrame frame = new JFrame();
     final JTextField b = new JTextField();
     b.setName("xyz");
@@ -50,8 +62,8 @@ public class TextDispatcher_dispatch_Test {
     frame.getContentPane().add(c);
     frame.pack();
     frame.setVisible(true);
-    final JTextComponentFixture fix = new JTextComponentFixture(r, "xyz");
-    final JButtonFixture fix2 = new JButtonFixture(r, "cc");
+    final JTextComponentFixture fix = new JTextComponentFixture(this.r, "xyz");
+    final JButtonFixture fix2 = new JButtonFixture(this.r, "cc");
     GuiEventDispatcher.initialize(this.lstr);
     final ArgumentCaptor<TestCaseStep> captor = ArgumentCaptor.forClass(TestCaseStep.class);
     fix.enterText("hello");
@@ -69,6 +81,5 @@ public class TextDispatcher_dispatch_Test {
     Assert.assertEquals(capt.getArgs().length, 2);
     Assert.assertEquals(capt.getArgs()[0], "xyz");
     Assert.assertEquals(capt.getArgs()[1], "hello");
-    r.cleanUp();
   }
 }

@@ -12,7 +12,9 @@ import javax.swing.JFrame;
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
 import org.assertj.swing.fixture.JButtonFixture;
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +35,17 @@ import com.phoenix.util.MyEventListener;
 public class ButtonDispatcher_dispatch_Test {
   @Mock
   private MyEventListener<TestCaseStep> lstr;
+  Robot r;
+
+  @Before
+  public void setup() {
+    this.r = BasicRobot.robotWithNewAwtHierarchy();
+  }
+
+  @After
+  public void tearDown() {
+    this.r.cleanUp();
+  }
 
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
