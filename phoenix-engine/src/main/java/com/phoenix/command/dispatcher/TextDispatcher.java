@@ -19,6 +19,7 @@ import com.phoenix.to.TestCaseStep;
  * @version 1.0.0
  * @since Jan 21, 2016
  */
+@com.phoenix.spi.GuiDispatcher
 public class TextDispatcher implements GuiDispatcher {
 
   /**

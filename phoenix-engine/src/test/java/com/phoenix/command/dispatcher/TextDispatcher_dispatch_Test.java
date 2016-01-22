@@ -6,6 +6,8 @@
 package com.phoenix.command.dispatcher;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,9 +24,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.springframework.context.ApplicationContext;
 
 import com.phoenix.command.GuiEventDispatcher;
 import com.phoenix.to.TestCaseStep;
@@ -37,6 +42,10 @@ import com.phoenix.util.MyEventListener;
  */
 @RunWith(MockitoJUnitRunner.class)
 public class TextDispatcher_dispatch_Test {
+  @Mock
+  private ApplicationContext context;
+  @InjectMocks
+  private GuiEventDispatcher dispatcher;
   @Mock
   private MyEventListener<TestCaseStep> lstr;
   Robot r;
@@ -53,6 +62,9 @@ public class TextDispatcher_dispatch_Test {
 
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
+    final Map<String, Object> mp = new HashMap<>();
+    mp.put("abc", new TextDispatcher());
+    Mockito.when(this.context.getBeansWithAnnotation(Matchers.any())).thenReturn(mp);
     final JFrame frame = new JFrame();
     final JTextField b = new JTextField();
     b.setName("xyz");
@@ -64,7 +76,7 @@ public class TextDispatcher_dispatch_Test {
     frame.setVisible(true);
     final JTextComponentFixture fix = new JTextComponentFixture(this.r, "xyz");
     final JButtonFixture fix2 = new JButtonFixture(this.r, "cc");
-    GuiEventDispatcher.initialize(this.lstr);
+    this.dispatcher.initialize(this.lstr);
     final ArgumentCaptor<TestCaseStep> captor = ArgumentCaptor.forClass(TestCaseStep.class);
     fix.enterText("hello");
     fix2.focus();
