@@ -8,6 +8,9 @@ package com.phoenix.command;
 import java.awt.AWTEvent;
 import java.awt.Component;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import com.phoenix.command.dispatcher.ButtonDispatcher;
@@ -34,8 +37,14 @@ public class GuiEventDispatcher {
   private static Thread t;
 
   public static void initialize(final MyEventListener<TestCaseStep> listener) {
-    final GuiDispatcher patch1 = new ButtonDispatcher();
-    final GuiDispatcher patch2 = new TextDispatcher();
+    final List<GuiDispatcher> dispatchers = new ArrayList<>();
+    dispatchers.add(new ButtonDispatcher());
+    dispatchers.add(new TextDispatcher());
+    GuiEventDispatcher.initialize(listener, dispatchers);
+  }
+
+  public static void initialize(final MyEventListener<TestCaseStep> listener,
+      final List<GuiDispatcher> dispatchers) {
     t = new Thread(() -> {
       while (true) {
         try {
@@ -53,13 +62,13 @@ public class GuiEventDispatcher {
 }   );
     t.start();
     Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
-      Optional<TestCaseStep> step = patch1.dispatch(event);
-      if (step.isPresent()) {
-        listener.event(step.get());
-      } else {
-        step = patch2.dispatch(event);
+      Optional<TestCaseStep> step;
+      final Iterator<GuiDispatcher> disp = dispatchers.iterator();
+      while (disp.hasNext()) {
+        step = disp.next().dispatch(event);
         if (step.isPresent()) {
           listener.event(step.get());
+          break;
         }
       }
     }, AWT_EVENT_MASK);

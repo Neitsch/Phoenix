@@ -49,7 +49,6 @@ public class ButtonDispatcher_dispatch_Test {
 
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
-    final Robot r = BasicRobot.robotWithNewAwtHierarchy();
     final JFrame frame = new JFrame();
     final JButton b = new JButton();
     b.setText("abc");
@@ -57,7 +56,7 @@ public class ButtonDispatcher_dispatch_Test {
     frame.add(b);
     frame.pack();
     frame.setVisible(true);
-    final JButtonFixture fix = new JButtonFixture(r, "def");
+    final JButtonFixture fix = new JButtonFixture(this.r, "def");
     GuiEventDispatcher.initialize(this.lstr);
     final ArgumentCaptor<TestCaseStep> captor = ArgumentCaptor.forClass(TestCaseStep.class);
     fix.click();
@@ -66,6 +65,5 @@ public class ButtonDispatcher_dispatch_Test {
     Assert.assertEquals(capt.getMethodName(), "click");
     Assert.assertEquals(capt.getArgs().length, 1);
     Assert.assertEquals(capt.getArgs()[0], "def");
-    r.cleanUp();
   }
 }
