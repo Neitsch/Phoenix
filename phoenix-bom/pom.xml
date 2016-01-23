@@ -45,6 +45,11 @@
                 <version>${project.version}</version>
             </dependency>
             <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-swing</artifactId>
                 <version>${assertj.version}</version>
