@@ -6,11 +6,13 @@
 package com.phoenix.command.dispatcher;
 
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.assertj.swing.core.BasicRobot;
 import org.assertj.swing.core.Robot;
@@ -73,6 +75,13 @@ public class ButtonDispatcher_dispatch_Test {
     this.dispatcher.initialize(this.lstr);
     final ArgumentCaptor<TestCaseStep> captor = ArgumentCaptor.forClass(TestCaseStep.class);
     fix.click();
+    try {
+      SwingUtilities.invokeAndWait(() -> {
+
+      });
+    } catch (final InvocationTargetException e) {
+      e.printStackTrace();
+    }
     Mockito.verify(this.lstr, Mockito.times(1)).event(captor.capture());
     final TestCaseStep capt = captor.getValue();
     Assert.assertEquals(capt.getMethodName(), "click");
