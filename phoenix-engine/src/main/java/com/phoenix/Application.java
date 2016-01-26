@@ -6,8 +6,6 @@ package com.phoenix;
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
 
-import lombok.extern.slf4j.XSlf4j;
-
 import org.kohsuke.args4j.CmdLineException;
 import org.kohsuke.args4j.CmdLineParser;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 
 import com.phoenix.config.CmdArguments;
+
+import lombok.extern.slf4j.XSlf4j;
 
 /**
  * @author nschuste
