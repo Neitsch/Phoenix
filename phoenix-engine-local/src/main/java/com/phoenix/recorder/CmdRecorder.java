@@ -16,6 +16,7 @@ import java.util.Scanner;
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.Runner;
@@ -34,6 +35,7 @@ import com.phoenix.to.TestCaseSetup;
  * @since Jan 23, 2016
  */
 @XSlf4j
+@Service
 public class CmdRecorder implements Runner {
   private static final String EXIT_STRING = "exit";
   @Autowired
@@ -57,15 +59,16 @@ public class CmdRecorder implements Runner {
     TestCaseSetup setup = null;
     final TestCase tc = new TestCase();
     final TestCaseBody body = new TestCaseBody();
-    Path tc_setup_path;
+    Path tc_setup_path =
+        Paths.get(args.getInputFile() != null ? args.getInputFile() : "data/setup.tc");
     boolean failure = false;
     do {
-      do {
+      while (!Files.exists(tc_setup_path)) {
         System.out.print("Please enter a valid testcase setup location (CWD: "
             + new File("").getAbsolutePath() + "): ");
         final String setup_path = scan.nextLine();
         tc_setup_path = Paths.get(setup_path);
-      } while (!Files.exists(tc_setup_path));
+      };
       try {
         setup = this.mapper.readValue(tc_setup_path.toFile(), TestCaseSetup.class);
       } catch (final Exception e2) {
@@ -83,16 +86,18 @@ public class CmdRecorder implements Runner {
       log.catching(e1);
     }
     this.dispatcher.initialize(e -> {
+      log.info(e.toString());
       body.getLines().add(e);
     });
     String input;
     while (!(input = scan.nextLine()).toLowerCase().equals(EXIT_STRING)) {
     }
     try {
-      this.mapper.writeValue(System.out, tc);
+      this.mapper.writerWithDefaultPrettyPrinter().writeValue(System.out, tc);
     } catch (final IOException e1) {
       log.catching(e1);
     }
     this.executor.tearDown(null);
+    scan.close();
   }
 }

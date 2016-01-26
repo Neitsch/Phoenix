@@ -5,12 +5,12 @@
 
 package com.phoenix;
 
-import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.EventQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 
 /**
@@ -22,6 +22,7 @@ public class MyFrame extends JFrame {
 
   private static Object notify;
   private final JPanel contentPane;
+  private final JTextField textField;
 
   /**
    * Create the frame.
@@ -30,12 +31,20 @@ public class MyFrame extends JFrame {
     this.setName("Frame1");
     this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     this.setBounds(100, 100, 450, 300);
+    final JButton button = new JButton("Hii!!");
+    button.setBounds(131, 32, 263, 150);
+    button.setName("button");
     this.contentPane = new JPanel();
     this.contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-    this.contentPane.setLayout(new BorderLayout(0, 0));
-    this.contentPane.add(new Button("Hi!!"));
+    this.contentPane.setLayout(null);
+    this.contentPane.add(button);
     this.setContentPane(this.contentPane);
-    this.pack();
+
+    this.textField = new JTextField();
+    this.textField.setBounds(6, 72, 134, 28);
+    this.textField.setName("text");
+    this.contentPane.add(this.textField);
+    this.textField.setColumns(10);
   }
 
   /**
@@ -66,5 +75,4 @@ public class MyFrame extends JFrame {
     MyFrame.notify = notify;
     main(args);
   }
-
 }
