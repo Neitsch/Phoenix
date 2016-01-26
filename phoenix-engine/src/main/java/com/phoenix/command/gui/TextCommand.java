@@ -31,6 +31,12 @@ public class TextCommand {
         showing));
   }
 
+  @GuiMethod(methodName = "check")
+  public ResultWithMessage check(final Environment env, final String... varargs) {
+    getFixture(env.getRobot(), env.getFrame(), varargs[0], true).requireText(varargs[1]);
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
+  }
+
   /**
    * @author nschuste
    * @version 1.0.0
@@ -44,5 +50,4 @@ public class TextCommand {
     getFixture(env.getRobot(), env.getFrame(), varargs[0], true).deleteText().enterText(varargs[1]);
     return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
-
 }
