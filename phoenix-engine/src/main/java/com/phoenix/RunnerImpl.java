@@ -49,8 +49,11 @@ public class RunnerImpl implements Runner {
     try {
       final TestCase tc = this.loadTC(args.getInputFile());
       final Configuration config = this.loadConfig(args.getConfigLocation());
+      this.executor.setUp(tc.getTcHead().getSetup());
       final TestCaseBodyResult result = this.executor.execute(tc.getTcBody());
       log.info(result.toString());
+      this.mapper.writerWithDefaultPrettyPrinter().writeValue(new File("data/sample.out"), result);
+      this.executor.tearDown(null);
     } catch (final Exception e) {
       log.catching(e);
     }

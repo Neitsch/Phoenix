@@ -5,8 +5,6 @@
 
 package com.phoenix;
 
-import java.net.URISyntaxException;
-
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -25,6 +23,7 @@ import com.phoenix.config.CmdArguments;
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseBodyResult;
+import com.phoenix.to.TestCaseSetup;
 
 /**
  * @author nschuste
@@ -77,7 +76,7 @@ public class Runner_executeArgs_Test {
   public void tearDown() throws Exception {}
 
   @Test
-  public final void test_simple() throws URISyntaxException {
+  public final void test_simple() throws Exception {
     final CmdArguments args = new CmdArguments();
     final String inputFile = this.getClass().getResource("sample.tc").getFile();
     args.setInputFile(inputFile);
@@ -85,7 +84,8 @@ public class Runner_executeArgs_Test {
     final TestCaseBodyResult result = new TestCaseBodyResult();
     Mockito.doReturn(result).when(this.executor).execute(Matchers.any(TestCaseBody.class));
     this.runner.executeArgs(args);
-    Mockito.verify(this.executor, Mockito.only()).execute(Matchers.any(TestCaseBody.class));
+    Mockito.verify(this.executor, Mockito.times(1)).execute(Matchers.any(TestCaseBody.class));
+    Mockito.verify(this.executor, Mockito.times(1)).setUp(Matchers.any(TestCaseSetup.class));
     Mockito.verifyNoMoreInteractions(this.executor);
   }
 

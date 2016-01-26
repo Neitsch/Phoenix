@@ -13,9 +13,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
 
 import lombok.extern.slf4j.XSlf4j;
 
@@ -69,9 +75,11 @@ public class DefaultTcExecutor implements TcExecutor {
                 .build()));;
     while (position < res.getStepResults().size()) {
       try {
+        log.info("Next step is: " + res.getStepResults().get(position).getStep());
         final TestCaseStep step = res.getStepResults().get(position).getStep();
         final ResultWithMessage myRes = this.exec.doStep(step, this.env);
         res.getStepResults().get(position).setResult(myRes.getStatus());
+        log.info("Step result is: " + myRes);
         position++;
       } catch (final Exception e) {
         log.catching(e);
@@ -100,9 +108,18 @@ public class DefaultTcExecutor implements TcExecutor {
       System.setProperty("user.dir", this.env.getDir().toAbsolutePath().toString());
       // Download Assets
       final Path downloads = Files.createDirectories(this.env.getDir().resolve("downloads"));
+      final List<Exception> exceptions = Collections.synchronizedList(new LinkedList<Exception>());
       setup.getDownloads().parallelStream().forEach(download -> {
-        download.doDownload(downloads);
+        try {
+          download.doDownload(downloads);
+        } catch (final Exception e) {
+          log.catching(e);
+          exceptions.add(e);
+        }
       });
+      if (exceptions.size() > 0) {
+        throw exceptions.get(0);
+      }
       // First create Robot, so that it will pick up on the created frame
       this.env.setRobot(BasicRobot.robotWithNewAwtHierarchy());
       // Execute setup script if present
@@ -134,6 +151,9 @@ public class DefaultTcExecutor implements TcExecutor {
       this.env.setFrame(frame);
       if (frame == null) {
         throw new SetupException(new java.awt.AWTException("Frame not found"));
+      }
+      if (JFrame.class.isAssignableFrom(frame.getClass())) {
+        ((JFrame) frame).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       }
     } catch (final Exception e) {
       throw new SetupException(e);
