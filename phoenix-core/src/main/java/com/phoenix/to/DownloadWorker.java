@@ -5,21 +5,26 @@
 
 package com.phoenix.to;
 
+import java.io.IOException;
 import java.nio.file.Path;
+
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 
 /**
  * @author nschuste
  * @version 1.0.0
  * @since Dec 21, 2015
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "type")
 public interface DownloadWorker {
 
   /**
    * @author nschuste
    * @version 1.0.0
    * @param downloads
+   * @throws IOException
    * @since Dec 21, 2015
    */
-  void doDownload(Path downloads);
+  void doDownload(Path downloads) throws IOException;
 
 }

@@ -14,7 +14,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.config.CmdArguments;
 
 /**
@@ -22,6 +25,7 @@ import com.phoenix.config.CmdArguments;
  * @version 1.0.0
  * @since Nov 21, 2015
  */
+@ComponentScan
 @SpringBootApplication
 @XSlf4j
 public class Application {
@@ -42,6 +46,11 @@ public class Application {
   public static void main(final String[] args) throws CmdLineException {
     final ApplicationContext con = SpringApplication.run(Application.class);
     con.getBean(Application.class).doMain(args);
+  }
+
+  @Bean
+  public ObjectMapper mapper() {
+    return new ObjectMapper();
   }
 
   protected void doMain(final String[] args) {

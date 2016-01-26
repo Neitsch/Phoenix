@@ -8,15 +8,15 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
-    <artifactId>phoenix-core</artifactId>
+    <artifactId>phoenix-engine-local</artifactId>
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>com.phoenix</groupId>
+            <artifactId>phoenix-engine</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
         </dependency>
     </dependencies>
 </project>

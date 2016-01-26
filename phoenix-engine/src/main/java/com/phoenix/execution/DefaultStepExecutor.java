@@ -13,6 +13,7 @@ import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Service;
 
 import com.phoenix.command.Environment;
 import com.phoenix.to.ResultWithMessage;
@@ -24,6 +25,7 @@ import com.phoenix.to.TestCaseStepResultStatus;
  * @version 1.0.0
  * @since Dec 7, 2015
  */
+@Service
 @XSlf4j
 public class DefaultStepExecutor implements StepExecutor {
   @Autowired

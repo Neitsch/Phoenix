@@ -60,11 +60,12 @@ public class DefaultMethodStore implements MethodStore {
     final Class<?> target = ResultWithMessage.class;
     final Map<String, Object> beans = this.context.getBeansWithAnnotation(GuiPackage.class);
     for (final String s : beans.keySet()) {
+      final GuiPackage p = beans.get(s).getClass().getAnnotation(GuiPackage.class);
       for (final Method m : beans.get(s).getClass().getDeclaredMethods()) {
         if (m.isAnnotationPresent(GuiMethod.class)) {
           if (target.isAssignableFrom(m.getReturnType())) {
             final GuiMethod g = m.getAnnotation(GuiMethod.class);
-            this.store.put(g.methodName(), m);
+            this.store.put(p.packageName() + "." + g.methodName(), m);
           } else {
             log.warn("Method is assigned " + GuiMethod.class.getName()
                 + " annotation, but does not return " + target.getName() + ". Skipped "

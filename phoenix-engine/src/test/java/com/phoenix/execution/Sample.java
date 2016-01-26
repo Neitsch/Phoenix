@@ -15,7 +15,7 @@ import com.phoenix.to.TestCaseStepResultStatus;
  * @version 1.0.0
  * @since Dec 6, 2015
  */
-@GuiPackage(packageName = "Smaple")
+@GuiPackage(packageName = "Sample")
 public class Sample {
 
   @GuiMethod(methodName = "MyMethod1")
