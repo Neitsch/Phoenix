@@ -3,7 +3,7 @@
  */
 
 
-package org.phoenix.server.rest;
+package com.phoenix.server.rest;
 
 import java.util.List;
 
