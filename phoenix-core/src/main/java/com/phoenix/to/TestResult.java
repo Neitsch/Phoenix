@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.data.annotation.Id;
+
 /**
  * @author nschuste
  * @version 1.0.0
@@ -20,5 +22,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestResult {
+  @Id
+  private String id;
+  private TestCaseBodyResult result;
   private boolean success;
 }
