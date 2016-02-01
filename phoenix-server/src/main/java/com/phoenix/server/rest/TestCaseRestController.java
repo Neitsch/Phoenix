@@ -7,12 +7,13 @@ package com.phoenix.server.rest;
 
 import java.util.List;
 
-import javax.websocket.server.PathParam;
-
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.phoenix.server.data.TestCaseRepository;
@@ -24,10 +25,17 @@ import com.phoenix.to.TestCase;
  * @since Jan 27, 2016
  */
 @XSlf4j
+@RequestMapping("/tc")
 @RestController
 public class TestCaseRestController {
   @Autowired
   private TestCaseRepository repository;
+
+  @RequestMapping(method = RequestMethod.POST)
+  public void bla(@RequestBody final TestCase tc) {
+    log.entry(tc);
+    log.exit(this.repository.save(tc));
+  }
 
   @RequestMapping("")
   public List<TestCase> getAllTestCases() {
@@ -36,7 +44,7 @@ public class TestCaseRestController {
   }
 
   @RequestMapping("/{tcid}")
-  public TestCase getTestCase(@PathParam("tcid") final String id) {
+  public TestCase getTestCase(@PathVariable("tcid") final String id) {
     log.entry(id);
     return log.exit(this.repository.findOne(id));
   }

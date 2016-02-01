@@ -7,11 +7,10 @@ package com.phoenix.server.rest;
 
 import java.util.Collection;
 
-import javax.websocket.server.PathParam;
-
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -45,7 +44,7 @@ public class TestCaseHeadRestController {
   }
 
   @RequestMapping("/{setupId}")
-  public TestCaseHead getSetup(@PathParam("setupId") final String id) {
+  public TestCaseHead getSetup(@PathVariable("setupId") final String id) {
     log.entry(id);
     return log.exit(this.repository.findOne(id));
   }
