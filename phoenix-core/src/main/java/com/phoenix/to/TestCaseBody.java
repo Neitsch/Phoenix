@@ -12,6 +12,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import org.springframework.data.annotation.Id;
+
 /**
  * @author nschuste
  * @version 1.0.0
@@ -21,5 +23,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TestCaseBody {
+  @Id
+  private String id;
   private List<TestCaseStep> lines = new LinkedList<>();
 }

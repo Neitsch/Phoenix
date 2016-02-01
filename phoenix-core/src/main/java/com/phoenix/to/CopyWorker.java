@@ -3,7 +3,7 @@
  */
 
 
-package com.phoenix.setup;
+package com.phoenix.to;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,8 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import lombok.Data;
-
-import com.phoenix.to.DownloadWorker;
 
 /**
  * @author nschuste
