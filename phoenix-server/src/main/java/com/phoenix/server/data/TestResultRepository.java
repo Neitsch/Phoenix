@@ -15,5 +15,4 @@ import com.phoenix.to.TestCaseBodyResult;
  * @since Jan 27, 2016
  */
 public interface TestResultRepository extends MongoRepository<TestCaseBodyResult, String> {
-
 }

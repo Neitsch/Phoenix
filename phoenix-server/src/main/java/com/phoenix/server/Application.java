@@ -15,6 +15,7 @@ import org.springframework.context.annotation.Configuration;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseHeadRepository;
 import com.phoenix.server.data.TestCaseRepository;
+import com.phoenix.to.TestCase;
 import com.phoenix.to.TestCaseHead;
 
 /**
@@ -50,6 +51,10 @@ public class Application implements CommandLineRunner {
     this.repo2.deleteAll();
     this.repo1.save(new ObjectMapper().readValue(this.getClass().getResourceAsStream("setup.tc"),
         TestCaseHead.class));
+    final TestCase entity = new TestCase();
+    entity.setName("Testname");
+    this.repo2.save(entity);
+    System.out.println(this.repo2.findByNameIgnoreCaseContains("testnam"));
     // final TestCase tc = new TestCase();
     // tc.setTcBody(new TestCaseBody());
     // TestCaseHead tch = new TestCaseHead();
