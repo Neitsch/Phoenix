@@ -73,6 +73,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
         }).log("${body}").choice().when(this.body().isNull())
             .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
         this.from("jms:queue:testcase").log("LOG");
+        this.from("jms:topic:testresult").log("LOG");
       }
 
       public RouteBuilder init(final TestCaseRepository repository) {

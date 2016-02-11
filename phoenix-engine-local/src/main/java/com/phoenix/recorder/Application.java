@@ -1,7 +1,7 @@
 /**
  * Copyright 2015 Nigel Schuster.
  */
-package com.phoenix;
+package com.phoenix.recorder;
 
 import java.io.ByteArrayOutputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +18,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.Runner;
 import com.phoenix.config.CmdArguments;
 
 /**

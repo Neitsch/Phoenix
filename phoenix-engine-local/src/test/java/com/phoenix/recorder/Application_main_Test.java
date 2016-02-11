@@ -3,7 +3,7 @@
  */
 
 
-package com.phoenix;
+package com.phoenix.recorder;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -17,7 +17,9 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 
+import com.phoenix.Runner;
 import com.phoenix.config.CmdArguments;
+import com.phoenix.recorder.Application;
 
 /**
  * @author nschuste
