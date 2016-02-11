@@ -9,6 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +20,7 @@ import lombok.NoArgsConstructor;
  */
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Data
 public class TestCaseBodyResult {
   private List<TestCaseStepResult> stepResults = new LinkedList<>();
