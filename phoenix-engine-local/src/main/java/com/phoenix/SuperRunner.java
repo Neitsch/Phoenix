@@ -123,7 +123,7 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
       intf.phase(UserInterface.PHASE.DONE);
       this.phase = PHASE.DONE;
       if (intf.saveTestCase()) {
-        this.requestModule.saveTc(this.tc);
+        log.info("Saved Testcase as " + this.requestModule.saveTc(this.tc));
       }
     } catch (final Exception e) {
       log.catching(e);
@@ -143,7 +143,7 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
     if (createNew) {
       tc =
           TestCase.builder().tcBody(TestCaseBody.builder().lines(new ArrayList<>()).build())
-          .tcHead(this.requestModule.requestHead(this.userIntf.getResourcePath())).build();
+              .tcHead(this.requestModule.requestHead(this.userIntf.getResourcePath())).build();
     } else {
       tc = this.requestModule.requestTestCase(this.userIntf.getResourcePath());
     }

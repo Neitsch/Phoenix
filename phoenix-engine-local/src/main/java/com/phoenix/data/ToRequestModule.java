@@ -38,6 +38,6 @@ public interface ToRequestModule {
    * @param tc
    * @since Feb 13, 2016
    */
-  void saveTc(TestCase tc) throws Exception;
+  String saveTc(TestCase tc) throws Exception;
 
 }

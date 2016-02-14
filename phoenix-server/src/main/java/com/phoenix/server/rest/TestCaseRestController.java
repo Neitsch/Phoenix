@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,14 +41,15 @@ public class TestCaseRestController {
   @Autowired
   TestCaseService service;
 
+  @ResponseBody
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping(method = RequestMethod.POST)
-  public void bla(@RequestBody final TestCase tc) {
+  public String bla(@RequestBody final TestCase tc) {
     log.entry(tc);
     if (tc.getTcBody().getId() == null) {
       this.bodyRepository.save(tc.getTcBody());
     }
-    log.exit(this.repository.save(tc));
+    return log.exit(this.repository.save(tc)).getId();
   }
 
   @RequestMapping("/enqueue/{tcid}")

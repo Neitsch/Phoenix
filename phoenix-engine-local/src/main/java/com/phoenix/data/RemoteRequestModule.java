@@ -19,7 +19,7 @@ import com.phoenix.to.TestCaseHead;
  */
 @XSlf4j
 public class RemoteRequestModule implements ToRequestModule {
-  private static <T> void post(final T object) {
+  private static <T> String post(final T object) {
     log.entry(object);
     RestTemplate restTemplate = new RestTemplate();
     final StringBuilder builder = new StringBuilder().append("http://");
@@ -31,8 +31,7 @@ public class RemoteRequestModule implements ToRequestModule {
     } else if (clazz.isAssignableFrom(TestCaseHead.class)) {
       builder.append("/tch/");
     }
-    restTemplate.postForObject(builder.toString(), object, String.class);
-    log.exit();
+    return log.exit(restTemplate.postForObject(builder.toString(), object, String.class));
   }
 
   private static String resolvePath(final Class<?> clazz, final String path) {
@@ -40,7 +39,7 @@ public class RemoteRequestModule implements ToRequestModule {
     final StringBuilder builder = new StringBuilder().append("http://");
     builder.append(System.getProperty("server.host.address"));
     if (clazz.isAssignableFrom(TestCase.class)) {
-      builder.append("/tc/");
+      builder.append("/tc/id/");
     } else if (clazz.isAssignableFrom(TestCaseHead.class)) {
       builder.append("/tch/");
     }
@@ -84,10 +83,9 @@ public class RemoteRequestModule implements ToRequestModule {
    * @since Feb 13, 2016
    */
   @Override
-  public void saveTc(final TestCase tc) throws Exception {
+  public String saveTc(final TestCase tc) throws Exception {
     log.entry(tc);
-    post(tc);
-    log.exit();
+    return log.exit(post(tc));
   }
 
   private <T> T request(final Class<T> clazz, final String path) {

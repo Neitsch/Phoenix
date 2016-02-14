@@ -67,8 +67,9 @@ public class LocalRequestModule implements ToRequestModule {
    * @since Feb 13, 2016
    */
   @Override
-  public void saveTc(final TestCase tc) throws Exception {
+  public String saveTc(final TestCase tc) throws Exception {
     this.mapper.writeValue(this.saved.toFile(), tc);
+    return this.saved.toAbsolutePath().toString();
   }
 
   private <T> T load(final Class<T> clazz, final String path) throws Exception {
