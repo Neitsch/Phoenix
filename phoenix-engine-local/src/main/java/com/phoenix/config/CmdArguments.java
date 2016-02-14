@@ -22,8 +22,4 @@ public class CmdArguments {
 
   @Option(hidden = false, required = false, name = "-g", usage = "GUI interface")
   private boolean gui;
-
-  @Option(hidden = false, required = false, name = "-in",
-      usage = "relative or absolute path to file that should be executed.", metaVar = "FILEPATH")
-  private String inputFile;
 }
