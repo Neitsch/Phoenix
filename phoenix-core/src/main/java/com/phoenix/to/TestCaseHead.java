@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import org.springframework.data.annotation.Id;
 
@@ -21,6 +22,7 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @Data
 @Builder
+@Accessors(chain = true)
 public class TestCaseHead {
   @Id
   private String id;

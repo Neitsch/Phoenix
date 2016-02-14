@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
@@ -24,6 +25,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
+@Accessors(chain = true)
 public class TestCase implements Serializable {
   @Id
   public String id;

@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.Accessors;
 
 import org.springframework.data.annotation.Id;
 
@@ -18,6 +19,7 @@ import org.springframework.data.annotation.Id;
  * @since Nov 21, 2015
  */
 @Data
+@Accessors(chain = true)
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor

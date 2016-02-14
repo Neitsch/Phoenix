@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * @author nschuste
@@ -18,6 +19,7 @@ import lombok.Data;
  * @since Jan 7, 2016
  */
 @Data
+@Accessors(chain = true)
 public class CopyWorker implements DownloadWorker {
   private String destination;
   private String origin;
