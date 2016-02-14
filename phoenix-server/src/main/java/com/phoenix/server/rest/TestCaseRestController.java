@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.phoenix.server.data.TestCaseBodyRepository;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.server.service.TestCaseService;
 import com.phoenix.to.TestCase;
@@ -35,12 +36,17 @@ public class TestCaseRestController {
   @Autowired
   private TestCaseRepository repository;
   @Autowired
+  private TestCaseBodyRepository bodyRepository;
+  @Autowired
   TestCaseService service;
 
   @ResponseStatus(HttpStatus.OK)
   @RequestMapping(method = RequestMethod.POST)
   public void bla(@RequestBody final TestCase tc) {
     log.entry(tc);
+    if (tc.getTcBody().getId() == null) {
+      this.bodyRepository.save(tc.getTcBody());
+    }
     log.exit(this.repository.save(tc));
   }
 
