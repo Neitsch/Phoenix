@@ -36,7 +36,7 @@ public class ButtonDispatcher implements GuiDispatcher {
     if (JButton.class.isAssignableFrom(e.getSource().getClass())) {
       if (e.getID() == MouseEvent.MOUSE_CLICKED) {
         op =
-            Optional.of(TestCaseStep.builder().methodName("click")
+            Optional.of(TestCaseStep.builder().methodName("button.click")
                 .args(new String[] {((JButton) e.getSource()).getName()}).build());
       }
     }

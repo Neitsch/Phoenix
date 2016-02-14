@@ -37,7 +37,7 @@ public class TextDispatcher implements GuiDispatcher {
       if (e.getID() == FocusEvent.FOCUS_LOST) {
         final JTextComponent tc = (JTextComponent) e.getSource();
         op =
-            Optional.of(TestCaseStep.builder().methodName("enter")
+            Optional.of(TestCaseStep.builder().methodName("text.enter")
                 .args(new String[] {tc.getName(), tc.getText()}).build());
       }
     }

@@ -13,6 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.PosixFilePermission;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,6 +43,7 @@ import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResult;
 import com.phoenix.to.TestCaseStepResultStatus;
 import com.phoenix.util.FS;
+import com.phoenix.util.MyEventListener;
 
 /**
  * @author nschuste
@@ -51,11 +53,12 @@ import com.phoenix.util.FS;
 @XSlf4j
 @Service
 public class DefaultTcExecutor implements TcExecutor {
-
-
   protected Environment env;
+
   @Autowired
   private StepExecutor exec;
+  private int position = 0;
+  private final List<MyEventListener<TestCaseStepResult>> resultListener = new ArrayList<>();
 
   /**
    * {@inheritDoc}
@@ -68,24 +71,51 @@ public class DefaultTcExecutor implements TcExecutor {
   @Override
   public TestCaseBodyResult execute(final TestCaseBody tc) {
     final TestCaseBodyResult res = new TestCaseBodyResult();
-    int position = 0;
+    this.position = 0;
     tc.getLines().forEach(
         t -> res.getStepResults().add(
             TestCaseStepResult.builder().step(t).result(TestCaseStepResultStatus.NOT_EXECUTED)
                 .build()));;
-    while (position < res.getStepResults().size()) {
+    while (this.position < res.getStepResults().size()) {
       try {
-        log.info("Next step is: " + res.getStepResults().get(position).getStep());
-        final TestCaseStep step = res.getStepResults().get(position).getStep();
+        log.info("Next step is: " + res.getStepResults().get(this.position).getStep());
+        final TestCaseStep step = res.getStepResults().get(this.position).getStep();
         final ResultWithMessage myRes = this.exec.doStep(step, this.env);
-        res.getStepResults().get(position).setResult(myRes.getStatus());
+        res.getStepResults().get(this.position).setResult(myRes.getStatus());
+        this.report(res.getStepResults().get(this.position));
         log.info("Step result is: " + myRes);
-        position++;
+        this.position++;
       } catch (final Exception e) {
         log.catching(e);
       }
     }
     return res;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.execution.TcExecutor#getEnvironment()
+   * @since Feb 12, 2016
+   */
+  @Override
+  public Environment getEnvironment() {
+    return this.env;
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.execution.TcExecutor#registerListener(com.phoenix.util.MyEventListener)
+   * @since Feb 11, 2016
+   */
+  @Override
+  public void registerListener(final MyEventListener<TestCaseStepResult> myEventListener) {
+    this.resultListener.add(myEventListener);
   }
 
   /**
@@ -176,6 +206,16 @@ public class DefaultTcExecutor implements TcExecutor {
     } catch (final IOException e) {
       log.catching(e);
     }
+  }
+
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @param testCaseStepResult
+   * @since Feb 11, 2016
+   */
+  private void report(final TestCaseStepResult testCaseStepResult) {
+    this.resultListener.forEach(t -> t.event(testCaseStepResult));
   }
 
 }
