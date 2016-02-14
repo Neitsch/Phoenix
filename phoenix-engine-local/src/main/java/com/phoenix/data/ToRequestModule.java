@@ -32,4 +32,12 @@ public interface ToRequestModule {
    */
   TestCase requestTestCase(String resourcePath) throws Exception;
 
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @param tc
+   * @since Feb 13, 2016
+   */
+  void saveTc(TestCase tc) throws Exception;
+
 }

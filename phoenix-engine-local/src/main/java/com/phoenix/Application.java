@@ -38,6 +38,7 @@ public class Application implements CommandLineRunner {
 
   public static void main(final String[] args) {
     SpringApplication.run(Application.class, args);
+    System.exit(0);
   }
 
   private static final CmdArguments parse(final String... args) throws Exception {

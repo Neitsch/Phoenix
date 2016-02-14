@@ -60,6 +60,8 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
   TestCase tc;
   @NonFinal
   UserInterface userIntf;
+  @NonFinal
+  ToRequestModule requestModule;
 
   /**
    * {@inheritDoc}
@@ -97,8 +99,8 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
       this.phase = PHASE.SETUP;
       this.executor.setUp(this.tc.getTcHead().getSetup());
       this.dispatcher.initialize(this);
-      intf.phase(UserInterface.PHASE.EXECUTION);
       this.phase = PHASE.EXECUTION;
+      intf.phase(UserInterface.PHASE.EXECUTION);
       if (this.execServ == null) {
         this.execServ = Executors.newSingleThreadExecutor();
       }
@@ -120,6 +122,9 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
       this.executor.tearDown(null);
       intf.phase(UserInterface.PHASE.DONE);
       this.phase = PHASE.DONE;
+      if (intf.saveTestCase()) {
+        this.requestModule.saveTc(this.tc);
+      }
     } catch (final Exception e) {
       log.catching(e);
     }
@@ -128,20 +133,19 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
   private TestCase prepare() throws Exception {
     final boolean createNew = this.userIntf.shouldCreateNew();
     final boolean remoteResource = this.userIntf.remoteResource();
-    ToRequestModule module;
     if (remoteResource) {
-      module = new RemoteRequestModule();
+      this.requestModule = new RemoteRequestModule();
     } else {
-      module = new LocalRequestModule();
+      this.requestModule = new LocalRequestModule();
     }
-    this.ctx.getAutowireCapableBeanFactory().autowireBean(module);
+    this.ctx.getAutowireCapableBeanFactory().autowireBean(this.requestModule);
     TestCase tc;
     if (createNew) {
       tc =
           TestCase.builder().tcBody(TestCaseBody.builder().lines(new ArrayList<>()).build())
-          .tcHead(module.requestHead(this.userIntf.getResourcePath())).build();
+          .tcHead(this.requestModule.requestHead(this.userIntf.getResourcePath())).build();
     } else {
-      tc = module.requestTestCase(this.userIntf.getResourcePath());
+      tc = this.requestModule.requestTestCase(this.userIntf.getResourcePath());
     }
     return tc;
   }

@@ -5,6 +5,7 @@
 
 package com.phoenix.data;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import com.phoenix.to.TestCaseHead;
 public class LocalRequestModule implements ToRequestModule {
   @Autowired
   private ObjectMapper mapper;
+  private Path saved;
 
   /**
    * {@inheritDoc}
@@ -36,7 +38,11 @@ public class LocalRequestModule implements ToRequestModule {
    */
   @Override
   public TestCaseHead requestHead(final String resourcePath) throws Exception {
-    return this.load(TestCaseHead.class, resourcePath);
+    try {
+      return this.load(TestCaseHead.class, resourcePath);
+    } finally {
+      this.saved = this.saved.resolveSibling(this.saved.getFileName().toString() + ".tc");
+    }
   }
 
   /**
@@ -52,7 +58,21 @@ public class LocalRequestModule implements ToRequestModule {
     return this.load(TestCase.class, resourcePath);
   }
 
+  /**
+   * {@inheritDoc}
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.data.ToRequestModule#saveTc(com.phoenix.to.TestCase)
+   * @since Feb 13, 2016
+   */
+  @Override
+  public void saveTc(final TestCase tc) throws Exception {
+    this.mapper.writeValue(this.saved.toFile(), tc);
+  }
+
   private <T> T load(final Class<T> clazz, final String path) throws Exception {
-    return this.mapper.readValue(Paths.get(path).toUri().toURL(), clazz);
+    this.saved = Paths.get(path);
+    return this.mapper.readValue(this.saved.toFile(), clazz);
   }
 }

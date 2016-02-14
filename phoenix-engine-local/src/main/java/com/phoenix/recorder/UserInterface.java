@@ -56,6 +56,14 @@ public interface UserInterface {
    * @author nschuste
    * @version 1.0.0
    * @return
+   * @since Feb 13, 2016
+   */
+  boolean saveTestCase();
+
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @return
    * @since Feb 11, 2016
    */
   boolean shouldCreateNew();

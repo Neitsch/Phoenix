@@ -55,6 +55,9 @@ public class CmdInterface implements UserInterface {
   @Override
   public void phase(final PHASE preparation) {
     log.info("Now in phase " + preparation);
+    if (preparation == PHASE.EXECUTION) {
+      this.scan.nextLine();
+    }
   }
 
   /**
@@ -84,6 +87,24 @@ public class CmdInterface implements UserInterface {
     String read;
     do {
       System.out.println("Will you be using a server to get the data?");
+      read = this.scan.nextLine();
+    } while (!read.equals("y") && !read.equals("n"));
+    return read.equals("y");
+  }
+
+  /**
+   * {@inheritDoc}
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.recorder.UserInterface#saveTestCase()
+   * @since Feb 13, 2016
+   */
+  @Override
+  public boolean saveTestCase() {
+    String read;
+    do {
+      System.out.println("Save testcase?");
       read = this.scan.nextLine();
     } while (!read.equals("y") && !read.equals("n"));
     return read.equals("y");

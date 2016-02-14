@@ -44,7 +44,7 @@ public class GuiInterface implements UserInterface {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.recorder.UserInterface#proceed(java.util.concurrent.Semaphore)
@@ -65,6 +65,19 @@ public class GuiInterface implements UserInterface {
    */
   @Override
   public boolean remoteResource() {
+    throw new RuntimeException();
+  }
+
+  /**
+   * {@inheritDoc}
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.recorder.UserInterface#saveTestCase()
+   * @since Feb 13, 2016
+   */
+  @Override
+  public boolean saveTestCase() {
     throw new RuntimeException();
   }
 
