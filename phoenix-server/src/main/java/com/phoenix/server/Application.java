@@ -23,6 +23,8 @@ import com.phoenix.to.TestCaseHead;
  * @version 1.0.0
  * @since Jan 27, 2016
  */
+// @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+// @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.phoenix")
@@ -31,7 +33,6 @@ public class Application implements CommandLineRunner {
   TestCaseHeadRepository repo1;
   @Autowired
   TestCaseRepository repo2;
-
 
   public static void main(final String[] args) throws Exception {
     SpringApplication.run(Application.class, args);
@@ -49,8 +50,8 @@ public class Application implements CommandLineRunner {
   public void run(final String... args) throws Exception {
     this.repo1.deleteAll();
     this.repo2.deleteAll();
-    this.repo1.save(new ObjectMapper().readValue(this.getClass().getResourceAsStream("setup.tc"),
-        TestCaseHead.class));
+    System.out.println(this.repo1.save(new ObjectMapper().readValue(this.getClass()
+        .getResourceAsStream("setup.tc"), TestCaseHead.class)));
     final TestCase entity = new TestCase();
     entity.setName("Testname");
     this.repo2.save(entity);
