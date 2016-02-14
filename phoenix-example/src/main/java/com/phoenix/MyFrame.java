@@ -20,6 +20,12 @@ import javax.swing.border.EmptyBorder;
  */
 public class MyFrame extends JFrame {
 
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 13, 2016
+   */
+  private static final long serialVersionUID = 1094131661009680129L;
   private static Object notify;
   private final JPanel contentPane;
   private final JTextField textField;

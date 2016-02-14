@@ -27,6 +27,12 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 @Data
 @Accessors(chain = true)
 public class TestCase implements Serializable {
+  /**
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 13, 2016
+   */
+  private static final long serialVersionUID = -8547117539340733237L;
   @Id
   public String id;
   private String name;
