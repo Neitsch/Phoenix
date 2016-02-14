@@ -89,7 +89,7 @@ public class TextDispatcher_dispatch_Test {
     }
     Mockito.verify(this.lstr, Mockito.times(1)).event(captor.capture());
     final TestCaseStep capt = captor.getValue();
-    Assert.assertEquals(capt.getMethodName(), "enter");
+    Assert.assertEquals(capt.getMethodName(), "text.enter");
     Assert.assertEquals(capt.getArgs().length, 2);
     Assert.assertEquals(capt.getArgs()[0], "xyz");
     Assert.assertEquals(capt.getArgs()[1], "hello");
