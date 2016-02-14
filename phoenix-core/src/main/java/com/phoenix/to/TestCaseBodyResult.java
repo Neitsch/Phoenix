@@ -5,6 +5,7 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -24,6 +25,6 @@ import lombok.experimental.Accessors;
 @Builder
 @Data
 @Accessors(chain = true)
-public class TestCaseBodyResult {
+public class TestCaseBodyResult implements Serializable {
   private List<TestCaseStepResult> stepResults = new LinkedList<>();
 }

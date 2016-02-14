@@ -5,6 +5,7 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,7 +27,7 @@ import org.springframework.data.annotation.Id;
 @Builder
 @Data
 @Accessors(chain = true)
-public class TestCaseBody {
+public class TestCaseBody implements Serializable {
   @Id
   private String id;
   private List<TestCaseStep> lines = new LinkedList<>();

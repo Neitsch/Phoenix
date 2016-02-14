@@ -5,6 +5,8 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +23,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Data
 @Accessors(chain = true)
-public class TestCaseStepResult {
+public class TestCaseStepResult implements Serializable {
   private TestCaseStepResultStatus result;
   private TestCaseStep step;
 }

@@ -5,6 +5,7 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Collection;
 
@@ -24,6 +25,6 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Data
 @Accessors(chain = true)
-public class TestCaseEnd {
+public class TestCaseEnd implements Serializable {
   private Collection<Path> removeFiles;
 }

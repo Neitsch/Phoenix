@@ -5,6 +5,8 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +25,7 @@ import org.springframework.data.annotation.Id;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestResult {
+public class TestResult implements Serializable {
   @Id
   private String id;
   private TestCaseBodyResult result;

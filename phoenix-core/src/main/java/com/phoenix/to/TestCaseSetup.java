@@ -5,6 +5,7 @@
 
 package com.phoenix.to;
 
+import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +24,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @Data
 @Accessors(chain = true)
-public class TestCaseSetup {
+public class TestCaseSetup implements Serializable {
   private List<DownloadWorker> downloads;
   private String frameName;
   private String[] startArgs;
