@@ -43,7 +43,8 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
 
   @Bean
   public ConnectionFactory bla() {
-    final ActiveMQConnectionFactory act = new ActiveMQConnectionFactory("tcp://localhost:61616");
+    final ActiveMQConnectionFactory act =
+        new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
     act.setUserName("admin");
     act.setPassword("admin");
     return act;
@@ -72,8 +73,8 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
           m.setHeader("id", id);
         }).log("${body}").choice().when(this.body().isNull())
             .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
-        this.from("jms:queue:testcase").log("LOG");
-        this.from("jms:topic:testresult").log("LOG");
+        // this.from("jms:queue:testcase").log("LOG");
+        this.from("jms:topic:testresult").log("${body}");
       }
 
       public RouteBuilder init(final TestCaseRepository repository) {

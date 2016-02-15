@@ -5,6 +5,8 @@
 
 package com.phoenix.server;
 
+import java.util.Arrays;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -13,10 +15,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.phoenix.server.data.TestCaseBodyRepository;
 import com.phoenix.server.data.TestCaseHeadRepository;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.to.TestCase;
+import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseHead;
+import com.phoenix.to.TestCaseStep;
 
 /**
  * @author nschuste
@@ -33,6 +38,8 @@ public class Application implements CommandLineRunner {
   TestCaseHeadRepository repo1;
   @Autowired
   TestCaseRepository repo2;
+  @Autowired
+  TestCaseBodyRepository repo3;
 
   public static void main(final String[] args) throws Exception {
     SpringApplication.run(Application.class, args);
@@ -50,22 +57,20 @@ public class Application implements CommandLineRunner {
   public void run(final String... args) throws Exception {
     this.repo1.deleteAll();
     this.repo2.deleteAll();
-    System.out.println(this.repo1.save(new ObjectMapper().readValue(this.getClass()
-        .getResourceAsStream("setup.tc"), TestCaseHead.class)));
-    final TestCase entity = new TestCase();
-    entity.setName("Testname");
-    this.repo2.save(entity);
+    this.repo3.deleteAll();
+    this.repo2.save(TestCase
+        .builder()
+        .name("Testname")
+        .tcHead(
+            this.repo1.save(new ObjectMapper().readValue(
+                this.getClass().getResourceAsStream("setup.tc"), TestCaseHead.class)))
+                .tcBody(
+                    this.repo3.save(TestCaseBody
+                        .builder()
+                        .lines(
+                            Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
+                                .methodName("button.click").args(new String[] {"button"}).build()}))
+                                .build())).build());
     System.out.println(this.repo2.findByNameIgnoreCaseContains("testnam"));
-    // final TestCase tc = new TestCase();
-    // tc.setTcBody(new TestCaseBody());
-    // TestCaseHead tch = new TestCaseHead();
-    // tch.setName("name");
-    // this.repo1.save(tch);
-    // tch = new TestCaseHead();
-    // tch.setId(this.repo1.findAll().get(0).getId());
-    // tc.setTcHead(tch);
-    // this.repo2.save(tc);
-    // final List<TestCase> tcs = this.repo2.findAll();
-    // System.out.println(tcs);
   }
 }
