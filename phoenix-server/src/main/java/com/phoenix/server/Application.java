@@ -64,13 +64,13 @@ public class Application implements CommandLineRunner {
         .tcHead(
             this.repo1.save(new ObjectMapper().readValue(
                 this.getClass().getResourceAsStream("setup.tc"), TestCaseHead.class)))
-                .tcBody(
-                    this.repo3.save(TestCaseBody
-                        .builder()
-                        .lines(
-                            Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
-                                .methodName("button.click").args(new String[] {"button"}).build()}))
-                                .build())).build());
+        .tcBody(
+            this.repo3.save(TestCaseBody
+                .builder()
+                .lines(
+                    Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
+                        .methodName("button.click").args(new String[] {"button"}).build()}))
+                .build())).build());
     System.out.println(this.repo2.findByNameIgnoreCaseContains("testnam"));
   }
 }
