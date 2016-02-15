@@ -73,9 +73,9 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
           m.setBody(tc);
           m.setHeader("id", id);
         }).log("${body}").choice().when(this.body().isNull())
-        .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
+            .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
         // this.from("jms:queue:testcase").log("LOG");
-        this.from("jms:topic:testresult").log("${body}");
+        this.from("jms:topic:testresult").log("${body}").beanRef("defaultTestResultService");
       }
 
       public RouteBuilder init(final TestCaseRepository repository) {

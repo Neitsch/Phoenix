@@ -18,6 +18,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseBodyRepository;
 import com.phoenix.server.data.TestCaseHeadRepository;
 import com.phoenix.server.data.TestCaseRepository;
+import com.phoenix.server.data.TestResultRepository;
 import com.phoenix.to.TestCase;
 import com.phoenix.to.TestCaseBody;
 import com.phoenix.to.TestCaseHead;
@@ -40,8 +41,11 @@ public class Application implements CommandLineRunner {
   TestCaseRepository repo2;
   @Autowired
   TestCaseBodyRepository repo3;
+  @Autowired
+  TestResultRepository repo4;
 
   public static void main(final String[] args) throws Exception {
+    System.setProperty("database", "test");
     SpringApplication.run(Application.class, args);
   }
 
@@ -58,6 +62,7 @@ public class Application implements CommandLineRunner {
     this.repo1.deleteAll();
     this.repo2.deleteAll();
     this.repo3.deleteAll();
+    this.repo4.deleteAll();
     this.repo2.save(TestCase
         .builder()
         .name("Testname")

@@ -7,12 +7,12 @@ package com.phoenix.server.data;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.phoenix.to.TestCaseBodyResult;
+import com.phoenix.to.TestResult;
 
 /**
  * @author nschuste
  * @version 1.0.0
  * @since Jan 27, 2016
  */
-public interface TestResultRepository extends MongoRepository<TestCaseBodyResult, String> {
+public interface TestResultRepository extends MongoRepository<TestResult, String> {
 }
