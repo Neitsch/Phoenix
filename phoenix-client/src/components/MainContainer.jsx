@@ -7,7 +7,7 @@ export const Container = React.createClass({
   mixins: [PureRenderMixin],
   render: function() {
     return <div className="main">
-      Hi
+      <a className="btn btn-primary">Hi</a>
     </div>;
   }
 });
