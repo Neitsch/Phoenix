@@ -3,7 +3,7 @@
  */
 
 
-package com.phoenix.setup;
+package com.phoenix.to;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -11,8 +11,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import lombok.Data;
-
-import com.phoenix.to.DownloadWorker;
+import lombok.experimental.Accessors;
 
 /**
  * @author nschuste
@@ -20,6 +19,7 @@ import com.phoenix.to.DownloadWorker;
  * @since Jan 7, 2016
  */
 @Data
+@Accessors(chain = true)
 public class CopyWorker implements DownloadWorker {
   private String destination;
   private String origin;

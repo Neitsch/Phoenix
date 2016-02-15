@@ -6,6 +6,7 @@
 package com.phoenix.to;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Path;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
@@ -16,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
  * @since Dec 21, 2015
  */
 @JsonTypeInfo(use = JsonTypeInfo.Id.CLASS, property = "type")
-public interface DownloadWorker {
+public interface DownloadWorker extends Serializable {
 
   /**
    * @author nschuste
