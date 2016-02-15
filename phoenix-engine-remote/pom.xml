@@ -8,8 +8,15 @@
         <version>0.0.1-SNAPSHOT</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
-    <artifactId>phoenix-client-remote</artifactId>
+    <artifactId>phoenix-engine-remote</artifactId>
+    <properties>
+        <docker.image.prefix>neitsch</docker.image.prefix>
+    </properties>
     <dependencies>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-swing</artifactId>
+        </dependency>
         <dependency>
             <groupId>com.phoenix</groupId>
             <artifactId>phoenix-engine</artifactId>
@@ -19,7 +26,7 @@
             <artifactId>camel-jms</artifactId>
             <version>2.16.1</version>
         </dependency>
-         <dependency>
+        <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>activemq-camel</artifactId>
         </dependency>
@@ -44,6 +51,37 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>docker-maven-plugin</artifactId>
+                <version>0.4.0</version>
+                <configuration>
+                    <imageName>${docker.image.prefix}/${project.artifactId}</imageName>
+                    <dockerDirectory>${basedir}/docker</dockerDirectory>
+                    <resources>
+                        <resource>
+                            <targetPath>/</targetPath>
+                            <directory>${project.build.directory}</directory>
+                            <include>${project.build.finalName}.jar</include>
+                        </resource>
+                    </resources>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
