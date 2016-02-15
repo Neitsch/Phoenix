@@ -47,6 +47,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
         new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
     act.setUserName("admin");
     act.setPassword("admin");
+    act.setTrustAllPackages(true);
     return act;
   }
 
@@ -72,7 +73,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
           m.setBody(tc);
           m.setHeader("id", id);
         }).log("${body}").choice().when(this.body().isNull())
-            .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
+        .throwException(new NullPointerException()).otherwise().to("jms:queue:testcase");
         // this.from("jms:queue:testcase").log("LOG");
         this.from("jms:topic:testresult").log("${body}");
       }
