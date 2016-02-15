@@ -20,7 +20,6 @@ public class CmdArguments {
       usage = "relative or absolute path to the configuration file.", metaVar = "FILEPATH")
   private String configLocation;
 
-  @Option(hidden = false, required = true, name = "-in",
-      usage = "relative or absolute path to file that should be executed.", metaVar = "FILEPATH")
-  private String inputFile;
+  @Option(hidden = false, required = false, name = "-g", usage = "GUI interface")
+  private boolean gui;
 }

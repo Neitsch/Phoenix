@@ -1,4 +1,5 @@
 language: java
+sudo: required
 jdk:
   - oraclejdk8
 env:
@@ -7,3 +8,9 @@ before_install:
   - sh -e /etc/init.d/xvfb start
 notifications:
   email: false
+services:
+  - docker
+install:
+  - mvn clean install -B -Dmaven.test.skip
+script:
+  - mvn test -B

@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.phoenix</groupId>
         <artifactId>phoenix-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>0.0.1</version>
     </parent>
     <properties>
         <args4j.version>2.32</args4j.version>
@@ -42,6 +42,11 @@
             <dependency>
                 <groupId>com.phoenix</groupId>
                 <artifactId>phoenix-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

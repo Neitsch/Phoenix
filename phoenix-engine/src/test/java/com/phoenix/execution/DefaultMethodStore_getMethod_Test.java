@@ -78,13 +78,13 @@ public class DefaultMethodStore_getMethod_Test {
     reg.put("", new Sample());
     Mockito.when(this.context.getBeansWithAnnotation(GuiPackage.class)).thenReturn(reg);
     this.store.init();
-    Method m = this.store.getMethod("MyMethod1");
+    Method m = this.store.getMethod("Sample.MyMethod1");
     Assert.assertNotNull(m);
-    m = this.store.getMethod("MyMethod4");
+    m = this.store.getMethod("Sample.MyMethod4");
     Assert.assertNull(m);
-    m = this.store.getMethod("MyMethod3");
+    m = this.store.getMethod("Sample.MyMethod3");
     Assert.assertNotNull(m);
-    m = this.store.getMethod("MyMethod2");
+    m = this.store.getMethod("Sample.MyMethod2");
     Assert.assertNotNull(m);
   }
 }
