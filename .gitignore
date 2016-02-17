@@ -20,3 +20,5 @@ activemq-data/
 temp*
 
 node_modules/
+.jshintrc
+dist/

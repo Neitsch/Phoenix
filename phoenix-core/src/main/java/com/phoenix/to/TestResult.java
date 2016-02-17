@@ -28,6 +28,8 @@ import org.springframework.data.annotation.Id;
 public class TestResult implements Serializable {
   @Id
   private String id;
+  private String tcId;
+  private String title;
   private TestCaseBodyResult result;
   private boolean success;
 }
