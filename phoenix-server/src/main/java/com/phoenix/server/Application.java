@@ -5,24 +5,21 @@
 
 package com.phoenix.server;
 
-import java.util.Arrays;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseBodyRepository;
 import com.phoenix.server.data.TestCaseHeadRepository;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.server.data.TestResultRepository;
-import com.phoenix.to.TestCase;
-import com.phoenix.to.TestCaseBody;
-import com.phoenix.to.TestCaseHead;
-import com.phoenix.to.TestCaseStep;
 
 /**
  * @author nschuste
@@ -49,6 +46,16 @@ public class Application implements CommandLineRunner {
     SpringApplication.run(Application.class, args);
   }
 
+  @Bean
+  public WebMvcConfigurer corsConfigurer() {
+    return new WebMvcConfigurerAdapter() {
+      @Override
+      public void addCorsMappings(final CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("http://localhost:8910");
+      }
+    };
+  }
+
   /**
    * {@inheritDoc}
    *
@@ -59,23 +66,36 @@ public class Application implements CommandLineRunner {
    */
   @Override
   public void run(final String... args) throws Exception {
-    this.repo1.deleteAll();
-    this.repo2.deleteAll();
-    this.repo3.deleteAll();
-    this.repo4.deleteAll();
-    this.repo2.save(TestCase
-        .builder()
-        .name("Testname")
-        .tcHead(
-            this.repo1.save(new ObjectMapper().readValue(
-                this.getClass().getResourceAsStream("setup.tc"), TestCaseHead.class)))
-        .tcBody(
-            this.repo3.save(TestCaseBody
-                .builder()
-                .lines(
-                    Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
-                        .methodName("button.click").args(new String[] {"button"}).build()}))
-                .build())).build());
+    // this.repo1.deleteAll();
+    // this.repo2.deleteAll();
+    // this.repo3.deleteAll();
+    // this.repo4.deleteAll();
+    // this.repo2.save(TestCase
+    // .builder()
+    // .name("Testname")
+    // .tcHead(
+    // this.repo1.save(new ObjectMapper().readValue(
+    // this.getClass().getResourceAsStream("setup.tc"), TestCaseHead.class)))
+    // .tcBody(
+    // this.repo3.save(TestCaseBody
+    // .builder()
+    // .lines(
+    // Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
+    // .methodName("button.click").args(new String[] {"button"}).build()}))
+    // .build())).build());
+    // this.repo2.save(TestCase
+    // .builder()
+    // .name("Other Testname")
+    // .tcHead(
+    // this.repo1.save(new ObjectMapper().readValue(
+    // this.getClass().getResourceAsStream("setup.tc"), TestCaseHead.class)))
+    // .tcBody(
+    // this.repo3.save(TestCaseBody
+    // .builder()
+    // .lines(
+    // Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
+    // .methodName("button.click").args(new String[] {"button"}).build()}))
+    // .build())).build());
     System.out.println(this.repo2.findByNameIgnoreCaseContains("testnam"));
   }
 }
