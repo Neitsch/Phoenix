@@ -14,7 +14,10 @@ module.exports = {
         exclude: /node_modules/,
         loader: 'babel'
       },
-      
+      { 
+         test: /notifyjs\.js$/,
+         loader: 'imports?jQuery=jquery,$=jquery,this=>window'
+      },
       { test: /\.css$/, loaders: [ 'style', 'css' ] },
       { test: /\.scss$/, loaders: [ 'style', 'css', 'sass' ] },
       { test: /\.(woff2?|svg)$/, loader: 'url?limit=10000' },

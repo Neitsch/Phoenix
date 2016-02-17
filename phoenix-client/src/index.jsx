@@ -7,8 +7,20 @@ import reducer from './reducer';
 import App from './components/App';
 import {MainContainer, Container} from './components/MainContainer';
 import { hashHistory } from 'react-router';
+import $ from 'jquery';
+import {HOST} from './CONSTANTS';
+import {setTestCases, setTestResults} from './action_creators';
+import "notifyjs-browser";
 
 const store = createStore(reducer);
+
+$.get(HOST+"/tc", function(data) {
+  store.dispatch(setTestCases(data));
+});
+
+$.get(HOST+"/tr", function(data) {
+  store.dispatch(setTestResults(data));
+});
 
 const routes = <Route component={App}>
   <Route path="/" component={MainContainer} />
