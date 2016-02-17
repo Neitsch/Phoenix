@@ -77,7 +77,7 @@ public class ButtonCommands_click_Test {
   }
 
   @Test
-  public final void test() throws InterruptedException {
+  public final void test() throws Exception {
     final ButtonCommand com = new ButtonCommand();
     com.click(this.env, "button1");
     Mockito.verify(this.tracker, Mockito.times(1)).click();
