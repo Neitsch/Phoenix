@@ -7,11 +7,14 @@ package com.phoenix.remote;
 
 import lombok.extern.slf4j.XSlf4j;
 
+import org.apache.commons.collections4.IterableUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.phoenix.execution.TcExecutor;
 import com.phoenix.to.TestCase;
+import com.phoenix.to.TestCaseBodyResult;
+import com.phoenix.to.TestCaseStepResultStatus;
 import com.phoenix.to.TestResult;
 
 /**
@@ -28,7 +31,15 @@ public class ExecWrapper {
   public TestResult result(final TestCase tc) throws Exception {
     try {
       this.exec.setUp(tc.getTcHead().getSetup());
-      return TestResult.builder().result(this.exec.execute(tc.getTcBody())).success(true).build();
+      TestCaseBodyResult res = this.exec.execute(tc.getTcBody());
+      return TestResult
+          .builder()
+          .result(res)
+          .title(tc.getName())
+          .tcId(tc.getId())
+          .success(
+              !IterableUtils.matchesAny(res.getStepResults(),
+                  arg0 -> arg0.getResult() == TestCaseStepResultStatus.EXCEPTION)).build();
     } catch (Exception e) {
       log.catching(e);
       throw e;
