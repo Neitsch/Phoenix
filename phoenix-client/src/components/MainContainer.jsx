@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import $ from 'jquery';
 import {HOST} from '../CONSTANTS';
-import {Table,Thead,Th} from 'reactable';
 
 export const Container = React.createClass({
   mixins: [PureRenderMixin],
