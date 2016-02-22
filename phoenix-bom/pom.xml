@@ -70,6 +70,26 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
+                <artifactId>camel-rabbitmq</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-amqp</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-jackson</artifactId>
+                <version>${camel.version}</version>
+</dependency>
+<dependency>
+  <groupId>org.apache.camel</groupId>
+  <artifactId>camel-xstream</artifactId>
+                <version>${camel.version}</version>
+</dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
                 <artifactId>camel-spring-javaconfig</artifactId>
                 <version>${camel.version}</version>
             </dependency>
