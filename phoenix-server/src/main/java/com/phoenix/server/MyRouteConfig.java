@@ -88,25 +88,32 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
       @Override
       public void configure() throws Exception {
         this.from("direct:startTestCase")
-        .log("${body}")
-        .process(arg0 -> {
-          final Message m = arg0.getIn();
-          final String id = (String) m.getBody();
-          final TestCase tc = this.repository.findOne(id);
-          m.setBody(tc);
-          m.setHeader("id", id);
-        })
-        .log("${body}")
-        .choice()
-        .when(this.body().isNull())
-        .throwException(new NullPointerException())
-        .otherwise()
-            .marshal()
-            .json(JsonLibrary.Jackson)
-            .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
+        .marshal()
+        .json(JsonLibrary.Jackson, String.class)
+            .log("${body}")
+        .to("rabbitmq://localhost:5672/testcaseid?username=guest&password=guest&autoDelete=false");
+        this.from("amqp:queue:testcaseid")
+        .unmarshal()
+        .json(JsonLibrary.Jackson, String.class)
+            .log("${body}")
+            .process(arg0 -> {
+              final Message m = arg0.getIn();
+              final String id = (String) m.getBody();
+              final TestCase tc = this.repository.findOne(id);
+              m.setBody(tc);
+              m.setHeader("id", id);
+            })
+            .log("${body}")
+            .choice()
+            .when(this.body().isNull())
+            .throwException(new NullPointerException())
+            .otherwise()
+        .marshal()
+        .json(JsonLibrary.Jackson)
+        .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
         // this.from("jms:queue:testcase").log("LOG");
         this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)
-            .log("${body}").beanRef("defaultTestResultService");
+        .log("${body}").beanRef("defaultTestResultService");
       }
 
       public RouteBuilder init(final TestCaseRepository repository) {
