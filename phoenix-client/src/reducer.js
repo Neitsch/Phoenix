@@ -11,7 +11,12 @@ function setTestCases(state, testcases) {
 }
 
 function setTestResults(state, testresults) {
-  return state.set("testresults", fromJS(testresults));
+  var tr = fromJS(testresults);
+  tr = tr.sortBy(function(value, key) {
+    console.log(value.get('end'));
+    return - value.get('end');
+  });
+  return state.set("testresults", tr);
 }
 
 export default function(state = INITIAL_STATE, action) {

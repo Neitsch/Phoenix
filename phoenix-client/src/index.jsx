@@ -19,6 +19,7 @@ $.get(HOST+"/tc", function(data) {
 });
 
 $.get(HOST+"/tr", function(data) {
+  console.log(data);
   store.dispatch(setTestResults(data));
 });
 

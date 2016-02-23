@@ -1,35 +1,19 @@
 var express = require('express');
 var app = express();
+var amqp = require('amqplib').connect('amqp://localhost');
 
-var stompit = require('stompit');
-
-var connectOptions = {
-  'host': 'localhost',
-  'port': 61613,
-  'connectHeaders':{
-    'host': '0.0.0.0',
-    'login': 'admin',
-    'passcode': 'admin'
-  }
-};
-
-stompit.connect(connectOptions, function(error, client) {
-
-  if (error) {
-    console.log('connect error ' + error.message + error.isTransportError() + error.isProtocolError() + error.isApplicationError());
-    return;
-  }
-  else {
-    console.log('Connected');
-  }
-});
-
-app.use("/static", express.static(__dirname+'/../dist'));
-
-app.get('/en', function (req, res) {
-  res.end();
-});
-
-app.listen(3000, function () {
-  console.log('Example app listening on port 3000!');
+amqp.then(function(conn) {
+  var ok = conn.createChannel();
+  ok = ok.then(function(ch) {
+    ch.assertQueue("testcaseid");
+    app.use("/static", express.static(__dirname + '/../dist'));
+    app.get('/en', function(req, res) {
+      ch.sendToQueue("testcaseid", new Buffer('"' + req.query.id + '"'));
+      res.end();
+    });
+    app.listen(3000, function() {
+      console.log('Listening on 3000!');
+    });
+  });
+  return ok;
 });
