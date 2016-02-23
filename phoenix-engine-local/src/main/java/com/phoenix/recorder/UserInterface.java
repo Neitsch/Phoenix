@@ -31,6 +31,14 @@ public interface UserInterface {
   /**
    * @author nschuste
    * @version 1.0.0
+   * @return
+   * @since Feb 23, 2016
+   */
+  String getTcName();
+
+  /**
+   * @author nschuste
+   * @version 1.0.0
    * @param preparation
    * @since Feb 11, 2016
    */
