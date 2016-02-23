@@ -79,15 +79,15 @@
                 <version>${camel.version}</version>
             </dependency>
             <dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-jackson</artifactId>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jackson</artifactId>
                 <version>${camel.version}</version>
-</dependency>
-<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-xstream</artifactId>
                 <version>${camel.version}</version>
-</dependency>
+            </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-spring-javaconfig</artifactId>

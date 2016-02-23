@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js 'test/**/*.@(js|jsx)'"
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js 'test/**/*.@(js|jsx)'",
+    "start": "webpack && node ./srv/index.js"
   },
   "babel": {
     "presets": [
@@ -45,6 +46,7 @@
     "amqplib": "^0.4.1",
     "immutable": "^3.7.6",
     "jquery": "^2.2.0",
+    "moment": "^2.11.2",
     "react": "^0.14.7",
     "react-addons-pure-render-mixin": "^0.14.7",
     "react-dom": "^0.14.7",

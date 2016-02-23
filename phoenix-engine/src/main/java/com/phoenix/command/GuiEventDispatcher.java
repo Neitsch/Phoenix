@@ -63,27 +63,12 @@ public class GuiEventDispatcher {
 
   public void initialize(final MyEventListener<TestCaseStep> listener,
       final List<GuiDispatcher> dispatchers) {
-    t = new Thread(() -> {
-      while (true) {
-        try {
-          Thread.sleep(100);
-          final Optional<Component> c = Widgettracker.getComponent();
-          if (c.isPresent()) {
-
-            // Update component
-            // System.out.println(c.get());
-      }
-    } catch (final Exception e) {
-      e.printStackTrace();
-    }
-  }
-}   );
-    t.start();
     Toolkit.getDefaultToolkit().addAWTEventListener(event -> {
       Optional<TestCaseStep> step;
+      final Optional<Component> c = Widgettracker.getComponent();
       final Iterator<GuiDispatcher> disp = dispatchers.iterator();
       while (disp.hasNext()) {
-        step = disp.next().dispatch(event);
+        step = disp.next().dispatch(event, c);
         if (step.isPresent()) {
           listener.event(step.get());
           break;

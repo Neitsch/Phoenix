@@ -10,7 +10,7 @@ import java.awt.Component;
 import java.awt.event.MouseEvent;
 import java.util.Optional;
 
-import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import com.phoenix.command.GuiDispatcher;
 import com.phoenix.to.TestCaseStep;
@@ -18,30 +18,21 @@ import com.phoenix.to.TestCaseStep;
 /**
  * @author nschuste
  * @version 1.0.0
- * @since Jan 21, 2016
+ * @since Feb 23, 2016
  */
 @com.phoenix.spi.GuiDispatcher
-public class ButtonDispatcher implements GuiDispatcher {
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see com.phoenix.command.GuiDispatcher#dispatch(java.awt.event.ActionEvent)
-   * @since Jan 21, 2016
-   */
+public class LabelDispatcher implements GuiDispatcher {
   @Override
   public Optional<TestCaseStep> dispatch(final AWTEvent e, final Optional<Component> c) {
     Optional<TestCaseStep> op = Optional.empty();
-    if (JButton.class.isAssignableFrom(e.getSource().getClass())) {
+    if (c.isPresent() && JLabel.class.isAssignableFrom(c.get().getClass())) {
       if (e.getID() == MouseEvent.MOUSE_CLICKED) {
         op =
-            Optional.of(TestCaseStep.builder().methodName("button.click")
-                .args(new String[] {((JButton) e.getSource()).getName()}).build());
+            Optional.of(TestCaseStep.builder().methodName("label.check")
+                .args(new String[] {((JLabel) c.get()).getName(), ((JLabel) c.get()).getText()})
+                .build());
       }
     }
     return op;
   }
-
 }

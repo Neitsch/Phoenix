@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import $ from 'jquery';
 import {HOST} from '../CONSTANTS';
-import {Table,Thead,Th} from 'reactable';
+import moment from 'moment';
 
 export const Container = React.createClass({
   mixins: [PureRenderMixin],
@@ -16,7 +16,7 @@ export const Container = React.createClass({
   },
   enqueue: function(id) {
     $.ajax({
-      url: HOST+"/tc/enqueue/"+id,
+      url: "/en?id="+id,
       type: "GET",
       success: function(data) { $.notify("Enqueued testcases", "success");},
       error: function(data) { $.notify("Problem encountered!" + data); }
@@ -63,6 +63,7 @@ export const Container = React.createClass({
                 <tr>
                   <th>Testcase ID</th>
                   <th>Testcase Title</th>
+                  <th>Start time</th>
                 </tr>
               </thead>
               <tbody>
@@ -70,6 +71,7 @@ export const Container = React.createClass({
                   <tr key={entry.get("id")} className={entry.get("success")?"success":"danger"}>
                     <td>{entry.get("tcId")}</td>
                     <td>{entry.get("title")}</td>
+                    <td>{moment(entry.get("end")).format("YYYY-MM-DD hh:mm:ss")}</td>
                   </tr>
                 )}
               </tbody>

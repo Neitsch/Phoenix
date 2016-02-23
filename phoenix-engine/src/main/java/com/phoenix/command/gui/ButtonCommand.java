@@ -47,6 +47,13 @@ public class ButtonCommand {
     return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 
+  @GuiMethod(methodName = "disabled")
+  public ResultWithMessage checkDisabled(final Environment env, final String... varargs) {
+    final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
+    fixture.requireDisabled();
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
+  }
+
   @GuiMethod(methodName = "click")
   public ResultWithMessage click(final Environment env, final String... varargs) throws Exception {
     final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);

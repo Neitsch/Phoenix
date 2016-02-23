@@ -51,7 +51,7 @@ public class Application implements CommandLineRunner {
     return new WebMvcConfigurerAdapter() {
       @Override
       public void addCorsMappings(final CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:8910");
+        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
       }
     };
   }

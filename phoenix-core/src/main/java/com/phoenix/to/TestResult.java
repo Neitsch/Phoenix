@@ -6,6 +6,7 @@
 package com.phoenix.to;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +33,6 @@ public class TestResult implements Serializable {
   private String title;
   private TestCaseBodyResult result;
   private boolean success;
+  private Date start = new Date();
+  private Date end = new Date();
 }

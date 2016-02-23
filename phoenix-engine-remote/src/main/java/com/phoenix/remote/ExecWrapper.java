@@ -5,6 +5,8 @@
 
 package com.phoenix.remote;
 
+import java.util.Date;
+
 import lombok.extern.slf4j.XSlf4j;
 
 import org.apache.commons.collections4.IterableUtils;
@@ -30,16 +32,19 @@ public class ExecWrapper {
 
   public TestResult result(final TestCase tc) throws Exception {
     try {
+      Date start = new Date();
       this.exec.setUp(tc.getTcHead().getSetup());
       TestCaseBodyResult res = this.exec.execute(tc.getTcBody());
       return TestResult
           .builder()
+          .start(start)
           .result(res)
           .title(tc.getName())
           .tcId(tc.getId())
           .success(
               !IterableUtils.matchesAny(res.getStepResults(),
-                  arg0 -> arg0.getResult() == TestCaseStepResultStatus.EXCEPTION)).build();
+                  arg0 -> arg0.getResult() == TestCaseStepResultStatus.EXCEPTION)).end(new Date())
+          .build();
     } catch (Exception e) {
       log.catching(e);
       throw e;
