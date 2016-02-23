@@ -6,6 +6,7 @@
 package com.phoenix.command.dispatcher;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.event.FocusEvent;
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ public class TextDispatcher implements GuiDispatcher {
    * @since Jan 21, 2016
    */
   @Override
-  public Optional<TestCaseStep> dispatch(final AWTEvent e) {
+  public Optional<TestCaseStep> dispatch(final AWTEvent e, final Optional<Component> c) {
     Optional<TestCaseStep> op = Optional.empty();
     if (JTextComponent.class.isAssignableFrom(e.getSource().getClass())) {
       if (e.getID() == FocusEvent.FOCUS_LOST) {
