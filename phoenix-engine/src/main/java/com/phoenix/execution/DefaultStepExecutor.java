@@ -1,5 +1,6 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Singleton that handles the execution of a single step and reports
+ * its result.
  */
 
 
@@ -21,6 +22,8 @@ import com.phoenix.to.TestCaseStep;
 import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
+ * Class to executes single {@TestCaseStep}.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 7, 2015
@@ -44,9 +47,11 @@ public class DefaultStepExecutor implements StepExecutor {
    */
   @Override
   public ResultWithMessage doStep(final TestCaseStep step, final Environment env) throws Exception {
+    log.entry(step, env);
     final String mName = step.getMethodName();
     final Method method = this.store.getMethod(mName);
     final Object bean = this.context.getBean(method.getDeclaringClass());
+    log.debug("Using method: " + method.toString());
     ResultWithMessage res;
     try {
       res = (ResultWithMessage) method.invoke(bean, env, step.getArgs());
@@ -55,8 +60,8 @@ public class DefaultStepExecutor implements StepExecutor {
       log.catching(e);
       res =
           ResultWithMessage.builder().status(TestCaseStepResultStatus.EXCEPTION)
-              .exception(Optional.of(e)).build();
+          .exception(Optional.of(e)).build();
     }
-    return res;
+    return log.exit(res);
   }
 }

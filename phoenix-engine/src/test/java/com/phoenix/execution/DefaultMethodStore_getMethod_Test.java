@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Ensures that the MethodStore stores all GuiMethods in a class.
  */
 
 
@@ -25,6 +25,8 @@ import org.springframework.context.ApplicationContext;
 import com.phoenix.spi.GuiPackage;
 
 /**
+ * Verifies funcitonality of DefaultMethodStore, storing all methods annotated as GuiMethod
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Dec 7, 2015
@@ -72,6 +74,13 @@ public class DefaultMethodStore_getMethod_Test {
   @After
   public void tearDown() throws Exception {}
 
+  /**
+   * Scans the sample class.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @Test
   public final void test() {
     final Map<String, Object> reg = new HashMap<>();

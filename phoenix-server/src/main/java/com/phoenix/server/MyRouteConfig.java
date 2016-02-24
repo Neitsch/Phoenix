@@ -1,11 +1,13 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Configuration of Routes in Apache Camel.
  */
 
 
 package com.phoenix.server;
 
 import java.net.MalformedURLException;
+
+import lombok.extern.slf4j.XSlf4j;
 
 import org.apache.camel.Component;
 import org.apache.camel.Message;
@@ -26,10 +28,13 @@ import com.phoenix.to.TestResult;
 
 
 /**
+ * Apache Camel Route configuration
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 1, 2016
  */
+@XSlf4j
 @Configuration
 public class MyRouteConfig extends SingleRouteCamelConfiguration implements InitializingBean {
   @Autowired
@@ -87,14 +92,18 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
 
       @Override
       public void configure() throws Exception {
+        // Enqueue Testcase by ID
+        this.log.info("Configuring direct:startTestCase");
         this.from("direct:startTestCase")
-        .marshal()
-        .json(JsonLibrary.Jackson, String.class)
+            .marshal()
+            .json(JsonLibrary.Jackson, String.class)
             .log("${body}")
-        .to("rabbitmq://localhost:5672/testcaseid?username=guest&password=guest&autoDelete=false");
+            .to("rabbitmq://localhost:5672/testcaseid?username=guest&password=guest&autoDelete=false");
+        // Fetch body of testcase
+        this.log.info("Configuring amqp:queue:testcaseid");
         this.from("amqp:queue:testcaseid")
-        .unmarshal()
-        .json(JsonLibrary.Jackson, String.class)
+            .unmarshal()
+            .json(JsonLibrary.Jackson, String.class)
             .log("${body}")
             .process(arg0 -> {
               final Message m = arg0.getIn();
@@ -108,12 +117,14 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
             .when(this.body().isNull())
             .throwException(new NullPointerException())
             .otherwise()
-        .marshal()
-        .json(JsonLibrary.Jackson)
-        .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
-        // this.from("jms:queue:testcase").log("LOG");
+            .marshal()
+            .json(JsonLibrary.Jackson)
+            .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
+        // store result
+        this.log.info("Configuring amqp:queue:testresult");
         this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)
-        .log("${body}").beanRef("defaultTestResultService");
+            .log("${body}").beanRef("defaultTestResultService");
+        this.log.info("Done configuring Routes.");
       }
 
       public RouteBuilder init(final TestCaseRepository repository) {
@@ -125,6 +136,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
 
   @Bean
   public Component securedAmqpConnection() throws MalformedURLException {
-    return new AMQPComponent(this.facto());
+    log.entry();
+    return log.exit(new AMQPComponent(this.facto()));
   }
 }

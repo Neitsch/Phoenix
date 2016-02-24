@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Verifies that the StepExecutor indeed executes
  */
 
 
@@ -83,6 +83,14 @@ public class DefaultStepExecutor_doStep_Test {
   @After
   public void tearDown() throws Exception {}
 
+  /**
+   * Verifies that method is called.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @throws Exception
+   * @since Feb 23, 2016
+   */
   @Test
   public void test() throws Exception {
     final Environment env = null;

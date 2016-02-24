@@ -22,27 +22,31 @@
         <docker.image.prefix>neitsch</docker.image.prefix>
     </properties>
     <dependencies>
+    <!-- SPRING -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-test</artifactId>
-            <scope>test</scope>
+            <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
+        <!-- PHOENIX -->
         <dependency>
             <groupId>com.phoenix</groupId>
             <artifactId>phoenix-core</artifactId>
         </dependency>
+        <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <!-- SLF4J -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -55,35 +59,22 @@
             <groupId>org.slf4j</groupId>
             <artifactId>jcl-over-slf4j</artifactId>
         </dependency>
+        <!-- LOGBACK -->
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
         </dependency>
+        <!-- JSON ASSERT -->
         <dependency>
             <groupId>org.skyscreamer</groupId>
             <artifactId>jsonassert</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-jms</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-all</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms</artifactId>
-        </dependency>
-        <dependency> 
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-all</artifactId>
-        </dependency> 
-         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
-        </dependency>
+        <!-- CAMEL -->
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-spring</artifactId>
@@ -101,18 +92,23 @@
             <artifactId>camel-rabbitmq</artifactId>
         </dependency>
         <dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-amqp</artifactId>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-xstream</artifactId>
+        </dependency>
+        <dependency>
+    <groupId>javax.jms</groupId>
+    <artifactId>jms-api</artifactId>
+    <version>1.1-rev-1</version>
 </dependency>
-<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-jackson</artifactId>
-</dependency>
-
-<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
-</dependency>
+        
     </dependencies>
     <build>
         <plugins>
@@ -125,5 +121,5 @@
                 <artifactId>docker-maven-plugin</artifactId>
             </plugin>
         </plugins>
-     </build>
+    </build>
 </project>

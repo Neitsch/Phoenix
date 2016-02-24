@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Checks whether the the ButtonDispatcher records click correctly.
  */
 
 
@@ -35,6 +35,8 @@ import com.phoenix.to.TestCaseStep;
 import com.phoenix.util.MyEventListener;
 
 /**
+ * Verifies ButtonDispatcher functionality.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Jan 21, 2016
@@ -59,6 +61,14 @@ public class ButtonDispatcher_dispatch_Test {
     this.r.cleanUp();
   }
 
+  /**
+   * Simple test.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @throws InterruptedException
+   * @since Feb 23, 2016
+   */
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
     final Map<String, Object> mp = new HashMap<>();
@@ -76,6 +86,7 @@ public class ButtonDispatcher_dispatch_Test {
     final ArgumentCaptor<TestCaseStep> captor = ArgumentCaptor.forClass(TestCaseStep.class);
     fix.click();
     try {
+      // Ensure that AWT EventQueue is cleared.
       SwingUtilities.invokeAndWait(() -> {
 
       });

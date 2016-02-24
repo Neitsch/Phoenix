@@ -1,0 +1,2 @@
+10:42:55.617 [main] TRACE (com.phoenix.server.rest.TestCaseRestController:92) - entry
+10:42:55.649 [main] TRACE (com.phoenix.server.rest.TestCaseRestController:93) - exit with ([TestCase(id=null, name=null, tcBody=null, tcHead=null)])

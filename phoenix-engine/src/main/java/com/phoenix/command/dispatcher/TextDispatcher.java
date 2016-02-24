@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Dispatches any events involving a JTextComponent.
  */
 
 
@@ -12,14 +12,19 @@ import java.util.Optional;
 
 import javax.swing.text.JTextComponent;
 
+import lombok.extern.slf4j.XSlf4j;
+
 import com.phoenix.command.GuiDispatcher;
 import com.phoenix.to.TestCaseStep;
 
 /**
+ * Dispatches JTextComponent events.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Jan 21, 2016
  */
+@XSlf4j
 @com.phoenix.spi.GuiDispatcher
 public class TextDispatcher implements GuiDispatcher {
 
@@ -35,7 +40,9 @@ public class TextDispatcher implements GuiDispatcher {
   public Optional<TestCaseStep> dispatch(final AWTEvent e, final Optional<Component> c) {
     Optional<TestCaseStep> op = Optional.empty();
     if (JTextComponent.class.isAssignableFrom(e.getSource().getClass())) {
+      log.trace("TextComponent event: " + e);
       if (e.getID() == FocusEvent.FOCUS_LOST) {
+        log.info("JTextComponent lost focus, returning event.");
         final JTextComponent tc = (JTextComponent) e.getSource();
         op =
             Optional.of(TestCaseStep.builder().methodName("text.enter")

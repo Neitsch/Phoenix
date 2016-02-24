@@ -14,13 +14,13 @@
         <assertj.version>3.0.2</assertj.version>
         <camel.version>2.16.1</camel.version>
         <powermock.version>1.6.4</powermock.version>
-        <activemq.version>5.12.2</activemq.version>
         <spring.platform.version>2.0.2.RELEASE</spring.platform.version>
     </properties>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
         <dependencies>
+            <!-- SPRING -->
             <dependency>
                 <groupId>io.spring.platform</groupId>
                 <artifactId>platform-bom</artifactId>
@@ -28,40 +28,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <!-- CAMEL -->
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-jms</artifactId>
                 <version>${camel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>args4j</groupId>
-                <artifactId>args4j</artifactId>
-                <version>${args4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-ext</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.phoenix</groupId>
-                <artifactId>phoenix-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.phoenix</groupId>
-                <artifactId>phoenix-engine</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.assertj</groupId>
-                <artifactId>assertj-swing</artifactId>
-                <version>${assertj.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
@@ -98,6 +69,42 @@
                 <artifactId>camel-mongodb</artifactId>
                 <version>${camel.version}</version>
             </dependency>
+            <!-- ARGS4J -->
+            <dependency>
+                <groupId>args4j</groupId>
+                <artifactId>args4j</artifactId>
+                <version>${args4j.version}</version>
+            </dependency>
+            <!-- LOMBOK -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+            <!-- SLF4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- PHOENIX (this project) -->
+            <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- ASSERTJ -->
+            <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-swing</artifactId>
+                <version>${assertj.version}</version>
+            </dependency>
+            <!-- POWERMOCK -->
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
@@ -107,11 +114,6 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${powermock.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-all</artifactId>
-                <version>${activemq.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

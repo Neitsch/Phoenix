@@ -1,5 +1,6 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Ensures that necessary step for setting the environment up are
+ * executed.
  */
 
 
@@ -27,6 +28,8 @@ import com.phoenix.to.DownloadWorker;
 import com.phoenix.to.TestCaseSetup;
 
 /**
+ * Verifies DefaultTcExecutor performs all necessary step for setup.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 25, 2015
@@ -65,6 +68,8 @@ public class DefaultTcExecutor_setup_Test {
   }
 
   /**
+   * removes copied files.
+   *
    * @author nschuste
    * @version 1.0.0
    * @throws java.lang.Exception
@@ -96,6 +101,14 @@ public class DefaultTcExecutor_setup_Test {
     });
   }
 
+  /**
+   * Copies to files over and ensures frame is started.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @throws Exception
+   * @since Feb 23, 2016
+   */
   @Test
   public final void test() throws Exception {
     final TestCaseSetup setup = new TestCaseSetup();
