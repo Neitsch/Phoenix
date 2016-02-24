@@ -13,6 +13,8 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.amqp.AMQPComponent;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
+import org.apache.qpid.amqp_1_0.jms.ConnectionFactory;
+import org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -68,12 +70,12 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
    * @return
    * @since Feb 24, 2016
    */
-  // @Bean
-  // public ConnectionFactory fact() {
-  // log.entry();
-  // return log.exit(new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/",
-  // false, 1));
-  // }
+  @Bean
+  public ConnectionFactory facto() {
+    log.entry();
+    return log.exit(new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/",
+        false, 1));
+  }
 
   /**
    * {@inheritDoc}
@@ -118,7 +120,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
    */
   @Bean
   public Component securedAmqpConnection() throws MalformedURLException {
-    return AMQPComponent.amqpComponent("amqp://guest:guest@localhost:5672");
+    return new AMQPComponent(this.facto());
   }
 
 }
