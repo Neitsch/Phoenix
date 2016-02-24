@@ -7,7 +7,7 @@
         <!-- Your own application should inherit from spring-boot-starter-parent -->
         <groupId>com.phoenix</groupId>
         <artifactId>phoenix-all</artifactId>
-        <version>0.0.2-SNAPSHOT</version>
+        <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
     <artifactId>phoenix-server</artifactId>
