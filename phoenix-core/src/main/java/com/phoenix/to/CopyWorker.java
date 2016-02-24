@@ -10,8 +10,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import lombok.experimental.FieldDefaults;
 
 /**
  * @author nschuste
@@ -19,10 +21,11 @@ import lombok.experimental.Accessors;
  * @since Jan 7, 2016
  */
 @Data
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Accessors(chain = true)
 public class CopyWorker implements DownloadWorker {
-  private String destination;
-  private String origin;
+  String destination;
+  String origin;
 
   /**
    * {@inheritDoc}

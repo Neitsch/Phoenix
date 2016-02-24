@@ -1,0 +1,1 @@
+{"name":"myName","setup":{"downloads":[{"type":"com.phoenix.to.UrlDownloader","destination":"program.jar","origin":"https://github.com/Neitsch/Phoenix/raw/develop/sample-jar.jar"}],"frameName":"Frame2","startArgs":[],"startClass":"com.phoenix.AnotherFrame"}}

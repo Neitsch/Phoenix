@@ -4,14 +4,20 @@
 
 package com.phoenix.remote;
 
-import javax.jms.ConnectionFactory;
+import java.net.MalformedURLException;
 
-import org.apache.activemq.ActiveMQConnectionFactory;
+import org.apache.camel.Component;
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.component.amqp.AMQPComponent;
+import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
+import org.apache.qpid.amqp_1_0.jms.ConnectionFactory;
+import org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
+import com.phoenix.to.TestCase;
 
 /**
  * @author nschuste
@@ -32,13 +38,28 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
   @Override
   public void afterPropertiesSet() throws Exception {}
 
+  // @Bean
+  // public ConnectionFactory bla() {
+  // final ActiveMQConnectionFactory act =
+  // new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
+  // act.setUserName("admin");
+  // act.setPassword("admin");
+  // act.setTrustAllPackages(true);
+  // return act;
+  // }
+  //
+  // @Bean(name = "rabbit")
+  // public com.rabbitmq.client.ConnectionFactory fact() throws IOException {
+  // com.rabbitmq.client.ConnectionFactory facto = new com.rabbitmq.client.ConnectionFactory();
+  // facto.setUsername("guest");
+  // facto.setPassword("guest");
+  // facto.setHost(System.getenv("QUEUE_HOST"));
+  // return facto;
+  // }
+
   @Bean
-  public ConnectionFactory bla() {
-    final ActiveMQConnectionFactory act =
-        new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
-    act.setUserName("admin");
-    act.setPassword("admin");
-    return act;
+  public ConnectionFactory fact() {
+    return new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/", false, 1);
   }
 
   /**
@@ -54,10 +75,20 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
     return new RouteBuilder() {
       @Override
       public void configure() throws Exception {
-        this.from("jms:queue:testcase").throttle(1).to("direct:doTestcase");
-        this.from("direct:doTestcase").bean(ExecWrapper.class).to("jms:topic:testresult");
+        this.from("amqp:queue:testcase").unmarshal().json(JsonLibrary.Jackson, TestCase.class)
+            .throttle(1).to("direct:doTestcase");
+        this.from("direct:doTestcase").bean(ExecWrapper.class).to("direct:finishedTc");
+        this.from("direct:finishedTc")
+            .marshal()
+            .json(JsonLibrary.Jackson)
+            .to("rabbitmq://localhost:5672/testresult?username=guest&password=guest&autoDelete=false");
       }
     };
+  }
+
+  @Bean
+  public Component securedAmqpConnection() throws MalformedURLException {
+    return AMQPComponent.amqpComponent("amqp://guest:guest@localhost:5672");
   }
 
 }

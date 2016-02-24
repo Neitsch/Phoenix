@@ -6,6 +6,7 @@
 package com.phoenix.to;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,6 +29,10 @@ import org.springframework.data.annotation.Id;
 public class TestResult implements Serializable {
   @Id
   private String id;
+  private String tcId;
+  private String title;
   private TestCaseBodyResult result;
   private boolean success;
+  private Date start = new Date();
+  private Date end = new Date();
 }

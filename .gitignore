@@ -18,3 +18,7 @@ hs_err_pid*
 mongo.log*
 activemq-data/
 temp*
+
+node_modules/
+.jshintrc
+dist/

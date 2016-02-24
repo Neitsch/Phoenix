@@ -1,0 +1,57 @@
+{
+  "name": "phoenix-client",
+  "version": "0.0.2",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js 'test/**/*.@(js|jsx)'",
+    "start": "webpack && node ./srv/index.js"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react"
+    ]
+  },
+  "author": "Nigel Schuster",
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.5.2",
+    "babel-loader": "^6.2.2",
+    "babel-preset-es2015": "^6.5.0",
+    "babel-preset-react": "^6.5.0",
+    "bootstrap": "^3.3.6",
+    "bootstrap-loader": "^1.0.8",
+    "bootstrap-sass": "^3.3.6",
+    "bootstrap-sass-loader": "^1.0.10",
+    "chai": "^3.5.0",
+    "chai-immutable": "^1.5.3",
+    "css-loader": "^0.23.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "imports-loader": "^0.6.5",
+    "jsdom": "^8.0.2",
+    "mocha": "^2.4.5",
+    "node-sass": "^3.4.2",
+    "react-hot-loader": "^1.3.0",
+    "resolve-url-loader": "^1.4.3",
+    "sass-loader": "^3.1.2",
+    "sass-resources-loader": "^1.0.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.13",
+    "webpack-dev-server": "^1.14.1"
+  },
+  "dependencies": {
+    "amqplib": "^0.4.1",
+    "immutable": "^3.7.6",
+    "jquery": "^2.2.0",
+    "moment": "^2.11.2",
+    "react": "^0.14.7",
+    "react-addons-pure-render-mixin": "^0.14.7",
+    "react-dom": "^0.14.7",
+    "react-redux": "^4.4.0",
+    "react-router": "^2.0.0",
+    "redux": "^3.3.1"
+  }
+}

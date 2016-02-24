@@ -75,21 +75,21 @@ public class DefaultTcExecutor implements TcExecutor {
     tc.getLines().forEach(
         t -> res.getStepResults().add(
             TestCaseStepResult.builder().step(t).result(TestCaseStepResultStatus.NOT_EXECUTED)
-                .build()));;
-    while (this.position < res.getStepResults().size()) {
-      try {
-        log.info("Next step is: " + res.getStepResults().get(this.position).getStep());
-        final TestCaseStep step = res.getStepResults().get(this.position).getStep();
-        final ResultWithMessage myRes = this.exec.doStep(step, this.env);
-        res.getStepResults().get(this.position).setResult(myRes.getStatus());
-        this.report(res.getStepResults().get(this.position));
-        log.info("Step result is: " + myRes);
-        this.position++;
-      } catch (final Exception e) {
-        log.catching(e);
-      }
-    }
-    return res;
+            .build()));;
+            while (this.position < res.getStepResults().size()) {
+              try {
+                log.info("Next step is: " + res.getStepResults().get(this.position).getStep());
+                final TestCaseStep step = res.getStepResults().get(this.position).getStep();
+                final ResultWithMessage myRes = this.exec.doStep(step, this.env);
+                res.getStepResults().get(this.position).setResult(myRes.getStatus());
+                this.report(res.getStepResults().get(this.position));
+                log.info("Step result is: " + myRes);
+                this.position++;
+              } catch (final Exception e) {
+                log.catching(e);
+              }
+            }
+            return res;
   }
 
   /**
@@ -161,7 +161,7 @@ public class DefaultTcExecutor implements TcExecutor {
         script.toFile().setExecutable(true);
         final Process p =
             new ProcessBuilder().directory(downloads.toFile()).command(setup.getStartupScript())
-                .start();
+            .start();
         // Assert that it completed successfully
         if (!p.waitFor(setup.getTimeout(), TimeUnit.SECONDS)) {
           p.destroyForcibly();
@@ -173,7 +173,7 @@ public class DefaultTcExecutor implements TcExecutor {
       }
       @SuppressWarnings("resource")
       final ClassLoader loader =
-          new URLClassLoader(new URL[] {downloads.resolve("program.jar").toUri().toURL()});
+      new URLClassLoader(new URL[] {downloads.resolve("program.jar").toUri().toURL()});
       final Class<?> main = loader.loadClass(setup.getStartClass());
       main.getMethod("main", String[].class).invoke(null, (Object) setup.getStartArgs());
       this.env.getRobot().waitForIdle();

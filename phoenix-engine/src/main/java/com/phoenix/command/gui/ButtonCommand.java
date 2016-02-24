@@ -6,6 +6,8 @@
 package com.phoenix.command.gui;
 
 import java.awt.Frame;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import javax.swing.JButton;
 
@@ -45,10 +47,24 @@ public class ButtonCommand {
     return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 
-  @GuiMethod(methodName = "click")
-  public ResultWithMessage click(final Environment env, final String... varargs) {
+  @GuiMethod(methodName = "disabled")
+  public ResultWithMessage checkDisabled(final Environment env, final String... varargs) {
     final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
+    fixture.requireDisabled();
+    return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
+  }
+
+  @GuiMethod(methodName = "click")
+  public ResultWithMessage click(final Environment env, final String... varargs) throws Exception {
+    final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
+    Semaphore sem = new Semaphore(0);
+    fixture.target().addActionListener(e -> {
+      sem.release();
+    });
     fixture.click();
+    if (!sem.tryAcquire(2, TimeUnit.SECONDS)) {
+      throw new Exception("Click did not occur!");
+    }
     return ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build();
   }
 }

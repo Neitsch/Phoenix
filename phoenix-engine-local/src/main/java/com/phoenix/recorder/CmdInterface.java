@@ -46,6 +46,20 @@ public class CmdInterface implements UserInterface {
 
   /**
    * {@inheritDoc}
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @see com.phoenix.recorder.UserInterface#getTcName()
+   * @since Feb 23, 2016
+   */
+  @Override
+  public String getTcName() {
+    System.out.println("Please enter the name of the testcase:");
+    return this.scan.nextLine();
+  }
+
+  /**
+   * {@inheritDoc}
    *
    * @author nschuste
    * @version 1.0.0

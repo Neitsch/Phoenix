@@ -5,13 +5,17 @@
     <parent>
         <groupId>com.phoenix</groupId>
         <artifactId>phoenix-parent</artifactId>
-        <version>0.0.1</version>
+        <version>0.0.2</version>
     </parent>
     <properties>
-        <args4j.version>2.32</args4j.version>
+        <args4j.version>2.33</args4j.version>
         <lombok.version>1.16.6</lombok.version>
-        <slf4j.version>1.7.13</slf4j.version>
+        <slf4j.version>1.7.16</slf4j.version>
         <assertj.version>3.0.2</assertj.version>
+        <camel.version>2.16.1</camel.version>
+        <powermock.version>1.6.4</powermock.version>
+        <activemq.version>5.12.2</activemq.version>
+        <spring.platform.version>2.0.2.RELEASE</spring.platform.version>
     </properties>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
@@ -20,9 +24,14 @@
             <dependency>
                 <groupId>io.spring.platform</groupId>
                 <artifactId>platform-bom</artifactId>
-                <version>2.0.0.RELEASE</version>
+                <version>${spring.platform.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jms</artifactId>
+                <version>${camel.version}</version>
             </dependency>
             <dependency>
                 <groupId>args4j</groupId>
@@ -53,6 +62,56 @@
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-swing</artifactId>
                 <version>${assertj.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-rabbitmq</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-amqp</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-jackson</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-xstream</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring-javaconfig</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-mongodb</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-api-mockito</artifactId>
+                <version>${powermock.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.activemq</groupId>
+                <artifactId>activemq-all</artifactId>
+                <version>${activemq.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

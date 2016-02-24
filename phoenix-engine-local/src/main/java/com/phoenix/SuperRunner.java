@@ -141,9 +141,11 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
     this.ctx.getAutowireCapableBeanFactory().autowireBean(this.requestModule);
     TestCase tc;
     if (createNew) {
+      String name = this.userIntf.getTcName();
       tc =
-          TestCase.builder().tcBody(TestCaseBody.builder().lines(new ArrayList<>()).build())
-              .tcHead(this.requestModule.requestHead(this.userIntf.getResourcePath())).build();
+          TestCase.builder().name(name)
+              .tcBody(TestCaseBody.builder().lines(new ArrayList<>()).build())
+          .tcHead(this.requestModule.requestHead(this.userIntf.getResourcePath())).build();
     } else {
       tc = this.requestModule.requestTestCase(this.userIntf.getResourcePath());
     }
