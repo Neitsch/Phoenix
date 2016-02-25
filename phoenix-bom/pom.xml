@@ -9,70 +9,37 @@
     </parent>
     <properties>
         <args4j.version>2.33</args4j.version>
-        <lombok.version>1.16.6</lombok.version>
-        <slf4j.version>1.7.16</slf4j.version>
         <assertj.version>3.0.2</assertj.version>
         <camel.version>2.16.1</camel.version>
+        <commons.version>4.1</commons.version>
+        <lombok.version>1.16.6</lombok.version>
         <powermock.version>1.6.4</powermock.version>
-        <activemq.version>5.12.2</activemq.version>
+        <slf4j.version>1.7.16</slf4j.version>
         <spring.platform.version>2.0.2.RELEASE</spring.platform.version>
     </properties>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
         <dependencies>
+            <!-- APACHE COMMONS -->
             <dependency>
-                <groupId>io.spring.platform</groupId>
-                <artifactId>platform-bom</artifactId>
-                <version>${spring.platform.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-collections4</artifactId>
+                <version>${commons.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-jms</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
+            <!-- ARGS4J -->
             <dependency>
                 <groupId>args4j</groupId>
                 <artifactId>args4j</artifactId>
                 <version>${args4j.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-ext</artifactId>
-                <version>${slf4j.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.phoenix</groupId>
-                <artifactId>phoenix-core</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.phoenix</groupId>
-                <artifactId>phoenix-engine</artifactId>
-                <version>${project.version}</version>
-            </dependency>
+            <!-- ASSERTJ -->
             <dependency>
                 <groupId>org.assertj</groupId>
                 <artifactId>assertj-swing</artifactId>
                 <version>${assertj.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-spring</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-rabbitmq</artifactId>
-                <version>${camel.version}</version>
-            </dependency>
+            <!-- CAMEL -->
             <dependency>
                 <groupId>org.apache.camel</groupId>
                 <artifactId>camel-amqp</artifactId>
@@ -85,7 +52,22 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
-                <artifactId>camel-xstream</artifactId>
+                <artifactId>camel-jms</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-mongodb</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-rabbitmq</artifactId>
+                <version>${camel.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring</artifactId>
                 <version>${camel.version}</version>
             </dependency>
             <dependency>
@@ -95,23 +77,50 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
-                <artifactId>camel-mongodb</artifactId>
+                <artifactId>camel-xstream</artifactId>
                 <version>${camel.version}</version>
             </dependency>
+            <!-- LOMBOK -->
             <dependency>
-                <groupId>org.powermock</groupId>
-                <artifactId>powermock-module-junit4</artifactId>
-                <version>${powermock.version}</version>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
+            <!-- PHOENIX (this project) -->
+            <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.phoenix</groupId>
+                <artifactId>phoenix-engine</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- POWERMOCK -->
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
                 <version>${powermock.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-all</artifactId>
-                <version>${activemq.version}</version>
+                <groupId>org.powermock</groupId>
+                <artifactId>powermock-module-junit4</artifactId>
+                <version>${powermock.version}</version>
+            </dependency>
+            <!-- SLF4J -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-ext</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <!-- SPRING -->
+            <dependency>
+                <groupId>io.spring.platform</groupId>
+                <artifactId>platform-bom</artifactId>
+                <version>${spring.platform.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>

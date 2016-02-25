@@ -10,10 +10,17 @@
     </parent>
     <artifactId>phoenix-engine-local</artifactId>
     <dependencies>
+        <!-- ARGS4J -->
+        <dependency>
+            <groupId>args4j</groupId>
+            <artifactId>args4j</artifactId>
+        </dependency>
+        <!-- PHOENIX -->
         <dependency>
             <groupId>com.phoenix</groupId>
             <artifactId>phoenix-engine</artifactId>
         </dependency>
+        <!-- SPRING -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-aspects</artifactId>
@@ -21,14 +28,6 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>args4j</groupId>
-            <artifactId>args4j</artifactId>
         </dependency>
     </dependencies>
 </project>

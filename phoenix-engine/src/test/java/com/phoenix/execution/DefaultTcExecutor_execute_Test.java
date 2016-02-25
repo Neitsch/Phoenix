@@ -1,5 +1,6 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Ensures that DefaultTcExecutor executes the steps in the correct
+ * order.
  */
 
 
@@ -73,6 +74,14 @@ public class DefaultTcExecutor_execute_Test {
   @After
   public void tearDown() throws Exception {}
 
+  /**
+   * Verifies order of step execution.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @throws Exception
+   * @since Feb 23, 2016
+   */
   @Test
   public final void test() throws Exception {
     final TestCaseStep step1 = TestCaseStep.builder().methodName("click").build();

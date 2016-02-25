@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Checks that the button check command works.
  */
 
 
@@ -21,6 +21,8 @@ import com.phoenix.command.Environment;
 import com.phoenix.command.gui.ButtonCommand;
 
 /**
+ * Verifies functionality of button.check command.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 10, 2015
@@ -77,6 +79,14 @@ public class ButtonCommands_check_Test {
     this.env.getRobot().cleanUp();
   }
 
+  /**
+   * Simple Test
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @throws InterruptedException concurrency issues.
+   * @since Feb 23, 2016
+   */
   @Test(timeout = 2000)
   public final void test() throws InterruptedException {
     final ButtonCommand com = new ButtonCommand();

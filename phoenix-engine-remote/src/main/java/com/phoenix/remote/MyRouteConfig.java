@@ -1,10 +1,12 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Configuration for Apache Camel - Routing engine.
  */
 
 package com.phoenix.remote;
 
 import java.net.MalformedURLException;
+
+import lombok.extern.slf4j.XSlf4j;
 
 import org.apache.camel.Component;
 import org.apache.camel.builder.RouteBuilder;
@@ -20,10 +22,13 @@ import org.springframework.context.annotation.Configuration;
 import com.phoenix.to.TestCase;
 
 /**
+ * Apache Camel Route configuration.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 2, 2016
  */
+@XSlf4j
 @Configuration
 public class MyRouteConfig extends SingleRouteCamelConfiguration implements InitializingBean {
 
@@ -57,9 +62,20 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
   // return facto;
   // }
 
+  /**
+   * AMQP factory to rabbitmq
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @return
+   * @since Feb 24, 2016
+   */
   @Bean
-  public ConnectionFactory fact() {
-    return new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/", false, 1);
+  public ConnectionFactory facto() throws MalformedURLException {
+    String con = "amqp://guest:guest@" + System.getenv("QUEUE_HOST") + ":5672";
+    log.info(con);
+    ConnectionFactoryImpl factory = ConnectionFactoryImpl.createFromURL(con);
+    return factory;
   }
 
   /**
@@ -72,23 +88,42 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
    */
   @Override
   public RouteBuilder route() {
+    /*
+     * Note, that I am polling from AMQP, but sending results to RabbitMQ. RabbitMQ did not work
+     * very well with Camel, however this way functions as expected, though it is wasteful on
+     * resources.
+     */
     return new RouteBuilder() {
       @Override
       public void configure() throws Exception {
+        // Polling from queue to execute testcase
         this.from("amqp:queue:testcase").unmarshal().json(JsonLibrary.Jackson, TestCase.class)
-            .throttle(1).to("direct:doTestcase");
+        .throttle(1).to("direct:doTestcase");
+        // actual Testcase execution
         this.from("direct:doTestcase").bean(ExecWrapper.class).to("direct:finishedTc");
+        // reporting results
         this.from("direct:finishedTc")
-            .marshal()
-            .json(JsonLibrary.Jackson)
-            .to("rabbitmq://localhost:5672/testresult?username=guest&password=guest&autoDelete=false");
+        .marshal()
+        .json(JsonLibrary.Jackson)
+        .to("rabbitmq://" + System.getenv("QUEUE_HOST")
+                + ":5672/testresult?username=guest&password=guest&autoDelete=false");
       }
     };
   }
 
+  /**
+   * AMQP connection.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @return
+   * @throws MalformedURLException
+   * @since Feb 24, 2016
+   */
   @Bean
   public Component securedAmqpConnection() throws MalformedURLException {
-    return AMQPComponent.amqpComponent("amqp://guest:guest@localhost:5672");
+    log.entry();
+    return log.exit(new AMQPComponent(this.facto()));
   }
 
 }

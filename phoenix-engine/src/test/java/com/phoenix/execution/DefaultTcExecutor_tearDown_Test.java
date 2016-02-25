@@ -1,5 +1,6 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Ensures that tear down works, basically removing working
+ * directory.
  */
 
 
@@ -25,6 +26,8 @@ import com.phoenix.command.Environment;
 import com.phoenix.util.FS;
 
 /**
+ * Verifies system is cleaned up after execution.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 25, 2015
@@ -72,6 +75,14 @@ public class DefaultTcExecutor_tearDown_Test {
   @After
   public void tearDown() throws Exception {}
 
+  /**
+   * Simply ensures cleaning robot and removing files.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @throws Exception
+   * @since Feb 23, 2016
+   */
   @Test
   public final void test() throws Exception {
     final Environment env = Mockito.mock(Environment.class);

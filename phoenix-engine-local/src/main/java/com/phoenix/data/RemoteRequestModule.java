@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Will retrieve resources from central server.
  */
 
 
@@ -12,13 +12,25 @@ import org.springframework.web.client.RestTemplate;
 import com.phoenix.to.TestCase;
 import com.phoenix.to.TestCaseHead;
 
+
 /**
+ * RemoteRequestModule expects to find resources on the server.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 11, 2016
  */
 @XSlf4j
 public class RemoteRequestModule implements ToRequestModule {
+  /**
+   * Builds post request according to server standards.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @param object
+   * @return
+   * @since Feb 23, 2016
+   */
   private static <T> String post(final T object) {
     log.entry(object);
     RestTemplate restTemplate = new RestTemplate();
@@ -34,6 +46,16 @@ public class RemoteRequestModule implements ToRequestModule {
     return log.exit(restTemplate.postForObject(builder.toString(), object, String.class));
   }
 
+  /**
+   * Builds get request according to server standards.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @param clazz
+   * @param path
+   * @return
+   * @since Feb 23, 2016
+   */
   private static String resolvePath(final Class<?> clazz, final String path) {
     log.entry(clazz, path);
     final StringBuilder builder = new StringBuilder().append("http://");
@@ -88,6 +110,16 @@ public class RemoteRequestModule implements ToRequestModule {
     return log.exit(post(tc));
   }
 
+  /**
+   * Executes request to retrieve Object.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @param clazz
+   * @param path
+   * @return
+   * @since Feb 23, 2016
+   */
   private <T> T request(final Class<T> clazz, final String path) {
     log.entry(clazz, path);
     final RestTemplate restTemplate = new RestTemplate();

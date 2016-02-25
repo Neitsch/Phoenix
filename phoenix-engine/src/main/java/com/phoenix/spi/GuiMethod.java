@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. This is annotated to Methods that will perform a testcasestep
  */
 
 
@@ -12,6 +12,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotation for methods implementing a testcase step
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Dec 6, 2015
@@ -20,5 +22,13 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface GuiMethod {
+  /**
+   * Name of method in (packageName).(methodName)
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @return
+   * @since Feb 23, 2016
+   */
   public String methodName();
 }

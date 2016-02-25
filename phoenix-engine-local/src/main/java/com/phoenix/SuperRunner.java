@@ -1,5 +1,6 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. The SuperRunner handles the overall recording and execution of a
+ * testcase on a local machine.
  */
 
 
@@ -35,6 +36,8 @@ import com.phoenix.to.TestCaseStep;
 import com.phoenix.util.MyEventListener;
 
 /**
+ * SuperRunner supervises TestCase execution for a local client.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 11, 2016
@@ -52,14 +55,49 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
   boolean doingStep;
   @NonFinal
   ExecutorService execServ;
+  /**
+   * Phase of testcase execution
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @NonFinal
   PHASE phase;
+  /**
+   * Current index of step in tc
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @NonFinal
   int stepNum;
+  /**
+   * TestCase to be executed
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @NonFinal
   TestCase tc;
+  /**
+   * UI to interact with user
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @NonFinal
   UserInterface userIntf;
+  /**
+   * requestModule to retrieve TestCase(Head).
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   @NonFinal
   ToRequestModule requestModule;
 
@@ -73,14 +111,18 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
    */
   @Override
   public void event(final TestCaseStep e) {
+    log.entry(e);
     if (!this.doingStep && this.phase == PHASE.EXECUTION) {
       this.tc.getTcBody().getLines().add(this.stepNum, e);
       this.stepNum++;
       log.info("Added step " + e.toString() + " at position " + this.stepNum);
     }
+    log.exit();
   }
 
   /**
+   * Executes/Records Testcase
+   *
    * @author nschuste
    * @version 1.0.0
    * @param configLocation
@@ -88,6 +130,7 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
    * @since Feb 11, 2016
    */
   public void run(final String configLocation, final UserInterface intf) {
+    log.entry(configLocation, intf);
     this.doingStep = false;
     this.userIntf = intf;
     this.ctx.getAutowireCapableBeanFactory().autowireBean(intf);
@@ -114,6 +157,7 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
         final ResultWithMessage message =
             this.stepExecutor.doStep(step, this.executor.getEnvironment());
         this.doingStep = false;
+        log.info(message.toString());
         intf.stepResult(message);
         this.stepNum++;
       }
@@ -128,11 +172,24 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
     } catch (final Exception e) {
       log.catching(e);
     }
+    log.exit();
   }
 
+  /**
+   * Gathers information for Testcase
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @return
+   * @throws Exception
+   * @since Feb 23, 2016
+   */
   private TestCase prepare() throws Exception {
+    log.entry();
     final boolean createNew = this.userIntf.shouldCreateNew();
+    log.debug(Boolean.toString(createNew));
     final boolean remoteResource = this.userIntf.remoteResource();
+    log.debug(Boolean.toString(remoteResource));
     if (remoteResource) {
       this.requestModule = new RemoteRequestModule();
     } else {
@@ -149,6 +206,6 @@ public class SuperRunner implements MyEventListener<TestCaseStep> {
     } else {
       tc = this.requestModule.requestTestCase(this.userIntf.getResourcePath());
     }
-    return tc;
+    return log.exit(tc);
   }
 }

@@ -1,5 +1,6 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Checks whether the the Text(component)Dispatcher records click
+ * correctly.
  */
 
 
@@ -36,6 +37,8 @@ import com.phoenix.to.TestCaseStep;
 import com.phoenix.util.MyEventListener;
 
 /**
+ * Verifies TextDispatcher functionality.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Jan 21, 2016
@@ -60,6 +63,14 @@ public class TextDispatcher_dispatch_Test {
     this.r.cleanUp();
   }
 
+  /**
+   * Simple test.
+   * 
+   * @author nschuste
+   * @version 1.0.0
+   * @throws InterruptedException
+   * @since Feb 23, 2016
+   */
   @Test(timeout = 10000)
   public void test() throws InterruptedException {
     final Map<String, Object> mp = new HashMap<>();

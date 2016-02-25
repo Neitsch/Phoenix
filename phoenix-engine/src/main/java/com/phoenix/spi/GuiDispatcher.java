@@ -1,5 +1,6 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. This is annotated to any bean dispatching AWT events, picked up by
+ * Spring.
  */
 
 
@@ -14,6 +15,8 @@ import java.lang.annotation.Target;
 import org.springframework.stereotype.Component;
 
 /**
+ * Annotation for Beans wanting to dispatch AWTEvents.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Jan 22, 2016
@@ -23,5 +26,13 @@ import org.springframework.stereotype.Component;
 @Documented
 @Component
 public @interface GuiDispatcher {
+  /**
+   * Name of the dispatcher for ease of use.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @return
+   * @since Feb 23, 2016
+   */
   public String dispatcherName() default "";
 }

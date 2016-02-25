@@ -13,22 +13,30 @@
         <docker.image.prefix>neitsch</docker.image.prefix>
     </properties>
     <dependencies>
+        <!-- APACHE COMMONS -->
         <dependency>
-            <!-- Without this import BasicRobot is undefined, though the dependency should carry over from the engine -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <!-- ASSERTJ -->
+        <dependency>
+            <!-- Without this import BasicRobot is undefined, though the 
+                dependency should carry over from the engine -->
             <groupId>org.assertj</groupId>
             <artifactId>assertj-swing</artifactId>
         </dependency>
+        <!-- CAMEL -->
         <dependency>
-            <groupId>com.phoenix</groupId>
-            <artifactId>phoenix-engine</artifactId>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-amqp</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms</artifactId>
+            <artifactId>camel-jackson</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-rabbitmq</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.camel</groupId>
@@ -38,28 +46,17 @@
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-spring-javaconfig</artifactId>
         </dependency>
+        <!-- JAVAX -->
         <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-collections4</artifactId>
-    <version>4.1</version>
-</dependency>
-<!--<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
-</dependency>-->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rabbitmq</artifactId>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms-api</artifactId>
         </dependency>
+        <!-- PHOENIX -->
         <dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-amqp</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-jackson</artifactId>
-</dependency>
-    </dependencies> 
+            <groupId>com.phoenix</groupId>
+            <artifactId>phoenix-engine</artifactId>
+        </dependency>
+    </dependencies>
     <build>
         <plugins>
             <plugin>

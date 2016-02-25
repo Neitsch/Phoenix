@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Wraps the testcase execution in a simple way.
  */
 
 
@@ -20,6 +20,8 @@ import com.phoenix.to.TestCaseStepResultStatus;
 import com.phoenix.to.TestResult;
 
 /**
+ * ExecWrapper is a Spring Bean to wrap the testcase execution.
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Feb 2, 2016
@@ -31,11 +33,12 @@ public class ExecWrapper {
   TcExecutor exec;
 
   public TestResult result(final TestCase tc) throws Exception {
+    log.entry(tc);
     try {
       Date start = new Date();
       this.exec.setUp(tc.getTcHead().getSetup());
       TestCaseBodyResult res = this.exec.execute(tc.getTcBody());
-      return TestResult
+      return log.exit(TestResult
           .builder()
           .start(start)
           .result(res)
@@ -44,7 +47,7 @@ public class ExecWrapper {
           .success(
               !IterableUtils.matchesAny(res.getStepResults(),
                   arg0 -> arg0.getResult() == TestCaseStepResultStatus.EXCEPTION)).end(new Date())
-          .build();
+                  .build());
     } catch (Exception e) {
       log.catching(e);
       throw e;

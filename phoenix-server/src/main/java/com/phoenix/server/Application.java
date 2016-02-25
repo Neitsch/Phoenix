@@ -1,9 +1,12 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Entrypoint for the server mediating testcase execution and
+ * providing restful API
  */
 
 
 package com.phoenix.server;
+
+import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -12,7 +15,6 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -28,6 +30,7 @@ import com.phoenix.server.data.TestResultRepository;
  */
 // @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 // @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+@XSlf4j
 @Configuration
 @EnableAutoConfiguration
 @ComponentScan(basePackages = "com.phoenix")
@@ -42,17 +45,20 @@ public class Application implements CommandLineRunner {
   TestResultRepository repo4;
 
   public static void main(final String[] args) throws Exception {
+    log.entry((Object) args);
     System.setProperty("database", "test");
     SpringApplication.run(Application.class, args);
+    log.exit();
   }
 
   @Bean
   public WebMvcConfigurer corsConfigurer() {
     return new WebMvcConfigurerAdapter() {
-      @Override
-      public void addCorsMappings(final CorsRegistry registry) {
-        registry.addMapping("/**").allowedOrigins("http://localhost:3000");
-      }
+      // @Override
+      // public void addCorsMappings(final CorsRegistry registry) {
+      // // ExpressJS port
+      // registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+      // }
     };
   }
 
@@ -66,6 +72,8 @@ public class Application implements CommandLineRunner {
    */
   @Override
   public void run(final String... args) throws Exception {
+    // Ignore the following, just for testing.
+    //
     // this.repo1.deleteAll();
     // this.repo2.deleteAll();
     // this.repo3.deleteAll();

@@ -1,5 +1,5 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Simple Repository for TestCaseBodies.
  */
 
 
@@ -10,6 +10,8 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import com.phoenix.to.TestCaseBody;
 
 /**
+ * Default Repository for {@TestCaseBody}
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Jan 27, 2016
