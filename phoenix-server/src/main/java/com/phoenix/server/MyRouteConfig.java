@@ -96,10 +96,9 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
         // Enqueue Testcase by ID
         this.log.info("Configuring direct:startTestCase");
         this.from("direct:startTestCase")
-            .marshal()
-            .json(JsonLibrary.Jackson, String.class)
-            .log("${body}")
-            .to("rabbitmq://" + System.getenv("QUEUE_HOST")
+        .marshal()
+        .json(JsonLibrary.Jackson, String.class)
+        .to("rabbitmq://" + System.getenv("QUEUE_HOST")
             + ":5672/testcaseid?username=guest&password=guest&autoDelete=false");
         // Fetch body of testcase
         this.log.info("Configuring amqp:queue:testcaseid");
@@ -110,6 +109,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
             .process(arg0 -> {
               final Message m = arg0.getIn();
               final String id = (String) m.getBody();
+              this.log.info("Fetching TC: " + id);
               final TestCase tc = this.repository.findOne(id);
               m.setBody(tc);
               m.setHeader("id", id);
@@ -122,7 +122,7 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
             .marshal()
             .json(JsonLibrary.Jackson)
             .to("rabbitmq://" + System.getenv("QUEUE_HOST")
-            + ":5672/testcase?username=guest&password=guest&autoDelete=false");
+                + ":5672/testcase?username=guest&password=guest&autoDelete=false");
         // store result
         this.log.info("Configuring amqp:queue:testresult");
         this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)

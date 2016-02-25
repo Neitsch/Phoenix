@@ -27,6 +27,7 @@ import com.phoenix.to.TestCaseStep;
 @XSlf4j
 @com.phoenix.spi.GuiDispatcher
 public class TextDispatcher implements GuiDispatcher {
+  private String curText = null;
 
   /**
    * {@inheritDoc}
@@ -41,12 +42,17 @@ public class TextDispatcher implements GuiDispatcher {
     Optional<TestCaseStep> op = Optional.empty();
     if (JTextComponent.class.isAssignableFrom(e.getSource().getClass())) {
       log.trace("TextComponent event: " + e);
-      if (e.getID() == FocusEvent.FOCUS_LOST) {
+      if (e.getID() == FocusEvent.FOCUS_GAINED) {
+        this.curText = ((JTextComponent) e.getSource()).getText();
+      } else if (e.getID() == FocusEvent.FOCUS_LOST) {
         log.info("JTextComponent lost focus, returning event.");
         final JTextComponent tc = (JTextComponent) e.getSource();
-        op =
-            Optional.of(TestCaseStep.builder().methodName("text.enter")
-                .args(new String[] {tc.getName(), tc.getText()}).build());
+        String newText = tc.getText();
+        if (!newText.equals(this.curText)) {
+          op =
+              Optional.of(TestCaseStep.builder().methodName("text.enter")
+                  .args(new String[] {tc.getName(), tc.getText()}).build());
+        }
       }
     }
     return op;

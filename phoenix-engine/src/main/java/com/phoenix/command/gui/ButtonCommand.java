@@ -83,7 +83,7 @@ public class ButtonCommand {
   public ResultWithMessage checkDisabled(final Environment env, final String... varargs) {
     log.entry((Object) varargs);
     final JButtonFixture fixture = getFixture(env.getRobot(), env.getFrame(), varargs[0], true);
-    // TODO(nigel): Feb 23, 2016 require enabled instead
+    // TODO(nigel): Feb 23, 2016 require enabled should be possible
     fixture.requireDisabled();
     return log.exit(ResultWithMessage.builder().status(TestCaseStepResultStatus.SUCCESS).build());
   }
