@@ -12,6 +12,7 @@ import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +33,7 @@ import com.phoenix.to.TestCase;
  * @version 1.0.0
  * @since Jan 27, 2016
  */
+@CrossOrigin
 @XSlf4j
 @RequestMapping("/tc")
 @RestController
@@ -110,7 +112,7 @@ public class TestCaseRestController {
 
   /**
    * Requestmethod to query a testcase by its name
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @param name case insensitive part of the name

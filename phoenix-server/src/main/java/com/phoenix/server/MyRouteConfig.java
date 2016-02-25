@@ -72,8 +72,9 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
 
   @Bean
   public ConnectionFactory facto() throws MalformedURLException {
-    ConnectionFactoryImpl factory =
-        ConnectionFactoryImpl.createFromURL("amqp://guest:guest@localhost:5672");
+    String con = "amqp://guest:guest@" + System.getenv("QUEUE_HOST") + ":5672";
+    log.info(con);
+    ConnectionFactoryImpl factory = ConnectionFactoryImpl.createFromURL(con);
     return factory;
   }
 
@@ -98,7 +99,8 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
             .marshal()
             .json(JsonLibrary.Jackson, String.class)
             .log("${body}")
-            .to("rabbitmq://localhost:5672/testcaseid?username=guest&password=guest&autoDelete=false");
+            .to("rabbitmq://" + System.getenv("QUEUE_HOST")
+            + ":5672/testcaseid?username=guest&password=guest&autoDelete=false");
         // Fetch body of testcase
         this.log.info("Configuring amqp:queue:testcaseid");
         this.from("amqp:queue:testcaseid")
@@ -119,7 +121,8 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
             .otherwise()
             .marshal()
             .json(JsonLibrary.Jackson)
-            .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
+            .to("rabbitmq://" + System.getenv("QUEUE_HOST")
+            + ":5672/testcase?username=guest&password=guest&autoDelete=false");
         // store result
         this.log.info("Configuring amqp:queue:testresult");
         this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)

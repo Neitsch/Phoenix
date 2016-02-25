@@ -10,6 +10,7 @@ import java.util.Collection;
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +30,7 @@ import com.phoenix.to.TestCaseHead;
 @RequestMapping("/tch")
 @RestController
 @XSlf4j
+@CrossOrigin
 public class TestCaseHeadRestController {
   @Autowired
   private TestCaseHeadRepository repository;
@@ -50,7 +52,7 @@ public class TestCaseHeadRestController {
 
   /**
    * Fetches all available Heads.
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @return List of setups.
@@ -64,7 +66,7 @@ public class TestCaseHeadRestController {
 
   /**
    * Returns specific Head by ID.
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @param id id of Head

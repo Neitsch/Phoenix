@@ -10,6 +10,7 @@ import java.util.List;
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,11 +19,12 @@ import com.phoenix.to.TestResult;
 
 /**
  * Rest Controller only providing a method to fetch all TestResults
- * 
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 16, 2016
  */
+@CrossOrigin
 @XSlf4j
 @RequestMapping("/tr")
 @RestController
