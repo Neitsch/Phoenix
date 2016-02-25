@@ -11,6 +11,8 @@ services:
       - "5672:5672"
   database:
     image: mongo
+    ports:
+      - "27017:27017"
   server:
     image: neitsch/phoenix-server
     ports:
@@ -20,7 +22,7 @@ services:
       - database
     environment:
       - DATABASE=database
-      - QUEUE_HOST=queue.host
+      - QUEUE_HOST=143.44.65.120
   client:
     image: neitsch/phoenix-client
     ports:
@@ -29,5 +31,5 @@ services:
       - queue:queue.host
       - server:server
     environment:
-      - QUEUE_HOST=queue.host
+      - QUEUE_HOST=143.44.65.120
       - SERVER=server

@@ -71,10 +71,11 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
    * @since Feb 24, 2016
    */
   @Bean
-  public ConnectionFactory facto() {
-    log.entry();
-    return log.exit(new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/",
-        false, 1));
+  public ConnectionFactory facto() throws MalformedURLException {
+    String con = "amqp://guest:guest@" + System.getenv("QUEUE_HOST") + ":5672";
+    log.info(con);
+    ConnectionFactoryImpl factory = ConnectionFactoryImpl.createFromURL(con);
+    return factory;
   }
 
   /**
@@ -97,14 +98,15 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
       public void configure() throws Exception {
         // Polling from queue to execute testcase
         this.from("amqp:queue:testcase").unmarshal().json(JsonLibrary.Jackson, TestCase.class)
-            .throttle(1).to("direct:doTestcase");
+        .throttle(1).to("direct:doTestcase");
         // actual Testcase execution
         this.from("direct:doTestcase").bean(ExecWrapper.class).to("direct:finishedTc");
         // reporting results
         this.from("direct:finishedTc")
-            .marshal()
-            .json(JsonLibrary.Jackson)
-            .to("rabbitmq://localhost:5672/testresult?username=guest&password=guest&autoDelete=false");
+        .marshal()
+        .json(JsonLibrary.Jackson)
+        .to("rabbitmq://" + System.getenv("QUEUE_HOST")
+                + ":5672/testresult?username=guest&password=guest&autoDelete=false");
       }
     };
   }
@@ -120,7 +122,8 @@ public class MyRouteConfig extends SingleRouteCamelConfiguration implements Init
    */
   @Bean
   public Component securedAmqpConnection() throws MalformedURLException {
-    return new AMQPComponent(this.facto());
+    log.entry();
+    return log.exit(new AMQPComponent(this.facto()));
   }
 
 }
