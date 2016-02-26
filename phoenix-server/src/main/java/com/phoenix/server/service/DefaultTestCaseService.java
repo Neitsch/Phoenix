@@ -5,8 +5,6 @@
 
 package com.phoenix.server.service;
 
-import org.apache.camel.Produce;
-import org.apache.camel.ProducerTemplate;
 import org.springframework.stereotype.Service;
 
 /**
@@ -18,8 +16,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DefaultTestCaseService implements TestCaseService {
-  @Produce(uri = "direct:startTestCase")
-  ProducerTemplate template;
+  // @Produce(uri = "direct:startTestCase")
+  // ProducerTemplate template;
 
   /**
    * Launches the camel route.
@@ -31,6 +29,6 @@ public class DefaultTestCaseService implements TestCaseService {
    */
   @Override
   public void start(final String id) {
-    this.template.sendBody(id);
+    // this.template.sendBody(id);
   }
 }

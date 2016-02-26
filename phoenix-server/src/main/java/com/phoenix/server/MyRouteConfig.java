@@ -5,25 +5,30 @@
 
 package com.phoenix.server;
 
-import java.net.MalformedURLException;
-
 import lombok.extern.slf4j.XSlf4j;
 
-import org.apache.camel.Component;
-import org.apache.camel.Message;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.amqp.AMQPComponent;
-import org.apache.camel.model.dataformat.JsonLibrary;
-import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
-import org.apache.qpid.amqp_1_0.jms.ConnectionFactory;
-import org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.amqp.Amqp;
+import org.springframework.integration.dsl.core.Pollers;
+import org.springframework.integration.dsl.support.Transformers;
+import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
+import org.springframework.messaging.MessageHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseRepository;
-import com.phoenix.to.TestCase;
+import com.phoenix.server.data.TestResultRepository;
 import com.phoenix.to.TestResult;
 
 
@@ -36,110 +41,68 @@ import com.phoenix.to.TestResult;
  */
 @XSlf4j
 @Configuration
-public class MyRouteConfig extends SingleRouteCamelConfiguration implements InitializingBean {
+public class MyRouteConfig {
   @Autowired
-  TestCaseRepository repository;
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-   * @since Feb 1, 2016
-   */
-  @Override
-  public void afterPropertiesSet() throws Exception {}
-
-  // @Bean
-  // public ConnectionFactory bla() {
-  // final ActiveMQConnectionFactory act =
-  // new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
-  // act.setUserName("admin");
-  // act.setPassword("admin");
-  // act.setTrustAllPackages(true);
-  // return act;
-  // }
-  //
-  // @Bean(name = "rabbit")
-  // public com.rabbitmq.client.ConnectionFactory fact() {
-  // com.rabbitmq.client.ConnectionFactory facto = new com.rabbitmq.client.ConnectionFactory();
-  // facto.setUsername("guest");
-  // facto.setPassword("guest");
-  // facto.setHost(System.getenv("QUEUE_HOST"));
-  // return facto;
-  // }
+  TestCaseRepository repository1;
+  @Autowired
+  TestResultRepository repository2;
 
   @Bean
-  public ConnectionFactory facto() throws MalformedURLException {
-    String con = "amqp://guest:guest@" + System.getenv("QUEUE_HOST") + ":5672";
-    log.info(con);
-    ConnectionFactoryImpl factory = ConnectionFactoryImpl.createFromURL(con);
-    return factory;
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration#route()
-   * @since Feb 1, 2016
-   */
-  @Override
-  public RouteBuilder route() {
-    return new RouteBuilder() {
-      TestCaseRepository repository;
-
-      @Override
-      public void configure() throws Exception {
-        // Enqueue Testcase by ID
-        this.log.info("Configuring direct:startTestCase");
-        this.from("direct:startTestCase")
-        .marshal()
-        .json(JsonLibrary.Jackson, String.class)
-        .to("rabbitmq://" + System.getenv("QUEUE_HOST")
-            + ":5672/testcaseid?username=guest&password=guest&autoDelete=false");
-        // Fetch body of testcase
-        this.log.info("Configuring amqp:queue:testcaseid");
-        this.from("amqp:queue:testcaseid")
-            .unmarshal()
-            .json(JsonLibrary.Jackson, String.class)
-            .log("${body}")
-            .process(arg0 -> {
-              final Message m = arg0.getIn();
-              final String id = (String) m.getBody();
-              this.log.info("Fetching TC: " + id);
-              final TestCase tc = this.repository.findOne(id);
-              m.setBody(tc);
-              m.setHeader("id", id);
-            })
-            .log("${body}")
-            .choice()
-            .when(this.body().isNull())
-            .throwException(new NullPointerException())
-            .otherwise()
-            .marshal()
-            .json(JsonLibrary.Jackson)
-            .to("rabbitmq://" + System.getenv("QUEUE_HOST")
-                + ":5672/testcase?username=guest&password=guest&autoDelete=false");
-        // store result
-        this.log.info("Configuring amqp:queue:testresult");
-        this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)
-            .log("${body}").beanRef("defaultTestResultService");
-        this.log.info("Done configuring Routes.");
-      }
-
-      public RouteBuilder init(final TestCaseRepository repository) {
-        this.repository = repository;
-        return this;
-      }
-    }.init(this.repository);
+  public static Jackson2JsonObjectMapper getMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    return new Jackson2JsonObjectMapper(mapper);
   }
 
   @Bean
-  public Component securedAmqpConnection() throws MalformedURLException {
-    log.entry();
-    return log.exit(new AMQPComponent(this.facto()));
+  public org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory() {
+    com.rabbitmq.client.ConnectionFactory f = new com.rabbitmq.client.ConnectionFactory();
+    f.setHost(System.getenv("QUEUE_HOST"));
+    f.setPassword("guest");
+    f.setUsername("guest");
+    f.setPort(5672);
+    return new CachingConnectionFactory(f);
+  }
+
+  @Bean
+  public IntegrationFlow fetch_testcase() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(), new org.springframework.amqp.core.Queue(
+                "testcaseid"))).transform(Transformers.objectToString())
+        .wireTap(f -> f.handle(this.logger()))
+        .transform(arg0 -> log.exit(this.repository1.findOne((String) arg0)))
+                .transform(Transformers.toJson())
+        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testcase")).get();
+  }
+
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new JsonMessageConverter();
+  }
+
+  @Bean
+  public MessageHandler logger() {
+    LoggingHandler loggingHandler = new LoggingHandler(LoggingHandler.Level.INFO.name());
+    loggingHandler.setLoggerName("com.phoenix.server");
+    return loggingHandler;
+  }
+
+  @Bean(name = PollerMetadata.DEFAULT_POLLER)
+  public PollerMetadata poller() {
+    return Pollers.fixedDelay(1000).get();
+  }
+
+  @Bean
+  public IntegrationFlow store_testresult() {
+    return IntegrationFlows
+        .from(Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult")))
+        .wireTap(f -> f.handle(this.logger())).transform(Transformers.fromJson())
+        .wireTap(f -> f.handle(this.logger()))
+        .transform(arg0 -> this.repository2.save((TestResult) arg0)).handle(this.logger()).get();
+  }
+
+  @Bean
+  public AmqpTemplate template() {
+    return new RabbitTemplate(this.connectionFactory());
   }
 }

@@ -13,6 +13,18 @@
         <docker.image.prefix>neitsch</docker.image.prefix>
     </properties>
     <dependencies>
+        <dependency>
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-java-dsl</artifactId>
+</dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
         <!-- APACHE COMMONS -->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -24,27 +36,6 @@
                 dependency should carry over from the engine -->
             <groupId>org.assertj</groupId>
             <artifactId>assertj-swing</artifactId>
-        </dependency>
-        <!-- CAMEL -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-amqp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jackson</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rabbitmq</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring-javaconfig</artifactId>
         </dependency>
         <!-- JAVAX -->
         <dependency>
