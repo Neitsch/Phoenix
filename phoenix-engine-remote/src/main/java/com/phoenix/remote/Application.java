@@ -10,6 +10,7 @@ import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -21,6 +22,7 @@ import org.springframework.context.annotation.ComponentScan;
  * @since Feb 2, 2016
  */
 @XSlf4j
+@EnableAutoConfiguration
 @ComponentScan("com.phoenix")
 @SpringApplicationConfiguration
 public class Application implements CommandLineRunner {
