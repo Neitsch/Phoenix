@@ -8,6 +8,8 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Engine</name>
+    <description>The engine is a library to execute a complete testcase and assert the correct execution.</description>
     <artifactId>phoenix-engine</artifactId>
     <dependencies>
         <!-- ASSERTJ -->

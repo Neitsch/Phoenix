@@ -12,9 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.IntegrationComponentScan;
+import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -22,6 +26,7 @@ import com.phoenix.server.data.TestCaseBodyRepository;
 import com.phoenix.server.data.TestCaseHeadRepository;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.server.data.TestResultRepository;
+import com.phoenix.to.TestSuite;
 
 /**
  * @author nschuste
@@ -33,8 +38,15 @@ import com.phoenix.server.data.TestResultRepository;
 @XSlf4j
 @Configuration
 @EnableAutoConfiguration
+@IntegrationComponentScan
 @ComponentScan(basePackages = "com.phoenix")
 public class Application implements CommandLineRunner {
+  @MessagingGateway
+  public interface EchoGateway {
+    @Gateway(requestChannel = "testsuiteChannel")
+    void echo(TestSuite message);
+  }
+
   @Autowired
   TestCaseHeadRepository repo1;
   @Autowired
@@ -47,7 +59,16 @@ public class Application implements CommandLineRunner {
   public static void main(final String[] args) throws Exception {
     log.entry((Object) args);
     System.setProperty("database", "test");
-    SpringApplication.run(Application.class, args);
+    ApplicationContext ctx = SpringApplication.run(Application.class, args);
+
+    // TestSuite ts =
+    // TestSuite
+    // .builder()
+    // .testcaseids(
+    // Arrays
+    // .asList(new String[] {"56d0f5178380d78ed141d922", "56d0f5178380d78ed141d922"}))
+    // .build();
+    // ctx.getBean(EchoGateway.class).echo(ts);
     log.exit();
   }
 
@@ -104,6 +125,6 @@ public class Application implements CommandLineRunner {
     // Arrays.asList(new TestCaseStep[] {TestCaseStep.builder()
     // .methodName("button.click").args(new String[] {"button"}).build()}))
     // .build())).build());
-    System.out.println(this.repo2.findByNameIgnoreCaseContains("testnam"));
+    System.out.println(this.repo2.findAll());
   }
 }

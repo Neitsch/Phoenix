@@ -22,7 +22,7 @@ services:
       - database
     environment:
       - DATABASE=database
-      - QUEUE_HOST=143.44.65.120
+      - QUEUE_HOST=queue.host
   client:
     image: neitsch/phoenix-client
     ports:
@@ -31,5 +31,5 @@ services:
       - queue:queue.host
       - server:server
     environment:
-      - QUEUE_HOST=143.44.65.120
+      - QUEUE_HOST=queue.host
       - SERVER=server

@@ -8,6 +8,8 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Local Engine</name>
+    <description>An implementation to locally execute a testcase as well as recording and modifying a testcase.</description>
     <artifactId>phoenix-engine-local</artifactId>
     <dependencies>
         <!-- ARGS4J -->

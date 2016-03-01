@@ -19,7 +19,7 @@ import lombok.experimental.Accessors;
 /**
  * TestCaseEnd contains information to reset the state of the system to it's state before the
  * testcase was started.
- * 
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 1, 2015
@@ -32,7 +32,7 @@ import lombok.experimental.Accessors;
 public class TestCaseEnd implements Serializable {
   /**
    * List of Paths that should be removed before shutting down.
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @since Feb 23, 2016

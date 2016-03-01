@@ -5,6 +5,8 @@
 
 package com.phoenix.server;
 
+import java.util.concurrent.Executors;
+
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.amqp.core.AmqpTemplate;
@@ -23,6 +25,8 @@ import org.springframework.integration.dsl.core.Pollers;
 import org.springframework.integration.dsl.support.Transformers;
 import org.springframework.integration.handler.LoggingHandler;
 import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.integration.store.MessageStore;
+import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
 import org.springframework.messaging.MessageHandler;
 
@@ -30,6 +34,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.server.data.TestResultRepository;
 import com.phoenix.to.TestResult;
+import com.phoenix.to.TestSuite;
 
 
 /**
@@ -64,15 +69,35 @@ public class MyRouteConfig {
   }
 
   @Bean
+  public IntegrationFlow do_testsuite() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(), new Queue("testsuite"))
+            .mappedRequestHeaders("*"))
+            .transform(Transformers.fromJson())
+            // .claimCheckIn(this.store()).handle(this.logger()).get();
+            .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
+            .split()
+            .transform(Transformers.toJson())
+            .wireTap(f -> f.handle(this.logger()))
+            .handle(
+                Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
+                .mappedRequestHeaders("*")).get();
+  }
+
+  @Bean
   public IntegrationFlow fetch_testcase() {
     return IntegrationFlows
         .from(
-            Amqp.inboundGateway(this.connectionFactory(), new org.springframework.amqp.core.Queue(
-                "testcaseid"))).transform(Transformers.objectToString())
-        .wireTap(f -> f.handle(this.logger()))
-        .transform(arg0 -> log.exit(this.repository1.findOne((String) arg0)))
+            Amqp.inboundGateway(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
+        .transform(Transformers.objectToString())
+                .transform(Transformers.fromJson())
+                .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
                 .transform(Transformers.toJson())
-        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testcase")).get();
+                .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testcase")
+                .mappedRequestHeaders("*")).get();
   }
 
   @Bean
@@ -89,20 +114,33 @@ public class MyRouteConfig {
 
   @Bean(name = PollerMetadata.DEFAULT_POLLER)
   public PollerMetadata poller() {
-    return Pollers.fixedDelay(1000).get();
+    return Pollers.fixedDelay(1000).taskExecutor(Executors.newCachedThreadPool()).get();
+  }
+
+
+  @Bean
+  public IntegrationFlow receive_testresult() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
+            .mappedRequestHeaders("*")).transform(Transformers.fromJson())
+            .transform(arg0 -> this.repository2.save((TestResult) arg0)).aggregate()
+            .handle(this.logger()).get();
   }
 
   @Bean
-  public IntegrationFlow store_testresult() {
-    return IntegrationFlows
-        .from(Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult")))
-        .wireTap(f -> f.handle(this.logger())).transform(Transformers.fromJson())
-        .wireTap(f -> f.handle(this.logger()))
-        .transform(arg0 -> this.repository2.save((TestResult) arg0)).handle(this.logger()).get();
+  public MessageStore store() {
+    return new SimpleMessageStore();
   }
 
   @Bean
   public AmqpTemplate template() {
     return new RabbitTemplate(this.connectionFactory());
+  }
+
+  @Bean
+  public IntegrationFlow ts() {
+    return IntegrationFlows.from("testsuiteChannel").transform(Transformers.toJson())
+        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testsuite")).get();
   }
 }

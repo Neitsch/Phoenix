@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
 
 /**
  * TestResult contains meta information on the execution as well as the step results itself.
@@ -30,6 +31,8 @@ import org.springframework.data.annotation.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 public class TestResult implements Serializable {
+  @Version
+  private long version;
   /**
    * Unique identifier
    *
@@ -81,7 +84,7 @@ public class TestResult implements Serializable {
   private Date start = new Date();
   /**
    * Time the tearing down of the system after the testcase execution was completed.
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @since Feb 23, 2016

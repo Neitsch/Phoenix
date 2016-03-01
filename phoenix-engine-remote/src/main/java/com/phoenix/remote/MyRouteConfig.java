@@ -78,18 +78,21 @@ public class MyRouteConfig {
   public IntegrationFlow store_testresult() {
     return IntegrationFlows
         .from(
-            Amqp.inboundGateway(this.connectionFactory(), new org.springframework.amqp.core.Queue(
-                "testcase"))).wireTap(f -> f.handle(this.logger()))
-        .transform(Transformers.fromJson()).wireTap(f -> f.handle(this.logger()))
-        .transform(arg0 -> {
-                  try {
-                    return this.wrapper.result((TestCase) arg0);
-                  } catch (Exception e) {
-                    log.catching(e);
-                    return TestResult.builder().success(false).build();
-                  }
-                }).transform(Transformers.toJson()).wireTap(f -> f.handle(this.logger()))
-                .handle(Amqp.outboundAdapter(this.template()).exchangeName("testresult")).get();
+            Amqp.inboundGateway(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testcase")).mappedRequestHeaders("*"))
+                .transform(Transformers.fromJson())
+                .transform(arg0 -> {
+          try {
+            return this.wrapper.result((TestCase) arg0);
+          } catch (Exception e) {
+            log.catching(e);
+            return TestResult.builder().success(false).build();
+          }
+        })
+        .transform(Transformers.toJson())
+        .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testresult")
+                .mappedRequestHeaders("*")).get();
   }
 
   @Bean

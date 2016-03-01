@@ -8,6 +8,8 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Core</name>
+    <description>Contains all Transferobjects that are shared between different projects in the application.</description>
     <artifactId>phoenix-core</artifactId>
     <dependencies>
         <!-- LOMBOK -->
