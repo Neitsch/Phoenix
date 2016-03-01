@@ -5,6 +5,8 @@
 
 package com.phoenix.server;
 
+import java.util.concurrent.Executors;
+
 import lombok.extern.slf4j.XSlf4j;
 
 import org.springframework.amqp.core.AmqpTemplate;
@@ -71,15 +73,15 @@ public class MyRouteConfig {
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testsuite"))
-                .mappedRequestHeaders("*"))
-        .transform(Transformers.fromJson())
-        // .claimCheckIn(this.store()).handle(this.logger()).get();
-        .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
-        .split()
-        .transform(Transformers.toJson())
-        .wireTap(f -> f.handle(this.logger()))
-        .handle(
-            Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
+            .mappedRequestHeaders("*"))
+            .transform(Transformers.fromJson())
+            // .claimCheckIn(this.store()).handle(this.logger()).get();
+            .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
+            .split()
+            .transform(Transformers.toJson())
+            .wireTap(f -> f.handle(this.logger()))
+            .handle(
+                Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
                 .mappedRequestHeaders("*")).get();
   }
 
@@ -89,13 +91,13 @@ public class MyRouteConfig {
         .from(
             Amqp.inboundGateway(this.connectionFactory(),
                 new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
-                .transform(Transformers.objectToString())
-        .transform(Transformers.fromJson())
-        .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
-        .transform(Transformers.toJson())
-        .handle(
-                    Amqp.outboundAdapter(this.template()).exchangeName("testcase")
-                    .mappedRequestHeaders("*")).get();
+        .transform(Transformers.objectToString())
+                .transform(Transformers.fromJson())
+                .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
+                .transform(Transformers.toJson())
+                .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testcase")
+                .mappedRequestHeaders("*")).get();
   }
 
   @Bean
@@ -112,7 +114,7 @@ public class MyRouteConfig {
 
   @Bean(name = PollerMetadata.DEFAULT_POLLER)
   public PollerMetadata poller() {
-    return Pollers.fixedDelay(1000).get();
+    return Pollers.fixedDelay(1000).taskExecutor(Executors.newCachedThreadPool()).get();
   }
 
 
@@ -121,9 +123,9 @@ public class MyRouteConfig {
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
-                .mappedRequestHeaders("*")).transform(Transformers.fromJson())
-        .transform(arg0 -> this.repository2.save((TestResult) arg0)).aggregate()
-        .handle(this.logger()).get();
+            .mappedRequestHeaders("*")).transform(Transformers.fromJson())
+            .transform(arg0 -> this.repository2.save((TestResult) arg0)).aggregate()
+            .handle(this.logger()).get();
   }
 
   @Bean
