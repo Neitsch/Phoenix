@@ -7,6 +7,8 @@
         <artifactId>phoenix-parent</artifactId>
         <version>0.0.2</version>
     </parent>
+    <name>Phoenix - Sample</name>
+    <description>Simple GUI Application that can be used for Regression Testing.</description>
     <artifactId>phoenix-example</artifactId>
     <build>
         <plugins>

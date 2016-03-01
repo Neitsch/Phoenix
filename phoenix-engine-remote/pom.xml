@@ -8,6 +8,8 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Remote Engine</name>
+    <description>Engine that can be executed on any machine with window support. Simply polls from a RabbitMQ queue.</description>
     <artifactId>phoenix-engine-remote</artifactId>
     <properties>
         <docker.image.prefix>neitsch</docker.image.prefix>

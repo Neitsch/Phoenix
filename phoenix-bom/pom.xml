@@ -17,6 +17,8 @@
         <slf4j.version>1.7.16</slf4j.version>
         <spring.platform.version>2.0.2.RELEASE</spring.platform.version>
     </properties>
+    <name>Phoenix - Bill of Materials</name>
+    <description>Manages Version information for plugins.</description>
     <artifactId>phoenix-bom</artifactId>
     <packaging>pom</packaging>
     <dependencyManagement>
