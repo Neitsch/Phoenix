@@ -12,7 +12,7 @@ promiseRetry(function(retry, number) {
       ch.assertQueue("testcaseid");
       app.use("/static", express.static(__dirname + '/../dist'));
       app.get('/en', function(req, res) {
-        ch.sendToQueue("testcaseid", new Buffer(req.query.id));
+        ch.sendToQueue("testcaseid", new Buffer('"'+req.query.id+'"'));
         res.end();
       });
       app.listen(3000, function() {

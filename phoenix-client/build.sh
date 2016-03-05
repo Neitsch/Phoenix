@@ -1,3 +1,3 @@
 webpack
 
-docker build -t neitsch/phoenix-client -f docker/Dockerfile --quiet .
+#docker build -t neitsch/phoenix-client -f docker/Dockerfile --quiet .
