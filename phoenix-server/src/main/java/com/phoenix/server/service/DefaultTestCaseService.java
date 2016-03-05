@@ -5,7 +5,11 @@
 
 package com.phoenix.server.service;
 
+import org.springframework.integration.annotation.Gateway;
+import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.stereotype.Service;
+
+import com.phoenix.to.TestSuite;
 
 /**
  * TestCaseService to start a testcase.
@@ -16,6 +20,12 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DefaultTestCaseService implements TestCaseService {
+  @MessagingGateway
+  public interface EchoGateway {
+    @Gateway(requestChannel = "testcaseidChannel")
+    void echo(TestSuite message);
+  }
+
   // @Produce(uri = "direct:startTestCase")
   // ProducerTemplate template;
 

@@ -92,7 +92,7 @@ public class MyRouteConfig {
             Amqp.inboundGateway(this.connectionFactory(),
                 new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
         .transform(Transformers.objectToString())
-                .transform(Transformers.fromJson())
+                .transform(Transformers.fromJson(String.class))
                 .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
                 .transform(Transformers.toJson())
                 .handle(
@@ -124,13 +124,20 @@ public class MyRouteConfig {
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
             .mappedRequestHeaders("*")).transform(Transformers.fromJson())
-            .transform(arg0 -> this.repository2.save((TestResult) arg0)).aggregate()
+            .transform(arg0 -> this.repository2.save((TestResult) arg0))
+            // .aggregate() // TODO: filter tc with correlation id
             .handle(this.logger()).get();
   }
 
   @Bean
   public MessageStore store() {
     return new SimpleMessageStore();
+  }
+
+  @Bean
+  public IntegrationFlow tcid() {
+    return IntegrationFlows.from("testcaseidChannel").transform(Transformers.toJson())
+        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")).get();
   }
 
   @Bean
