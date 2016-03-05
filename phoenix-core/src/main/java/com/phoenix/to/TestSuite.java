@@ -28,6 +28,7 @@ import org.springframework.data.annotation.Id;
 public class TestSuite {
   @Id
   private String id;
+  private String name;
   // https://docs.mongodb.org/manual/reference/database-references/
   // Unless you have a compelling reason to use DBRefs, use manual references instead.
   private Collection<String> testcaseids;
