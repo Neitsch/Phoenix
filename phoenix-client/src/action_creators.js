@@ -12,11 +12,10 @@ export function setTestCases(testcases) {
   };
 }
 
-export function toogleModal(arg) {
+export function toogleModal() {
   console.log("Toogle modal");
   return {
-    type: 'TOOGLE_MODAL',
-    arg
+    type: 'TOOGLE_MODAL'
   };
 }
 
