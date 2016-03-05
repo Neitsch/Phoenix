@@ -24,8 +24,8 @@ export const Container = React.createClass({
     });
   },
   render: function() {
-    var TrPanelContent = <span>This table displays all available suites.</span>;
-    var TrPanelTable = <TableContainer data={this.getData()} headers={this.getHeaders()}></TableContainer>;
+    var TsPanelContent = <span>This table displays all available suites.</span>;
+    var TsPanelTable = <TableContainer data={this.getData()} headers={this.getHeaders()}></TableContainer>;
     return <PanelContainer title="Testsuites" panel={TsPanelContent} footer={TsPanelTable}></PanelContainer>;
   }
 });
