@@ -1,4 +1,5 @@
 import React from 'react';
+import {ModalContainer} from './ModalContainer';
 
 export default React.createClass({
   render: function() {
@@ -14,6 +15,7 @@ export default React.createClass({
           Test
         </div>
       </nav>
+      <ModalContainer></ModalContainer>
     </div>;
   }
 });
