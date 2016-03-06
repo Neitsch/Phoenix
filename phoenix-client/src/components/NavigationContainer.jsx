@@ -14,7 +14,7 @@ export const Container = React.createClass({
       url: HOST+"/ts/create",
       type: "GET",
       success: function(data) {
-        this.props.addTestSuite(data);
+        this.props.saveTestSuite(data);
         hashHistory.push("/testsuite/edit/"+data.id);
       },
       error: function(data) { $.notify("Problem encountered!" + data); console.error(data); }

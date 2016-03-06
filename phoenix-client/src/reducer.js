@@ -30,13 +30,8 @@ function setTestResults(state, testresults) {
   return state.set("testresults", tr);
 }
 
-function addTestSuite(state, testsuite) {
-  return state.push(testsuite);
-}
-
-function addTestCaseToTestSuite(state, testsuiteid, testcaseid) {
-  if(state.getIn(["testsuites", testsuiteid, "testcaseids"]).includes(testcaseid) || !state.get("testcases").has(testcaseid)) return state;
-  return state.updateIn(["testsuites", testsuiteid, "testcaseids"], val => val.push(testcaseid));
+function saveTestSuite(state, testsuite) {
+  return state.setIn(["testsuites", testsuite.id], fromJS(testsuite));
 }
 
 function toogleModal(state) {
@@ -48,7 +43,7 @@ export default function(state = INITIAL_STATE, action) {
   switch(action.type) {
     case 'ADD_TESTCASE_TO_TESTSUITE': return addTestCaseToTestSuite(state, action.testsuiteid, action.testcaseid);
     case 'TESTCASES': return setTestCases(state, action.testcases);
-    case 'TESTSUITE': return addTestSuite(state, action.testsuite);
+    case 'TESTSUITE': return saveTestSuite(state, action.testsuite);
     case 'TESTRESULTS': return setTestResults(state, action.testresults);
     case 'TESTSUITES': return setTestSuites(state, action.testsuites);
     case 'TOOGLE_MODAL': return toogleModal(state);

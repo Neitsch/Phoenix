@@ -5,14 +5,6 @@
 //  };
 //}
 
-export function addTestCaseToTestSuite(testsuiteid, testcaseid) {
-  return {
-    type: 'ADD_TESTCASE_TO_TESTSUITE',
-    testsuiteid,
-    testcaseid
-  }
-}
-
 export function setTestCases(testcases) {
   return {
     type: 'TESTCASES',
@@ -20,7 +12,7 @@ export function setTestCases(testcases) {
   };
 }
 
-export function addTestSuite(testsuite) {
+export function saveTestSuite(testsuite) {
   return {
     type: 'TESTSUITE',
     testsuite

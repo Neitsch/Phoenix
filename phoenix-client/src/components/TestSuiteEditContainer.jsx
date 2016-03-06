@@ -2,6 +2,8 @@ import React from 'react';
 import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
+import $ from 'jquery';
+import {HOST} from '../CONSTANTS';
 
 export const Container = React.createClass({
   mixins: [PureRenderMixin],
@@ -10,8 +12,24 @@ export const Container = React.createClass({
   },
   handleKeyPress: function(event) {
     if (event.key === 'Enter') {
-      this.props.addTestCaseToTestSuite(this.props.params.id, event.target.value);
+      $.ajax({
+        url: HOST+"/ts/addTc/"+this.props.params.id+"/"+event.target.value,
+        type: "GET",
+        success: function(data) {
+          this.props.saveTestSuite(data);
+          console.log("Done");
+        }.bind(this),
+        error: function(data) { $.notify("Problem encountered!" + data); console.error(data); }
+      });
     }
+  },
+  enqueue: function(id) {
+    $.ajax({
+      url: "/en2?id="+id,
+      type: "GET",
+      success: function(data) { $.notify("Enqueued testsuite", "success");},
+      error: function(data) { $.notify("Problem encountered!" + data); }
+    });
   },
   render: function() {
     var ts = this.getTs(this.props.params.id);
@@ -19,6 +37,7 @@ export const Container = React.createClass({
       return <div></div>;
     }
     return <div>
+      <button onClick={() => this.enqueue(this.props.params.id)}>Start</button>
       <form className="form-horizontal">
         <div className="form-group">
           <label htmlFor="input1" className="col-sm-2 control-label">Testsuite Name</label>
