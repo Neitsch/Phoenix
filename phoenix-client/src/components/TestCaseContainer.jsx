@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import $ from 'jquery';
 import PanelContainer from './PanelContainer';
-import SimplePanel from './SimplePanel';
 import TableContainer from './TableContainer';
 import {fromJS} from 'immutable';
 
@@ -43,7 +42,6 @@ export const Container = React.createClass({
 });
 
 function mapStateToProps(state) {
-  console.log(state);
   return {
     testcases: state.getIn(["testcases"])
   };

@@ -5,11 +5,26 @@
 //  };
 //}
 
+export function addTestCaseToTestSuite(testsuiteid, testcaseid) {
+  return {
+    type: 'ADD_TESTCASE_TO_TESTSUITE',
+    testsuiteid,
+    testcaseid
+  }
+}
+
 export function setTestCases(testcases) {
   return {
     type: 'TESTCASES',
     testcases
   };
+}
+
+export function addTestSuite(testsuite) {
+  return {
+    type: 'TESTSUITE',
+    testsuite
+  }
 }
 
 export function toogleModal() {
@@ -26,7 +41,7 @@ export function setTestResults(testresults) {
   };
 }
 
-export function setTestSuites(testsuites) {
+export function setTestSuite(testsuites) {
   return {
     type: 'TESTSUITES',
     testsuites

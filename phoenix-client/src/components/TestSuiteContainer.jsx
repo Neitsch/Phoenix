@@ -3,7 +3,6 @@ import PureRenderMixin from 'react-addons-pure-render-mixin';
 import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import PanelContainer from './PanelContainer';
-import SimplePanel from './SimplePanel';
 import TableContainer from './TableContainer';
 import {fromJS} from 'immutable';
 import moment from 'moment';
