@@ -24,6 +24,7 @@ import org.springframework.integration.dsl.amqp.Amqp;
 import org.springframework.integration.dsl.core.Pollers;
 import org.springframework.integration.dsl.support.Transformers;
 import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.router.HeaderValueRouter;
 import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.integration.store.MessageStore;
 import org.springframework.integration.store.SimpleMessageStore;
@@ -69,19 +70,29 @@ public class MyRouteConfig {
   }
 
   @Bean
+  public IntegrationFlow correlate() {
+    return IntegrationFlows.from("testcase_testsuite").aggregate().handle(this.logger()).get();
+  }
+
+  @Bean
+  public IntegrationFlow deadLetter() {
+    return IntegrationFlows.from("deadLetterChannel").handle(this.logger()).get();
+  }
+
+  @Bean
   public IntegrationFlow do_testsuite() {
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testsuite"))
-            .mappedRequestHeaders("*"))
-            .transform(Transformers.fromJson())
-            // .claimCheckIn(this.store()).handle(this.logger()).get();
-            .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
-            .split()
-            .transform(Transformers.toJson())
-            .wireTap(f -> f.handle(this.logger()))
-            .handle(
-                Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
+                .mappedRequestHeaders("*"))
+        .transform(Transformers.fromJson())
+        // .claimCheckIn(this.store()).handle(this.logger()).get();
+        .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
+        .split()
+        .transform(Transformers.toJson())
+        .wireTap(f -> f.handle(this.logger()))
+        .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
                 .mappedRequestHeaders("*")).get();
   }
 
@@ -91,14 +102,15 @@ public class MyRouteConfig {
         .from(
             Amqp.inboundGateway(this.connectionFactory(),
                 new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
-        .transform(Transformers.objectToString())
-                .transform(Transformers.fromJson(String.class))
-                .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
-                .transform(Transformers.toJson())
-                .handle(
-            Amqp.outboundAdapter(this.template()).exchangeName("testcase")
-                .mappedRequestHeaders("*")).get();
+                .transform(Transformers.objectToString())
+        .transform(Transformers.fromJson(String.class))
+        .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
+        .transform(Transformers.toJson())
+        .handle(
+                    Amqp.outboundAdapter(this.template()).exchangeName("testcase")
+                    .mappedRequestHeaders("*")).get();
   }
+
 
   @Bean
   public MessageConverter jsonMessageConverter() {
@@ -117,16 +129,18 @@ public class MyRouteConfig {
     return Pollers.fixedDelay(1000).taskExecutor(Executors.newCachedThreadPool()).get();
   }
 
-
   @Bean
   public IntegrationFlow receive_testresult() {
+    HeaderValueRouter router = new HeaderValueRouter("jmsCorrelationId");
+    router.setChannelMapping("*", "testcase_testsuite");
+    router.setDefaultOutputChannelName("deadLetterChannel");;
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
-            .mappedRequestHeaders("*")).transform(Transformers.fromJson())
-            .transform(arg0 -> this.repository2.save((TestResult) arg0))
-            // .aggregate() // TODO: filter tc with correlation id
-            .handle(this.logger()).get();
+                .mappedRequestHeaders("*")).transform(Transformers.fromJson())
+        .transform(arg0 -> this.repository2.save((TestResult) arg0)).route(router).get();
+    // .aggregate() // TODO: filter tc with correlation id
+    // .handle(this.logger()).get();
   }
 
   @Bean

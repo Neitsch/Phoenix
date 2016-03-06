@@ -5,7 +5,7 @@
 
 package com.phoenix.server.rest;
 
-import java.util.List;
+import java.util.Collection;
 
 import lombok.extern.slf4j.XSlf4j;
 
@@ -41,7 +41,7 @@ public class TestResultRestController {
    * @since Feb 24, 2016
    */
   @RequestMapping("")
-  public List<TestResult> getAllTestResults() {
+  public Collection<TestResult> getAllTestResults() {
     // TODO(nigel): Feb 24, 2016 Pageable
     log.entry();
     return log.exit(this.repository.findAll());
