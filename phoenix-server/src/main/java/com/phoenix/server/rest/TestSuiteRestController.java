@@ -57,4 +57,14 @@ public class TestSuiteRestController {
     log.entry();
     return log.exit(this.repository.findAll());
   }
+
+  @ResponseStatus(code = HttpStatus.OK)
+  @RequestMapping(value = "/rmTc/{tsId}/{tcId}", method = RequestMethod.GET)
+  public TestSuite removeTestcase(@PathVariable("tsId") final String tsId,
+      @PathVariable("tcId") final String tcId) {
+    log.entry(tsId, tcId);
+    TestSuite ts = this.repository.findOne(tsId);
+    ts.getTestcaseids().remove(tcId);
+    return log.exit(this.repository.save(ts));
+  }
 }
