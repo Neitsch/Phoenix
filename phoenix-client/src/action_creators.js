@@ -12,6 +12,13 @@ export function setTestCases(testcases) {
   };
 }
 
+export function saveTestSuite(testsuite) {
+  return {
+    type: 'TESTSUITE',
+    testsuite
+  }
+}
+
 export function toogleModal() {
   console.log("Toogle modal");
   return {
@@ -26,7 +33,7 @@ export function setTestResults(testresults) {
   };
 }
 
-export function setTestSuites(testsuites) {
+export function setTestSuite(testsuites) {
   return {
     type: 'TESTSUITES',
     testsuites

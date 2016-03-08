@@ -5,6 +5,9 @@
 
 package com.phoenix.server;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.concurrent.Executors;
 
 import lombok.extern.slf4j.XSlf4j;
@@ -24,15 +27,19 @@ import org.springframework.integration.dsl.amqp.Amqp;
 import org.springframework.integration.dsl.core.Pollers;
 import org.springframework.integration.dsl.support.Transformers;
 import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.router.AbstractMessageRouter;
 import org.springframework.integration.scheduling.PollerMetadata;
 import org.springframework.integration.store.MessageStore;
 import org.springframework.integration.store.SimpleMessageStore;
 import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseRepository;
 import com.phoenix.server.data.TestResultRepository;
+import com.phoenix.server.data.TestSuiteRepository;
 import com.phoenix.to.TestResult;
 import com.phoenix.to.TestSuite;
 
@@ -51,6 +58,8 @@ public class MyRouteConfig {
   TestCaseRepository repository1;
   @Autowired
   TestResultRepository repository2;
+  @Autowired
+  TestSuiteRepository repository3;
 
   @Bean
   public static Jackson2JsonObjectMapper getMapper() {
@@ -69,19 +78,30 @@ public class MyRouteConfig {
   }
 
   @Bean
+  public IntegrationFlow correlate() {
+    return IntegrationFlows.from("testcase_testsuite").wireTap(f -> f.handle(this.logger()))
+        .aggregate().handle(this.logger()).get();
+  }
+
+  @Bean
+  public IntegrationFlow deadLetter() {
+    return IntegrationFlows.from("deadLetterChannel").handle(this.logger()).get();
+  }
+
+  @Bean
   public IntegrationFlow do_testsuite() {
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testsuite"))
-            .mappedRequestHeaders("*"))
-            .transform(Transformers.fromJson())
-            // .claimCheckIn(this.store()).handle(this.logger()).get();
-            .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
-            .split()
-            .transform(Transformers.toJson())
-            .wireTap(f -> f.handle(this.logger()))
-            .handle(
-                Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
+                .mappedRequestHeaders("*"))
+        .transform(Transformers.fromJson())
+        // .claimCheckIn(this.store()).handle(this.logger()).get();
+        .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
+        .split()
+        .transform(Transformers.toJson())
+        .wireTap(f -> f.handle(this.logger()))
+        .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
                 .mappedRequestHeaders("*")).get();
   }
 
@@ -91,14 +111,15 @@ public class MyRouteConfig {
         .from(
             Amqp.inboundGateway(this.connectionFactory(),
                 new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
-        .transform(Transformers.objectToString())
-                .transform(Transformers.fromJson(String.class))
-                .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
-                .transform(Transformers.toJson())
-                .handle(
-            Amqp.outboundAdapter(this.template()).exchangeName("testcase")
-                .mappedRequestHeaders("*")).get();
+                .transform(Transformers.objectToString())
+        .transform(Transformers.fromJson(String.class))
+        .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
+        .transform(Transformers.toJson())
+        .handle(
+                    Amqp.outboundAdapter(this.template()).exchangeName("testcase")
+                    .mappedRequestHeaders("*")).get();
   }
+
 
   @Bean
   public MessageConverter jsonMessageConverter() {
@@ -117,16 +138,27 @@ public class MyRouteConfig {
     return Pollers.fixedDelay(1000).taskExecutor(Executors.newCachedThreadPool()).get();
   }
 
-
   @Bean
   public IntegrationFlow receive_testresult() {
+    AbstractMessageRouter router = new AbstractMessageRouter() {
+
+      @Override
+      protected Collection<MessageChannel> determineTargetChannels(final Message<?> message) {
+        if (message.getHeaders().containsKey("correlationId")) {
+          return Arrays.asList(new MessageChannel[] {this.getChannelResolver().resolveDestination(
+              "testcase_testsuite")});
+        }
+        return new ArrayList<>();
+      }
+    };
+    router.setDefaultOutputChannelName("deadLetterChannel");
     return IntegrationFlows
         .from(
             Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
-            .mappedRequestHeaders("*")).transform(Transformers.fromJson())
-            .transform(arg0 -> this.repository2.save((TestResult) arg0))
-            // .aggregate() // TODO: filter tc with correlation id
-            .handle(this.logger()).get();
+                .mappedRequestHeaders("*")).transform(Transformers.fromJson())
+        .transform(arg0 -> this.repository2.save((TestResult) arg0)).route(router).get();
+    // .aggregate() // TODO: filter tc with correlation id
+    // .handle(this.logger()).get();
   }
 
   @Bean
@@ -149,5 +181,16 @@ public class MyRouteConfig {
   public IntegrationFlow ts() {
     return IntegrationFlows.from("testsuiteChannel").transform(Transformers.toJson())
         .handle(Amqp.outboundAdapter(this.template()).exchangeName("testsuite")).get();
+  }
+
+  @Bean
+  public IntegrationFlow tsid() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundAdapter(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testsuiteid")).mappedRequestHeaders("*"))
+        .transform(Transformers.objectToString()).transform(Transformers.fromJson(String.class))
+                .transform(source -> MyRouteConfig.this.repository3.findOne((String) source))
+                .channel("testsuiteChannel").get();
   }
 }

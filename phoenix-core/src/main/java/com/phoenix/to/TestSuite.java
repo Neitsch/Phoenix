@@ -5,7 +5,7 @@
 
 package com.phoenix.to;
 
-import java.util.Collection;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,5 +31,5 @@ public class TestSuite {
   private String name;
   // https://docs.mongodb.org/manual/reference/database-references/
   // Unless you have a compelling reason to use DBRefs, use manual references instead.
-  private Collection<String> testcaseids;
+  private Set<String> testcaseids;
 }

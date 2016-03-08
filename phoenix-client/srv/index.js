@@ -15,6 +15,10 @@ promiseRetry(function(retry, number) {
         ch.sendToQueue("testcaseid", new Buffer('"'+req.query.id+'"'));
         res.end();
       });
+      app.get('/en2', function(req, res) {
+        ch.sendToQueue("testsuiteid", new Buffer('"'+req.query.id+'"'));
+        res.end();
+      });
       app.listen(3000, function() {
         console.log('Listening on 3000!');
       });
