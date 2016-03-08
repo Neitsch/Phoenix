@@ -4,6 +4,7 @@ import {connect} from 'react-redux';
 import * as actionCreators from '../action_creators';
 import $ from 'jquery';
 import {HOST} from '../CONSTANTS';
+import AutoComplete from 'react-autocomplete';
 
 export const Container = React.createClass({
   mixins: [PureRenderMixin],
@@ -12,16 +13,30 @@ export const Container = React.createClass({
   },
   handleKeyPress: function(event) {
     if (event.key === 'Enter') {
-      $.ajax({
-        url: HOST+"/ts/addTc/"+this.props.params.id+"/"+event.target.value,
-        type: "GET",
-        success: function(data) {
-          this.props.saveTestSuite(data);
-          console.log("Done");
-        }.bind(this),
-        error: function(data) { $.notify("Problem encountered!" + data); console.error(data); }
-      });
+      event.preventDefault();
+      this.addTc(event.target.value);
     }
+  },
+  rmTc: function(id) {
+    $.ajax({
+      url: HOST+"/ts/rmTc/"+this.props.params.id+"/"+id,
+      type: "GET",
+      success: function(data) {
+        this.props.saveTestSuite(data);
+      }.bind(this),
+    });
+  },
+  addTc: function(id) {
+    console.log(id);
+    $.ajax({
+      url: HOST+"/ts/addTc/"+this.props.params.id+"/"+id,
+      type: "GET",
+      success: function(data) {
+        this.props.saveTestSuite(data);
+        console.log("Done");
+      }.bind(this),
+      error: function(data) { $.notify("Problem encountered!" + data); console.error(data); }
+    });
   },
   enqueue: function(id) {
     $.ajax({
@@ -33,6 +48,9 @@ export const Container = React.createClass({
   },
   render: function() {
     var ts = this.getTs(this.props.params.id);
+    console.log(this.props.testcases.filter(x => {
+        return !ts.get("testcaseids").includes(x.get("id"));
+      }).toArray());
     if(ts == undefined) {
       return <div></div>;
     }
@@ -50,13 +68,34 @@ export const Container = React.createClass({
         {this.props.testcases.filter(x => {
             return ts.get("testcaseids").includes(x.get("id"));
           }
-        ).map(x => <li className="list-group-item">{x.get("name")}</li>)}
+        ).map(x => <li className="list-group-item">{x.get("name")}<button onClick={() => this.rmTc(x.get("id"))}>Remove</button></li>)}
       </ul>
+      <form className="form-horizontal" onSubmit={event => event.preventDefault()}>
+        <div className="form-group">
+          <label htmlFor="input2" className="col-sm-2 control-label">Testcase Name</label>
+          <div className="col-sm-10">
+            <AutoComplete
+              items={this.props.testcases.filter(x => {
+                  return !ts.get("testcaseids").includes(x.get("id"));
+                }).toArray()}
+                getItemValue={(item) => item.get("name")}
+                renderItem={(item, isHighlighted) => (
+                  <div
+                    style={isHighlighted ? {} : {}}
+                    key={item.get("id")}
+                  >{item.get("name")}</div>
+                )}
+                onSelect={(value, item) => this.addTc(item.get("id"))}
+                inputProps={{className: "form-control"}}
+              />
+          </div>
+        </div>
+      </form>
       <form className="form-horizontal">
         <div className="form-group">
-          <label htmlFor="input1" className="col-sm-2 control-label">Testcase ID</label>
+          <label htmlFor="input3" className="col-sm-2 control-label">Testcase ID</label>
           <div className="col-sm-10">
-            <input type="text" className="form-control" id="input1" placeholder="ID" onKeyPress = {this.handleKeyPress}></input>
+            <input type="text" className="form-control" id="input3" placeholder="ID" onKeyPress = {this.handleKeyPress}></input>
           </div>
         </div>
       </form>
