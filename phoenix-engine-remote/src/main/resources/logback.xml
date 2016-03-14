@@ -2,11 +2,30 @@
 <configuration>
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger - %msg%n
-            </pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%file:%line\) - %msg%n</pattern>
         </encoder>
     </appender>
-    <root level="DEBUG">
+    <appender name="FILE"
+        class="ch.qos.logback.core.rolling.RollingFileAppender"
+    >
+        <file>logfile.log</file>
+        <rollingPolicy
+            class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy"
+        >
+            <!-- daily rollover -->
+            <fileNamePattern>logFile.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <!-- keep 30 days' worth of history -->
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <append>true</append>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level (%logger:%line\) - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <logger name="com.phoenix" level="ALL" />
+    <root level="WARN">
         <appender-ref ref="STDOUT" />
+        <appender-ref ref="FILE" />
     </root>
 </configuration>

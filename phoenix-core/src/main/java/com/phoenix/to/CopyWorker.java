@@ -1,5 +1,7 @@
 /**
  * Copyright 2016 Nigel Schuster.
+ *
+ * This class is a way to copy files inside the local file system before the testcase execution.
  */
 
 
@@ -16,6 +18,8 @@ import lombok.experimental.Accessors;
 import lombok.experimental.FieldDefaults;
 
 /**
+ * Copies a file inside the local filesystem system.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Jan 7, 2016
@@ -24,7 +28,21 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Accessors(chain = true)
 public class CopyWorker implements DownloadWorker {
+  /**
+   * The name that the file should have after copying it over.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   String destination;
+  /**
+   * The origin of the file on the local filesystem.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   String origin;
 
   /**
@@ -32,9 +50,8 @@ public class CopyWorker implements DownloadWorker {
    *
    * @author nschuste
    * @version 1.0.0
-   * @throws IOException
    * @see com.phoenix.to.DownloadWorker#doDownload(java.nio.file.Path)
-   * @since Jan 7, 2016
+   * @since Feb 23, 2016
    */
   @Override
   public void doDownload(final Path downloads) throws IOException {

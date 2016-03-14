@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "postinstall": "webpack",
     "test": "mocha --compilers js:babel-core/register --require ./test/test_helper.js 'test/**/*.@(js|jsx)'",
-    "start": "webpack && node ./srv/index.js"
+    "start": "node ./srv/index.js"
   },
   "babel": {
     "presets": [
@@ -44,12 +45,17 @@
   },
   "dependencies": {
     "amqplib": "^0.4.1",
+    "express": "^4.13.4",
     "immutable": "^3.7.6",
     "jquery": "^2.2.0",
     "moment": "^2.11.2",
+    "notifyjs-browser": "^0.4.1",
+    "promise-retry": "^1.0.2",
     "react": "^0.14.7",
     "react-addons-pure-render-mixin": "^0.14.7",
+    "react-autocomplete": "^0.2.0",
     "react-dom": "^0.14.7",
+    "react-modal": "^0.6.1",
     "react-redux": "^4.4.0",
     "react-router": "^2.0.0",
     "redux": "^3.3.1"

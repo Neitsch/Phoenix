@@ -1,5 +1,6 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Contains information to remove traces of the application after the
+ * testcase execution. Currently not used - low priority.
  */
 
 
@@ -16,6 +17,9 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
+ * TestCaseEnd contains information to reset the state of the system to it's state before the
+ * testcase was started.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Dec 1, 2015
@@ -26,5 +30,12 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class TestCaseEnd implements Serializable {
+  /**
+   * List of Paths that should be removed before shutting down.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   private Collection<Path> removeFiles;
 }

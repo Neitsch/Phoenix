@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Sample class to test method discovery.
  */
 
 
@@ -11,6 +11,8 @@ import com.phoenix.to.ResultWithMessage;
 import com.phoenix.to.TestCaseStepResultStatus;
 
 /**
+ * Simple class to test method discovery with annotations.
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Dec 6, 2015

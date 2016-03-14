@@ -8,58 +8,48 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Remote Engine</name>
+    <description>Engine that can be executed on any machine with window support. Simply polls from a RabbitMQ queue.</description>
     <artifactId>phoenix-engine-remote</artifactId>
     <properties>
         <docker.image.prefix>neitsch</docker.image.prefix>
     </properties>
     <dependencies>
         <dependency>
-            <!-- Without this import BasicRobot is undefined, though the dependency should carry over from the engine -->
+    <groupId>org.springframework.integration</groupId>
+    <artifactId>spring-integration-java-dsl</artifactId>
+</dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-amqp</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.jackson</groupId>
+            <artifactId>jackson-mapper-asl</artifactId>
+        </dependency>
+        <!-- APACHE COMMONS -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+        </dependency>
+        <!-- ASSERTJ -->
+        <dependency>
+            <!-- Without this import BasicRobot is undefined, though the 
+                dependency should carry over from the engine -->
             <groupId>org.assertj</groupId>
             <artifactId>assertj-swing</artifactId>
         </dependency>
+        <!-- JAVAX -->
+        <dependency>
+            <groupId>javax.jms</groupId>
+            <artifactId>jms-api</artifactId>
+        </dependency>
+        <!-- PHOENIX -->
         <dependency>
             <groupId>com.phoenix</groupId>
             <artifactId>phoenix-engine</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>activemq-camel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring-javaconfig</artifactId>
-        </dependency>
-        <dependency>
-    <groupId>org.apache.commons</groupId>
-    <artifactId>commons-collections4</artifactId>
-    <version>4.1</version>
-</dependency>
-<!--<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-xstream</artifactId>
-</dependency>-->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-rabbitmq</artifactId>
-        </dependency>
-        <dependency>
-    <groupId>org.apache.camel</groupId>
-    <artifactId>camel-amqp</artifactId>
-</dependency>
-<dependency>
-  <groupId>org.apache.camel</groupId>
-  <artifactId>camel-jackson</artifactId>
-</dependency>
-    </dependencies> 
+    </dependencies>
     <build>
         <plugins>
             <plugin>

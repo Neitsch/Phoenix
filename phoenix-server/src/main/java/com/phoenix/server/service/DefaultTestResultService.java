@@ -1,5 +1,6 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Simple service to save a TestResult, not necessarily needed,
+ * however an extra level of indirection might come in handy for analytics.
  */
 
 

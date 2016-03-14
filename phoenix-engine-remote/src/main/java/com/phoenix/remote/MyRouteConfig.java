@@ -1,94 +1,102 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Configuration for Apache Camel - Routing engine.
  */
 
 package com.phoenix.remote;
 
-import java.net.MalformedURLException;
+import lombok.extern.slf4j.XSlf4j;
 
-import org.apache.camel.Component;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.amqp.AMQPComponent;
-import org.apache.camel.model.dataformat.JsonLibrary;
-import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
-import org.apache.qpid.amqp_1_0.jms.ConnectionFactory;
-import org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl;
-import org.springframework.beans.factory.InitializingBean;
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.amqp.Amqp;
+import org.springframework.integration.dsl.core.Pollers;
+import org.springframework.integration.dsl.support.Transformers;
+import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
+import org.springframework.messaging.MessageHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.to.TestCase;
+import com.phoenix.to.TestResult;
 
 /**
+ * Apache Camel Route configuration.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 2, 2016
  */
+@XSlf4j
 @Configuration
-public class MyRouteConfig extends SingleRouteCamelConfiguration implements InitializingBean {
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-   * @since Feb 2, 2016
-   */
-  @Override
-  public void afterPropertiesSet() throws Exception {}
-
-  // @Bean
-  // public ConnectionFactory bla() {
-  // final ActiveMQConnectionFactory act =
-  // new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
-  // act.setUserName("admin");
-  // act.setPassword("admin");
-  // act.setTrustAllPackages(true);
-  // return act;
-  // }
-  //
-  // @Bean(name = "rabbit")
-  // public com.rabbitmq.client.ConnectionFactory fact() throws IOException {
-  // com.rabbitmq.client.ConnectionFactory facto = new com.rabbitmq.client.ConnectionFactory();
-  // facto.setUsername("guest");
-  // facto.setPassword("guest");
-  // facto.setHost(System.getenv("QUEUE_HOST"));
-  // return facto;
-  // }
+public class MyRouteConfig {
+  @Autowired
+  ExecWrapper wrapper;
 
   @Bean
-  public ConnectionFactory fact() {
-    return new ConnectionFactoryImpl("amqp", "localhost", 5672, "guest", "guest", "", "/", false, 1);
-  }
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration#route()
-   * @since Feb 2, 2016
-   */
-  @Override
-  public RouteBuilder route() {
-    return new RouteBuilder() {
-      @Override
-      public void configure() throws Exception {
-        this.from("amqp:queue:testcase").unmarshal().json(JsonLibrary.Jackson, TestCase.class)
-            .throttle(1).to("direct:doTestcase");
-        this.from("direct:doTestcase").bean(ExecWrapper.class).to("direct:finishedTc");
-        this.from("direct:finishedTc")
-            .marshal()
-            .json(JsonLibrary.Jackson)
-            .to("rabbitmq://localhost:5672/testresult?username=guest&password=guest&autoDelete=false");
-      }
-    };
+  public static Jackson2JsonObjectMapper getMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    return new Jackson2JsonObjectMapper(mapper);
   }
 
   @Bean
-  public Component securedAmqpConnection() throws MalformedURLException {
-    return AMQPComponent.amqpComponent("amqp://guest:guest@localhost:5672");
+  public org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory() {
+    com.rabbitmq.client.ConnectionFactory f = new com.rabbitmq.client.ConnectionFactory();
+    f.setHost(System.getenv("QUEUE_HOST"));
+    f.setPassword("guest");
+    f.setUsername("guest");
+    f.setPort(5672);
+    return new CachingConnectionFactory(f);
   }
 
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new JsonMessageConverter();
+  }
+
+  @Bean
+  public MessageHandler logger() {
+    LoggingHandler loggingHandler = new LoggingHandler(LoggingHandler.Level.INFO.name());
+    loggingHandler.setLoggerName("com.phoenix.server");
+    return loggingHandler;
+  }
+
+  @Bean(name = PollerMetadata.DEFAULT_POLLER)
+  public PollerMetadata poller() {
+    return Pollers.fixedDelay(1000).get();
+  }
+
+  @Bean
+  public IntegrationFlow store_testresult() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testcase")).mappedRequestHeaders("*"))
+                .transform(Transformers.fromJson())
+                .transform(arg0 -> {
+          try {
+            return this.wrapper.result((TestCase) arg0);
+          } catch (Exception e) {
+            log.catching(e);
+            return TestResult.builder().success(false).build();
+          }
+        })
+        .transform(Transformers.toJson())
+        .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testresult")
+                .mappedRequestHeaders("*")).get();
+  }
+
+  @Bean
+  public AmqpTemplate template() {
+    return new RabbitTemplate(this.connectionFactory());
+  }
 }

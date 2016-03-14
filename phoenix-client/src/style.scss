@@ -1,4 +1,8 @@
 //Comment
+$navbar-height: 50;
+$navbar-padding: $navbar-height + 20;
 body {
   color: black;
+  padding-top: $navbar-padding + px;
+  padding-bottom: $navbar-padding + px;
 }

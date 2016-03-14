@@ -10,6 +10,8 @@ import java.util.concurrent.Semaphore;
 import com.phoenix.to.ResultWithMessage;
 
 /**
+ * Currently not implemented
+ * 
  * @author nschuste
  * @version 1.0.0
  * @since Feb 11, 2016
@@ -31,7 +33,7 @@ public class GuiInterface implements UserInterface {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.recorder.UserInterface#getTcName()

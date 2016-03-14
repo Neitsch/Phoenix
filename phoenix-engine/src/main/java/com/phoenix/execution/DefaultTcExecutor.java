@@ -1,5 +1,5 @@
 /**
- * Copyright 2015 Nigel Schuster.
+ * Copyright 2015 Nigel Schuster. Handles setup, execution and tear down of a testcase.
  */
 
 
@@ -46,6 +46,8 @@ import com.phoenix.util.FS;
 import com.phoenix.util.MyEventListener;
 
 /**
+ * Provides methods to execute a testcase.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Nov 21, 2015
@@ -53,11 +55,26 @@ import com.phoenix.util.MyEventListener;
 @XSlf4j
 @Service
 public class DefaultTcExecutor implements TcExecutor {
+  // TODO(nigel): Feb 23, 2016 Separate Environment from this singleton.
   protected Environment env;
 
   @Autowired
   private StepExecutor exec;
+  /**
+   * Current index position in list of steps.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   private int position = 0;
+  /**
+   * List of listener to {@TestCaseStepResult}.
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   private final List<MyEventListener<TestCaseStepResult>> resultListener = new ArrayList<>();
 
   /**
@@ -70,6 +87,7 @@ public class DefaultTcExecutor implements TcExecutor {
    */
   @Override
   public TestCaseBodyResult execute(final TestCaseBody tc) {
+    log.entry(tc);
     final TestCaseBodyResult res = new TestCaseBodyResult();
     this.position = 0;
     tc.getLines().forEach(
@@ -89,7 +107,7 @@ public class DefaultTcExecutor implements TcExecutor {
                 log.catching(e);
               }
             }
-            return res;
+            return log.exit(res);
   }
 
   /**
@@ -115,7 +133,9 @@ public class DefaultTcExecutor implements TcExecutor {
    */
   @Override
   public void registerListener(final MyEventListener<TestCaseStepResult> myEventListener) {
+    log.entry(myEventListener);
     this.resultListener.add(myEventListener);
+    log.exit();
   }
 
   /**
@@ -129,6 +149,8 @@ public class DefaultTcExecutor implements TcExecutor {
    */
   @Override
   public void setUp(final TestCaseSetup setup) throws SetupException {
+    // TODO(nigel): Feb 23, 2016 Shorten code
+    log.entry(setup);
     try {
       // Create new Env for TC
       this.env = new Environment();
@@ -186,9 +208,11 @@ public class DefaultTcExecutor implements TcExecutor {
       if (JFrame.class.isAssignableFrom(frame.getClass())) {
         ((JFrame) frame).setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       }
+      log.info("Setup completed");
     } catch (final Exception e) {
       throw new SetupException(e);
     }
+    log.exit();
   }
 
   /**
@@ -201,16 +225,20 @@ public class DefaultTcExecutor implements TcExecutor {
    */
   @Override
   public void tearDown(final TestCaseEnd end) {
+    log.entry(end);
     try {
+      log.info("Triggering AWT cleanup");
       this.env.getRobot().cleanUp();
     } catch (Exception e) {
       log.catching(e);
     }
     try {
+      log.info("Going to delete dir: " + this.env.getDir().toAbsolutePath().toString());
       FS.delete(this.env.getDir());
     } catch (final IOException e) {
       log.catching(e);
     }
+    log.exit();
   }
 
   /**

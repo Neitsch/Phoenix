@@ -1,130 +1,196 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Configuration of Routes in Apache Camel.
  */
 
 
 package com.phoenix.server;
 
-import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.concurrent.Executors;
 
-import org.apache.camel.Component;
-import org.apache.camel.Message;
-import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.amqp.AMQPComponent;
-import org.apache.camel.model.dataformat.JsonLibrary;
-import org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration;
-import org.apache.qpid.amqp_1_0.jms.ConnectionFactory;
-import org.apache.qpid.amqp_1_0.jms.impl.ConnectionFactoryImpl;
-import org.springframework.beans.factory.InitializingBean;
+import lombok.extern.slf4j.XSlf4j;
+
+import org.springframework.amqp.core.AmqpTemplate;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.amqp.support.converter.JsonMessageConverter;
+import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.integration.dsl.IntegrationFlow;
+import org.springframework.integration.dsl.IntegrationFlows;
+import org.springframework.integration.dsl.amqp.Amqp;
+import org.springframework.integration.dsl.core.Pollers;
+import org.springframework.integration.dsl.support.Transformers;
+import org.springframework.integration.handler.LoggingHandler;
+import org.springframework.integration.router.AbstractMessageRouter;
+import org.springframework.integration.scheduling.PollerMetadata;
+import org.springframework.integration.store.MessageStore;
+import org.springframework.integration.store.SimpleMessageStore;
+import org.springframework.integration.support.json.Jackson2JsonObjectMapper;
+import org.springframework.messaging.Message;
+import org.springframework.messaging.MessageChannel;
+import org.springframework.messaging.MessageHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.phoenix.server.data.TestCaseRepository;
-import com.phoenix.to.TestCase;
+import com.phoenix.server.data.TestResultRepository;
+import com.phoenix.server.data.TestSuiteRepository;
 import com.phoenix.to.TestResult;
+import com.phoenix.to.TestSuite;
 
 
 /**
+ * Apache Camel Route configuration
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 1, 2016
  */
+@XSlf4j
 @Configuration
-public class MyRouteConfig extends SingleRouteCamelConfiguration implements InitializingBean {
+public class MyRouteConfig {
   @Autowired
-  TestCaseRepository repository;
-
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.springframework.beans.factory.InitializingBean#afterPropertiesSet()
-   * @since Feb 1, 2016
-   */
-  @Override
-  public void afterPropertiesSet() throws Exception {}
-
-  // @Bean
-  // public ConnectionFactory bla() {
-  // final ActiveMQConnectionFactory act =
-  // new ActiveMQConnectionFactory("tcp://" + System.getenv("QUEUE_HOST") + ":61616");
-  // act.setUserName("admin");
-  // act.setPassword("admin");
-  // act.setTrustAllPackages(true);
-  // return act;
-  // }
-  //
-  // @Bean(name = "rabbit")
-  // public com.rabbitmq.client.ConnectionFactory fact() {
-  // com.rabbitmq.client.ConnectionFactory facto = new com.rabbitmq.client.ConnectionFactory();
-  // facto.setUsername("guest");
-  // facto.setPassword("guest");
-  // facto.setHost(System.getenv("QUEUE_HOST"));
-  // return facto;
-  // }
+  TestCaseRepository repository1;
+  @Autowired
+  TestResultRepository repository2;
+  @Autowired
+  TestSuiteRepository repository3;
 
   @Bean
-  public ConnectionFactory facto() throws MalformedURLException {
-    ConnectionFactoryImpl factory =
-        ConnectionFactoryImpl.createFromURL("amqp://guest:guest@localhost:5672");
-    return factory;
+  public static Jackson2JsonObjectMapper getMapper() {
+    ObjectMapper mapper = new ObjectMapper();
+    return new Jackson2JsonObjectMapper(mapper);
   }
 
-  /**
-   * {@inheritDoc}
-   *
-   * @author nschuste
-   * @version 1.0.0
-   * @see org.apache.camel.spring.javaconfig.SingleRouteCamelConfiguration#route()
-   * @since Feb 1, 2016
-   */
-  @Override
-  public RouteBuilder route() {
-    return new RouteBuilder() {
-      TestCaseRepository repository;
+  @Bean
+  public org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory() {
+    com.rabbitmq.client.ConnectionFactory f = new com.rabbitmq.client.ConnectionFactory();
+    f.setHost(System.getenv("QUEUE_HOST"));
+    f.setPassword("guest");
+    f.setUsername("guest");
+    f.setPort(5672);
+    return new CachingConnectionFactory(f);
+  }
+
+  @Bean
+  public IntegrationFlow correlate() {
+    return IntegrationFlows.from("testcase_testsuite").wireTap(f -> f.handle(this.logger()))
+        .aggregate().handle(this.logger()).get();
+  }
+
+  @Bean
+  public IntegrationFlow deadLetter() {
+    return IntegrationFlows.from("deadLetterChannel").handle(this.logger()).get();
+  }
+
+  @Bean
+  public IntegrationFlow do_testsuite() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(), new Queue("testsuite"))
+                .mappedRequestHeaders("*"))
+        .transform(Transformers.fromJson())
+        // .claimCheckIn(this.store()).handle(this.logger()).get();
+        .transform(arg0 -> ((TestSuite) arg0).getTestcaseids())
+        .split()
+        .transform(Transformers.toJson())
+        .wireTap(f -> f.handle(this.logger()))
+        .handle(
+            Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")
+                .mappedRequestHeaders("*")).get();
+  }
+
+  @Bean
+  public IntegrationFlow fetch_testcase() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testcaseid")).mappedRequestHeaders("*"))
+                .transform(Transformers.objectToString())
+        .transform(Transformers.fromJson(String.class))
+        .transform(arg0 -> log.exit(this.repository1.findOne(log.exit((String) arg0))))
+        .transform(Transformers.toJson())
+        .handle(
+                    Amqp.outboundAdapter(this.template()).exchangeName("testcase")
+                    .mappedRequestHeaders("*")).get();
+  }
+
+
+  @Bean
+  public MessageConverter jsonMessageConverter() {
+    return new JsonMessageConverter();
+  }
+
+  @Bean
+  public MessageHandler logger() {
+    LoggingHandler loggingHandler = new LoggingHandler(LoggingHandler.Level.INFO.name());
+    loggingHandler.setLoggerName("com.phoenix.server");
+    return loggingHandler;
+  }
+
+  @Bean(name = PollerMetadata.DEFAULT_POLLER)
+  public PollerMetadata poller() {
+    return Pollers.fixedDelay(1000).taskExecutor(Executors.newCachedThreadPool()).get();
+  }
+
+  @Bean
+  public IntegrationFlow receive_testresult() {
+    AbstractMessageRouter router = new AbstractMessageRouter() {
 
       @Override
-      public void configure() throws Exception {
-        this.from("direct:startTestCase")
-        .marshal()
-        .json(JsonLibrary.Jackson, String.class)
-            .log("${body}")
-        .to("rabbitmq://localhost:5672/testcaseid?username=guest&password=guest&autoDelete=false");
-        this.from("amqp:queue:testcaseid")
-        .unmarshal()
-        .json(JsonLibrary.Jackson, String.class)
-            .log("${body}")
-            .process(arg0 -> {
-              final Message m = arg0.getIn();
-              final String id = (String) m.getBody();
-              final TestCase tc = this.repository.findOne(id);
-              m.setBody(tc);
-              m.setHeader("id", id);
-            })
-            .log("${body}")
-            .choice()
-            .when(this.body().isNull())
-            .throwException(new NullPointerException())
-            .otherwise()
-        .marshal()
-        .json(JsonLibrary.Jackson)
-        .to("rabbitmq://localhost:5672/testcase?username=guest&password=guest&autoDelete=false");
-        // this.from("jms:queue:testcase").log("LOG");
-        this.from("amqp:queue:testresult").unmarshal().json(JsonLibrary.Jackson, TestResult.class)
-        .log("${body}").beanRef("defaultTestResultService");
+      protected Collection<MessageChannel> determineTargetChannels(final Message<?> message) {
+        if (message.getHeaders().containsKey("correlationId")) {
+          return Arrays.asList(new MessageChannel[] {this.getChannelResolver().resolveDestination(
+              "testcase_testsuite")});
+        }
+        return new ArrayList<>();
       }
-
-      public RouteBuilder init(final TestCaseRepository repository) {
-        this.repository = repository;
-        return this;
-      }
-    }.init(this.repository);
+    };
+    router.setDefaultOutputChannelName("deadLetterChannel");
+    return IntegrationFlows
+        .from(
+            Amqp.inboundGateway(this.connectionFactory(), new Queue("testresult"))
+                .mappedRequestHeaders("*")).transform(Transformers.fromJson())
+        .transform(arg0 -> this.repository2.save((TestResult) arg0)).route(router).get();
+    // .aggregate() // TODO: filter tc with correlation id
+    // .handle(this.logger()).get();
   }
 
   @Bean
-  public Component securedAmqpConnection() throws MalformedURLException {
-    return new AMQPComponent(this.facto());
+  public MessageStore store() {
+    return new SimpleMessageStore();
+  }
+
+  @Bean
+  public IntegrationFlow tcid() {
+    return IntegrationFlows.from("testcaseidChannel").transform(Transformers.toJson())
+        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testcaseid")).get();
+  }
+
+  @Bean
+  public AmqpTemplate template() {
+    return new RabbitTemplate(this.connectionFactory());
+  }
+
+  @Bean
+  public IntegrationFlow ts() {
+    return IntegrationFlows.from("testsuiteChannel").transform(Transformers.toJson())
+        .handle(Amqp.outboundAdapter(this.template()).exchangeName("testsuite")).get();
+  }
+
+  @Bean
+  public IntegrationFlow tsid() {
+    return IntegrationFlows
+        .from(
+            Amqp.inboundAdapter(this.connectionFactory(),
+                new org.springframework.amqp.core.Queue("testsuiteid")).mappedRequestHeaders("*"))
+        .transform(Transformers.objectToString()).transform(Transformers.fromJson(String.class))
+                .transform(source -> MyRouteConfig.this.repository3.findOne((String) source))
+                .channel("testsuiteChannel").get();
   }
 }

@@ -1,21 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.phoenix</groupId>
-  <artifactId>phoenix-parent</artifactId>
-  <version>0.0.2</version>
-  <packaging>pom</packaging>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-  <modules>
-      <module>phoenix-bom</module>
-      <module>phoenix-engine</module>
-      <module>phoenix-engine-local</module>
-      <module>phoenix-engine-remote</module>
-      <module>phoenix-all</module>
-      <module>phoenix-core</module>
-      <module>phoenix-example</module>
-      <module>phoenix-server</module>
-  </modules>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.phoenix</groupId>
+    <artifactId>phoenix-parent</artifactId>
+    <version>0.0.2</version>
+    <packaging>pom</packaging>
+    <name>Phoenix - Parent</name>
+    <description>The parent simple contains all modules.</description>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+    </repositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <id>central</id>
+            <name>Central Repository</name>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </pluginRepository>
+    </pluginRepositories>
+    <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/Neitsch/Phoenix</url>
+    </ciManagement>
+    <scm>
+        <url>https://github.com/Neitsch/Phoenix</url>
+    </scm>
+    <modules>
+        <module>phoenix-bom</module>
+        <module>phoenix-engine</module>
+        <module>phoenix-engine-local</module>
+        <module>phoenix-engine-remote</module>
+        <module>phoenix-all</module>
+        <module>phoenix-core</module>
+        <module>phoenix-example</module>
+        <module>phoenix-server</module>
+        <module>phoenix-client</module>
+    </modules>
 </project>

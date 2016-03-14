@@ -1,0 +1,5 @@
+FROM rabbitmq:3.5-management
+
+RUN echo "[{rabbit, [{loopback_users,[]}]},{rabbitmq_management,[{load_definitions, \"/etc/rabbitmq/rabbit.json\"}]}]." > /etc/rabbitmq/rabbitmq.config
+
+ADD ./rabbit.json /etc/rabbitmq/

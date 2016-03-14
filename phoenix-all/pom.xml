@@ -1,6 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 >
+    <!-- This POM maintains the build process -->
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.phoenix</groupId>
@@ -13,6 +14,8 @@
     </properties>
     <artifactId>phoenix-all</artifactId>
     <packaging>pom</packaging>
+    <name>Phoenix - Build Management</name>
+    <description>Manages Plugin Configuration and Version information.</description>
     <dependencies>
     </dependencies>
     <dependencyManagement>
@@ -30,6 +33,7 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <!-- Ensures to build with Java 1.8 -->
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>3.5</version>
                     <configuration>
@@ -38,6 +42,7 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <!-- Plugin to build Dockerfile, standard configuration -->
                     <groupId>com.spotify</groupId>
                     <artifactId>docker-maven-plugin</artifactId>
                     <version>0.4.0</version>

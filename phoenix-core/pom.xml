@@ -8,19 +8,24 @@
         <version>0.0.2</version>
         <relativePath>../phoenix-all/pom.xml</relativePath>
     </parent>
+    <name>Phoenix - Core</name>
+    <description>Contains all Transferobjects that are shared between different projects in the application.</description>
     <artifactId>phoenix-core</artifactId>
     <dependencies>
+        <!-- LOMBOK -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>
+        <!-- JACKSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>
-		<dependency>
-			<groupId>org.springframework.data</groupId>
-			<artifactId>spring-data-mongodb</artifactId>
-		</dependency>
+        <!-- SPRING -->
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-mongodb</artifactId>
+        </dependency>
     </dependencies>
 </project>

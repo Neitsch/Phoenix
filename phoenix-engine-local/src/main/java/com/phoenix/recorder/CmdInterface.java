@@ -1,5 +1,6 @@
 /**
- * Copyright 2016 Nigel Schuster.
+ * Copyright 2016 Nigel Schuster. Command line interface (only UI currently implemented) to get and
+ * present information from/to the user
  */
 
 
@@ -13,12 +14,21 @@ import lombok.extern.slf4j.XSlf4j;
 import com.phoenix.to.ResultWithMessage;
 
 /**
+ * CmdInterface is an interface to interact with the user.
+ *
  * @author nschuste
  * @version 1.0.0
  * @since Feb 11, 2016
  */
 @XSlf4j
 public class CmdInterface implements UserInterface {
+  /**
+   * Scanner to read from std in
+   *
+   * @author nschuste
+   * @version 1.0.0
+   * @since Feb 23, 2016
+   */
   private final Scanner scan;
 
   /**
@@ -40,13 +50,14 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public String getResourcePath() {
+    log.entry();
     System.out.println("Please enter the path to the resource:");
-    return this.scan.nextLine();
+    return log.exit(this.scan.nextLine());
   }
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @author nschuste
    * @version 1.0.0
    * @see com.phoenix.recorder.UserInterface#getTcName()
@@ -54,8 +65,9 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public String getTcName() {
+    log.entry();
     System.out.println("Please enter the name of the testcase:");
-    return this.scan.nextLine();
+    return log.exit(this.scan.nextLine());
   }
 
   /**
@@ -84,8 +96,10 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public void proceed(final Semaphore sem) {
+    log.entry(sem);
     this.scan.nextLine();
     sem.release();
+    log.exit();
   }
 
   /**
@@ -98,12 +112,13 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public boolean remoteResource() {
+    log.entry();
     String read;
     do {
       System.out.println("Will you be using a server to get the data?");
       read = this.scan.nextLine();
     } while (!read.equals("y") && !read.equals("n"));
-    return read.equals("y");
+    return log.exit(read.equals("y"));
   }
 
   /**
@@ -116,12 +131,13 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public boolean saveTestCase() {
+    log.entry();
     String read;
     do {
       System.out.println("Save testcase?");
       read = this.scan.nextLine();
     } while (!read.equals("y") && !read.equals("n"));
-    return read.equals("y");
+    return log.exit(read.equals("y"));
   }
 
   /**
@@ -134,12 +150,13 @@ public class CmdInterface implements UserInterface {
    */
   @Override
   public boolean shouldCreateNew() {
+    log.entry();
     String read;
     do {
       System.out.println("Do you want to create a new testcase?");
       read = this.scan.nextLine();
     } while (!read.equals("y") && !read.equals("n"));
-    return read.equals("y");
+    return log.exit(read.equals("y"));
   }
 
   /**
